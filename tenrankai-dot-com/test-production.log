@@ -1,0 +1,33 @@
+[2m2025-08-24T07:36:43.879695Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Starting Tenrankai - High-Performance Photo Gallery Server server
+[2m2025-08-24T07:36:43.879778Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Configuration loaded from: "config.production.toml"
+[2m2025-08-24T07:36:43.879790Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Template directory: "/var/www/tenrankai/templates"
+[2m2025-08-24T07:36:43.879796Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Static files directory: "/var/www/tenrankai/static"
+[2m2025-08-24T07:36:43.879801Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'main' source directory: "/var/www/tenrankai/photos"
+[2m2025-08-24T07:36:43.879806Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'main' cache directory: "/var/www/tenrankai/cache/gallery"
+[2m2025-08-24T07:36:43.879811Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'showcase_portfolio' source directory: "/var/www/tenrankai/showcases/portfolio"
+[2m2025-08-24T07:36:43.879816Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'showcase_portfolio' cache directory: "/var/www/tenrankai/cache/showcase_portfolio"
+[2m2025-08-24T07:36:43.879821Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'showcase_events' source directory: "/var/www/tenrankai/showcases/events"
+[2m2025-08-24T07:36:43.879828Z[0m [32m INFO[0m [2mtenrankai[0m[2m:[0m Gallery 'showcase_events' cache directory: "/var/www/tenrankai/cache/showcase_events"
+[2m2025-08-24T07:36:43.879838Z[0m [32m INFO[0m [2mtenrankai::startup_checks[0m[2m:[0m Performing startup checks...
+[2m2025-08-24T07:36:43.879858Z[0m [32m INFO[0m [2mtenrankai::startup_checks[0m[2m:[0m Cache directory for gallery 'main' does not exist, creating: "/var/www/tenrankai/cache/gallery"
+[2m2025-08-24T07:36:43.880011Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Failed to create cache directory for gallery 'main': Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880053Z[0m [32m INFO[0m [2mtenrankai::startup_checks[0m[2m:[0m Cache directory for gallery 'showcase_portfolio' does not exist, creating: "/var/www/tenrankai/cache/showcase_portfolio"
+[2m2025-08-24T07:36:43.880146Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Failed to create cache directory for gallery 'showcase_portfolio': Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880161Z[0m [32m INFO[0m [2mtenrankai::startup_checks[0m[2m:[0m Cache directory for gallery 'showcase_events' does not exist, creating: "/var/www/tenrankai/cache/showcase_events"
+[2m2025-08-24T07:36:43.880227Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Failed to create cache directory for gallery 'showcase_events': Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880239Z[0m [33m WARN[0m [2mtenrankai::startup_checks[0m[2m:[0m Static files directory does not exist: "/var/www/tenrankai/static"
+[2m2025-08-24T07:36:43.880251Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Gallery 'main' source directory does not exist: "/var/www/tenrankai/photos"
+[2m2025-08-24T07:36:43.880263Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Gallery 'showcase_portfolio' source directory does not exist: "/var/www/tenrankai/showcases/portfolio"
+[2m2025-08-24T07:36:43.880271Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Gallery 'showcase_events' source directory does not exist: "/var/www/tenrankai/showcases/events"
+[2m2025-08-24T07:36:43.880279Z[0m [33m WARN[0m [2mtenrankai::startup_checks[0m[2m:[0m Templates directory does not exist: "/var/www/tenrankai/templates"
+[2m2025-08-24T07:36:43.880283Z[0m [33m WARN[0m [2mtenrankai::startup_checks[0m[2m:[0m This may cause issues with page rendering
+[2m2025-08-24T07:36:43.880288Z[0m [31mERROR[0m [2mtenrankai::startup_checks[0m[2m:[0m Startup checks failed with 7 errors
+[2m2025-08-24T07:36:43.880294Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Failed to create cache directory: Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880307Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Failed to create cache directory: Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880322Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Failed to create cache directory: Permission denied (os error 13)
+[2m2025-08-24T07:36:43.880326Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Static files directory does not exist
+[2m2025-08-24T07:36:43.880328Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Gallery source directory does not exist: main
+[2m2025-08-24T07:36:43.880332Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Gallery source directory does not exist: showcase_portfolio
+[2m2025-08-24T07:36:43.880334Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Startup check failed: Gallery source directory does not exist: showcase_events
+[2m2025-08-24T07:36:43.880338Z[0m [31mERROR[0m [2mtenrankai[0m[2m:[0m Critical startup check failed, exiting
+Error: "Critical startup check failed"

@@ -1,0 +1,300 @@
+{% assign page_title = "Features" %}
+{% assign meta_description = "Explore the comprehensive features of Tenrankai - from intelligent image processing to multi-gallery support and advanced caching." %}
+{% include "_header.html.liquid" %}
+
+<div class="container">
+    <h2>Features</h2>
+    
+    <section class="features-intro">
+        <p>Tenrankai is packed with features designed to make hosting and managing photo galleries a breeze. Whether you're a photographer showcasing your portfolio or an organization managing multiple image collections, Tenrankai has you covered.</p>
+    </section>
+
+    <section class="feature-category">
+        <h3>📂 File-Based Architecture</h3>
+        
+        <div class="feature-detail">
+            <h4>No Database Required</h4>
+            <p>Tenrankai operates entirely on files and folders - no database setup or maintenance:</p>
+            <ul>
+                <li>Drop images in folders to create galleries</li>
+                <li>Add markdown files for descriptions and captions</li>
+                <li>Write blog posts as simple markdown files</li>
+                <li>Configuration is just a TOML file</li>
+                <li>Everything is human-readable and version-control friendly</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>SyncThing Integration</h4>
+            <p>Perfect for distributed workflows with <a href="https://syncthing.net/" target="_blank" rel="noopener">SyncThing</a>:</p>
+            <ul>
+                <li>Edit your gallery on any device</li>
+                <li>Changes sync automatically to your server</li>
+                <li>No deployment process - just save and sync</li>
+                <li>Keep multiple servers in sync effortlessly</li>
+                <li>Works with any file synchronization tool</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Simple Deployment</h4>
+            <p>Since everything is files, deployment is straightforward:</p>
+            <ul>
+                <li>Copy files to server - you're done!</li>
+                <li>Use rsync, SyncThing, Dropbox, or git</li>
+                <li>No database migrations or schema updates</li>
+                <li>Easy backup - just copy the folders</li>
+                <li>Portable between servers</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>🖼️ Gallery Management</h3>
+        
+        <div class="feature-detail">
+            <h4>Multiple Independent Galleries</h4>
+            <p>Run unlimited galleries from a single Tenrankai instance, each with:</p>
+            <ul>
+                <li>Custom URL prefixes (e.g., /portfolio, /family, /projects)</li>
+                <li>Independent source directories and cache locations</li>
+                <li>Per-gallery configuration for image quality and sizes</li>
+                <li>Custom templates for unique gallery experiences</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Responsive Masonry Layout</h4>
+            <p>Beautiful, mobile-friendly gallery layouts that adapt to any screen size:</p>
+            <ul>
+                <li>Automatic column adjustment based on viewport</li>
+                <li>Smooth animations and transitions</li>
+                <li>Touch-friendly navigation on mobile devices</li>
+                <li>Optimized for both portrait and landscape orientations</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Folder Organization</h4>
+            <p>Organize photos hierarchically with full support for nested folders:</p>
+            <ul>
+                <li>Automatic breadcrumb navigation</li>
+                <li>Folder descriptions via markdown files</li>
+                <li>Hidden folders for private collections</li>
+                <li>Custom folder titles and metadata</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>📸 Image Processing</h3>
+        
+        <div class="feature-detail">
+            <h4>Automatic Resizing</h4>
+            <p>Generate multiple image sizes automatically:</p>
+            <ul>
+                <li><strong>Thumbnail:</strong> Small previews for gallery grids</li>
+                <li><strong>Gallery:</strong> Standard viewing size</li>
+                <li><strong>Medium:</strong> Larger size with optional watermarking</li>
+                <li><strong>Large:</strong> Full quality (authentication required)</li>
+                <li>@2x variants for all sizes (retina display support)</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Format Optimization</h4>
+            <p>Intelligent format selection for optimal performance:</p>
+            <ul>
+                <li>Automatic WebP conversion for supported browsers</li>
+                <li>JPEG fallback for maximum compatibility</li>
+                <li>Configurable quality settings per format</li>
+                <li>Content negotiation based on Accept headers</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Color Profile Preservation</h4>
+            <p>Full support for professional color management:</p>
+            <ul>
+                <li>ICC profile extraction and preservation</li>
+                <li>Display P3 and Adobe RGB support</li>
+                <li>Color profiles maintained through watermarking</li>
+                <li>Both JPEG and WebP profile embedding</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Metadata Extraction</h4>
+            <p>Comprehensive EXIF data parsing:</p>
+            <ul>
+                <li>Camera make, model, and settings</li>
+                <li>GPS coordinates and location data</li>
+                <li>Capture date and time</li>
+                <li>Lens information and focal length</li>
+                <li>ISO, aperture, and shutter speed</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>⚡ Performance & Caching</h3>
+        
+        <div class="feature-detail">
+            <h4>Intelligent Caching System</h4>
+            <p>Multi-level caching for lightning-fast performance:</p>
+            <ul>
+                <li>In-memory metadata cache with persistence</li>
+                <li>Processed image cache on disk</li>
+                <li>Automatic cache refresh in background</li>
+                <li>Version-based cache invalidation</li>
+                <li>Configurable cache directories per gallery</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Concurrent Processing</h4>
+            <p>Blazing-fast image processing:</p>
+            <ul>
+                <li>Parallel image processing with rate limiting</li>
+                <li>Non-blocking background tasks</li>
+                <li>Async I/O throughout the application</li>
+                <li>Efficient memory usage with streaming</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Pre-generation Options</h4>
+            <p>Optional cache pre-generation for instant loading:</p>
+            <ul>
+                <li>Generate all image sizes on startup</li>
+                <li>Background processing without blocking</li>
+                <li>Progress tracking and logging</li>
+                <li>Skip already cached images</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>📝 Content Management</h3>
+        
+        <div class="feature-detail">
+            <h4>Markdown Support</h4>
+            <p>Rich content with simple markdown files:</p>
+            <ul>
+                <li>Folder descriptions with _folder.md</li>
+                <li>Image captions with [imagename].md</li>
+                <li>TOML frontmatter for metadata</li>
+                <li>Full CommonMark support</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Built-in Blog System</h4>
+            <p>Multiple markdown-based blog systems:</p>
+            <ul>
+                <li>TOML frontmatter for post metadata</li>
+                <li>Automatic HTML generation</li>
+                <li>Chronological sorting and pagination</li>
+                <li>Subdirectory organization</li>
+                <li>Gallery image embedding support</li>
+                <li>Automatic reload on file changes</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Dynamic Content Updates</h4>
+            <p>Keep content fresh without restarts:</p>
+            <ul>
+                <li>API endpoints for content refresh</li>
+                <li>Automatic periodic refresh options</li>
+                <li>Hot-reload for development</li>
+                <li>Individual file update detection</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>🔒 Security & Protection</h3>
+        
+        <div class="feature-detail">
+            <h4>Copyright Watermarking</h4>
+            <p>Protect your images with intelligent watermarking:</p>
+            <ul>
+                <li>Automatic text color selection based on background</li>
+                <li>Configurable watermark text and positioning</li>
+                <li>Applied only to medium-sized images</li>
+                <li>Preserves image quality and color profiles</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Access Control</h4>
+            <p>Flexible authentication system:</p>
+            <ul>
+                <li>Password protection for large images</li>
+                <li>Download authentication tokens</li>
+                <li>Hidden folders with direct URL access</li>
+                <li>Configurable authentication endpoints</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Privacy Protection</h4>
+            <p>Control what information is visible to the public:</p>
+            <ul>
+                <li>Approximate date display for non-authenticated users</li>
+                <li>Show only month/year instead of exact timestamps</li>
+                <li>Perfect for family galleries or event photos</li>
+                <li>Full details remain available to authenticated users</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
+        <h3>🛠️ Developer Features</h3>
+        
+        <div class="feature-detail">
+            <h4>Template System</h4>
+            <p>Flexible Liquid templating engine:</p>
+            <ul>
+                <li>Customizable gallery and image templates</li>
+                <li>Reusable partial components</li>
+                <li>Per-gallery template configuration</li>
+                <li>Full Liquid syntax support</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>RESTful API</h4>
+            <p>Comprehensive API endpoints:</p>
+            <ul>
+                <li>Gallery preview and metadata</li>
+                <li>Image serving with size parameters</li>
+                <li>Content refresh triggers</li>
+                <li>Health check endpoints</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Monitoring & Logging</h4>
+            <p>Production-ready observability:</p>
+            <ul>
+                <li>Structured logging with configurable levels</li>
+                <li>HTTP access logs with latency tracking</li>
+                <li>Error tracking and reporting</li>
+                <li>Performance metrics</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h3>Ready to Experience These Features?</h3>
+        <p>Get started with Tenrankai today and build your perfect gallery.</p>
+        <div class="cta-actions">
+            <a href="/docs" class="btn btn-primary">Read the Documentation</a>
+            <a href="https://github.com/theatrus/tenrankai" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">View Source Code</a>
+        </div>
+    </section>
+</div>
+
+{% include "_footer.html.liquid" %}

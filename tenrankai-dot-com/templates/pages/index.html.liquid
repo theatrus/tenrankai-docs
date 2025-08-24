@@ -1,0 +1,71 @@
+{% assign page_title = "High-Performance Photo Gallery Server" %}
+{% assign meta_description = "Tenrankai - A blazing-fast web gallery server written in Rust. Features automatic image resizing, metadata extraction, and intelligent caching." %}
+{% assign page_css = "home.css" | split: "," %}
+{% include "_header.html.liquid" %}
+
+<div class="container container-md home-container">
+    <section class="hero-section">
+        <h1>Tenrankai</h1>
+        <p class="hero-subtitle">展覧会 - A High-Performance Photo Gallery Server</p>
+        <p class="hero-description">
+            A gallery, CMS, and blog platform that relies on nothing more than folders and files. 
+            Simply drop files in, sync with SyncThing, and your website stays up to date. 
+            Built with Rust for blazing performance.
+        </p>
+        <div class="hero-actions">
+            <a href="https://github.com/theatrus/tenrankai" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                View on GitHub
+            </a>
+            <a href="/docs" class="btn btn-secondary">
+                Documentation
+            </a>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <h2>Why Choose Tenrankai?</h2>
+        <div class="feature-grid">
+            <div class="feature card">
+                <h3>📁 Just Files & Folders</h3>
+                <p>No database, no complexity. Drop files in folders and your gallery is ready. Perfect for <a href="https://syncthing.net/" target="_blank" rel="noopener">SyncThing</a> workflows.</p>
+            </div>
+            <div class="feature card">
+                <h3>⚡ Blazing Fast</h3>
+                <p>Built with Rust and Axum for exceptional performance. Concurrent image processing with intelligent caching.</p>
+            </div>
+            <div class="feature card">
+                <h3>📸 Smart Processing</h3>
+                <p>Automatic resizing, WebP conversion, EXIF metadata extraction, and color profile preservation.</p>
+            </div>
+            <div class="feature card">
+                <h3>🎨 Beautiful Galleries</h3>
+                <p>Responsive masonry layout. Markdown support for descriptions. Multiple independent galleries.</p>
+            </div>
+            <div class="feature card">
+                <h3>📝 Built-in CMS</h3>
+                <p>Markdown-based blog system with TOML frontmatter. Multiple independent blogs with automatic refresh.</p>
+            </div>
+            <div class="feature card">
+                <h3>🔒 Production Ready</h3>
+                <p>Copyright watermarking, authentication, privacy controls, comprehensive logging, and graceful error handling.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2>See It In Action</h2>
+        <p>This website is powered by Tenrankai. Check out our demo gallery below:</p>
+        {% include "_gallery_preview.html.liquid" gallery_name: "main", gallery_url: "/gallery" %}
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to Get Started?</h2>
+        <p>Tenrankai is open source and ready to power your photo galleries.</p>
+        <div class="cta-actions">
+            <a href="/docs" class="btn btn-primary">Read the Docs</a>
+            <a href="https://github.com/theatrus/tenrankai" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Star on GitHub</a>
+        </div>
+    </section>
+</div>
+
+{% include "_footer.html.liquid" %}

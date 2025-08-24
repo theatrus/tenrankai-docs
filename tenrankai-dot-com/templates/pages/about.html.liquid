@@ -1,0 +1,69 @@
+{% assign page_title = "About Tenrankai" %}
+{% assign meta_description = "Learn about Tenrankai - a high-performance web gallery server built with Rust and designed for photographers and content creators." %}
+{% include "_header.html.liquid" %}
+
+<div class="container">
+    <h2>About Tenrankai</h2>
+    
+    <section class="about-intro">
+        <p>Tenrankai (展覧会) is Japanese for "exhibition" or "gallery show," perfectly capturing the essence of this project as a platform for displaying photographic collections.</p>
+        
+        <p>Born from the philosophy that content management should be as simple as organizing files in folders, Tenrankai is a gallery, CMS, and blog platform that relies on nothing more than your filesystem. Simply drop files in, or even use <a href="https://syncthing.net/" target="_blank" rel="noopener">SyncThing</a> to keep your gallery or website up to date.</p>
+        
+        <p>Built with Rust for exceptional performance, Tenrankai delivers a fast, flexible, and feature-rich experience without the complexity of traditional database-driven systems.</p>
+    </section>
+
+    <section class="about-philosophy">
+        <h3>Philosophy</h3>
+        <p>Tenrankai is built on several core principles:</p>
+        <ul>
+            <li><strong>Simplicity First:</strong> No database, no complex setup. Just files and folders. If you can organize files, you can run Tenrankai.</li>
+            <li><strong>Performance Always:</strong> Every feature is implemented with speed in mind, from concurrent image processing to intelligent caching strategies.</li>
+            <li><strong>Photographer Friendly:</strong> Preserves metadata, color profiles, and image quality while providing tools photographers actually need.</li>
+            <li><strong>Developer Experience:</strong> Clear configuration, extensive documentation, and a modular architecture that's easy to understand and extend.</li>
+            <li><strong>Production Ready:</strong> Built for real-world use with proper error handling, logging, and security features.</li>
+        </ul>
+    </section>
+
+    <section class="about-technical">
+        <h3>Technical Excellence</h3>
+        <p>Tenrankai leverages cutting-edge technologies:</p>
+        <ul>
+            <li><strong>Rust & Axum:</strong> A blazing-fast async web framework that ensures excellent performance and memory safety.</li>
+            <li><strong>Smart Caching:</strong> Multi-level caching with automatic refresh and persistence across restarts.</li>
+            <li><strong>Image Processing:</strong> Concurrent processing with support for JPEG, WebP, and automatic format negotiation.</li>
+            <li><strong>Color Management:</strong> Full ICC profile support preserving Display P3, Adobe RGB, and other color spaces.</li>
+            <li><strong>Responsive Design:</strong> Mobile-first approach with automatic image sizing for different devices.</li>
+        </ul>
+    </section>
+
+    <section class="about-features">
+        <h3>Key Features</h3>
+        <div class="feature-list">
+            <div class="feature-item">
+                <h4>Multiple Galleries</h4>
+                <p>Run multiple independent galleries with unique configurations, URLs, and content.</p>
+            </div>
+            <div class="feature-item">
+                <h4>Automatic Processing</h4>
+                <p>Images are automatically resized, optimized, and cached for fast delivery.</p>
+            </div>
+            <div class="feature-item">
+                <h4>Markdown Support</h4>
+                <p>Add descriptions to folders and captions to images using simple markdown files.</p>
+            </div>
+            <div class="feature-item">
+                <h4>Blog System</h4>
+                <p>Built-in markdown-based blog with TOML frontmatter and automatic refresh.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-community">
+        <h3>Open Source</h3>
+        <p>Tenrankai is proudly open source under the Apache 2.0 license. We welcome contributions, bug reports, and feature requests from the community.</p>
+        <p>Visit our <a href="https://github.com/theatrus/tenrankai">GitHub repository</a> to get involved!</p>
+    </section>
+</div>
+
+{% include "_footer.html.liquid" %}

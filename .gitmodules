@@ -1,0 +1,3 @@
+[submodule "tenrankai"]
+	path = tenrankai
+	url = https://github.com/theatrus/tenrankai

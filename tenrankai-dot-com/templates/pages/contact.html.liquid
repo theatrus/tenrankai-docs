@@ -1,0 +1,45 @@
+{% assign page_title = "Get Involved" %}
+{% assign meta_description = "Join the Tenrankai community - contribute, report issues, or get support for your gallery installation." %}
+{% assign page_css = "contact.css" | split: "," %}
+{% include "_header.html.liquid" %}
+
+<div class="container container-sm contact-container">
+    <h2>Get Involved</h2>
+    
+    <div class="contact-content">
+        <p>Tenrankai is an open source project and we welcome contributions from the community!</p>
+        
+        <div class="contact-methods">
+            <div class="contact-item card">
+                <h3>GitHub</h3>
+                <p>Report issues, contribute code, or browse the source:</p>
+                <p><a href="https://github.com/theatrus/tenrankai" target="_blank" rel="noopener noreferrer">github.com/theatrus/tenrankai</a></p>
+            </div>
+            
+            <div class="contact-item card">
+                <h3>Issues & Feature Requests</h3>
+                <p>Found a bug or have an idea for improvement?</p>
+                <p><a href="https://github.com/theatrus/tenrankai/issues" target="_blank" rel="noopener noreferrer">Open an Issue</a></p>
+            </div>
+            
+            <div class="contact-item card">
+                <h3>Documentation</h3>
+                <p>Need help getting started or configuring Tenrankai?</p>
+                <p><a href="/docs">Browse Documentation</a></p>
+            </div>
+            
+            <div class="contact-item card">
+                <h3>Contributing</h3>
+                <p>Want to contribute? Check out our contributing guidelines:</p>
+                <p><a href="https://github.com/theatrus/tenrankai/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing Guide</a></p>
+            </div>
+        </div>
+        
+        <div class="community-section">
+            <h3>Community Guidelines</h3>
+            <p>We're committed to providing a welcoming and inclusive environment for all contributors. Please be respectful, constructive, and follow our code of conduct when participating in the Tenrankai community.</p>
+        </div>
+    </div>
+</div>
+
+{% include "_footer.html.liquid" %}
