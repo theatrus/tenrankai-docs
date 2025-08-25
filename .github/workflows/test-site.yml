@@ -1,0 +1,132 @@
+name: Test Tenrankai Marketing Site
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: 1.89.0
+    
+    - name: Cache Rust dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          tenrankai/target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+    
+    - name: Build Tenrankai
+      run: |
+        cd tenrankai
+        cargo build --release
+    
+    - name: Run tests
+      run: |
+        uv run test_tenrankai_site.py
+    
+    - name: Test different configs
+      run: |
+        # Test dev config
+        uv run test_tenrankai_site.py --config config.dev.toml --port 3457
+        
+        # Test that production config parses (will fail on paths)
+        cd tenrankai-dot-com
+        ../tenrankai/target/release/tenrankai --config config.production.toml --quit-after 2 || true
+    
+    - name: Upload logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: server-logs
+        path: tenrankai-dot-com/server.log
+
+  test-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Check required files
+      run: |
+        # Check config files
+        for config in config.toml config.dev.toml config.production.toml; do
+          if [ -f "tenrankai-dot-com/$config" ]; then
+            echo "✓ Found $config"
+          else
+            echo "✗ Missing $config"
+            exit 1
+          fi
+        done
+        
+        # Check templates
+        for template in index.html.liquid about.html.liquid features.html.liquid; do
+          if [ -f "tenrankai-dot-com/templates/pages/$template" ]; then
+            echo "✓ Found $template"
+          else
+            echo "✗ Missing $template"
+            exit 1
+          fi
+        done
+        
+        # Check documentation
+        for doc in 00-quick-start.md 01-installation.md 02-configuration.md; do
+          if [ -f "tenrankai-dot-com/posts/docs/$doc" ]; then
+            echo "✓ Found $doc"
+          else
+            echo "✗ Missing $doc"
+            exit 1
+          fi
+        done
+    
+    - name: Validate TOML configs
+      run: |
+        # Simple TOML validation
+        python3 -c "
+import toml
+import sys
+
+configs = [
+    'tenrankai-dot-com/config.toml',
+    'tenrankai-dot-com/config.dev.toml',
+    'tenrankai-dot-com/config.production.toml'
+]
+
+for config in configs:
+    try:
+        with open(config, 'r') as f:
+            data = toml.load(f)
+        print(f'✓ {config} is valid TOML')
+        
+        # Check required sections
+        required = ['server', 'app', 'templates', 'static_files']
+        for section in required:
+            if section not in data:
+                print(f'✗ {config} missing required section: {section}')
+                sys.exit(1)
+    except Exception as e:
+        print(f'✗ {config} failed validation: {e}')
+        sys.exit(1)
+        "

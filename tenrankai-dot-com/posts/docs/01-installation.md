@@ -68,8 +68,7 @@ port = 3000
 
 [app]
 name = "My Gallery"
-download_secret = "change-me-in-production"
-download_password = "secure-password"
+cookie_secret = "change-me-in-production"
 copyright_holder = "Your Name"
 base_url = "https://yourdomain.com"
 

@@ -12,6 +12,7 @@ log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery Server"
 # IMPORTANT: Generate strong secrets for production!
 # Use: openssl rand -base64 32
+cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
 download_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
 download_password = "CHANGE_ME_USE_STRONG_PASSWORD"
 copyright_holder = "Tenrankai Project"
@@ -21,7 +22,7 @@ base_url = "https://tenrankai.com"
 directory = "/var/www/tenrankai/templates"
 
 [static_files]
-directory = "/var/www/tenrankai/static"
+directories = "/var/www/tenrankai/static"
 
 # Main demo gallery
 [[galleries]]
@@ -69,8 +70,8 @@ url_prefix = "/docs"
 posts_per_page = 50  # Show more docs per page
 refresh_interval_minutes = 60  # Check for updates hourly
 
-posts_index_template = "modules/posts_index.html.liquid"
-post_detail_template = "modules/post_detail.html.liquid"
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"
 
 # Blog
 [[posts]]
@@ -80,8 +81,8 @@ url_prefix = "/blog"
 posts_per_page = 10
 refresh_interval_minutes = 120  # Check every 2 hours
 
-posts_index_template = "modules/posts_index.html.liquid"
-post_detail_template = "modules/post_detail.html.liquid"
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"
 
 # Showcase galleries demonstrating different use cases
 [[galleries]]

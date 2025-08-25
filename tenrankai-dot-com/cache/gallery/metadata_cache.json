@@ -1,29 +1,4 @@
 {
-  "landscapes/CRW_1978.jpg": {
-    "dimensions": [
-      2048,
-      3072
-    ],
-    "capture_date": {
-      "secs_since_epoch": 1122708166,
-      "nanos_since_epoch": 0
-    },
-    "camera_info": {
-      "camera_make": "Canon",
-      "camera_model": "Canon EOS DIGITAL REBEL",
-      "lens_model": "28.0-135.0 mm",
-      "iso": null,
-      "aperture": "f/6.3",
-      "shutter_speed": "1/100 s",
-      "focal_length": "33 mm"
-    },
-    "location_info": null,
-    "modification_date": {
-      "secs_since_epoch": 1756012890,
-      "nanos_since_epoch": 862197982
-    },
-    "color_profile": "Display P3"
-  },
   "landscapes/_A7C5795.jpg": {
     "dimensions": [
       7414,
@@ -51,6 +26,31 @@
     "modification_date": {
       "secs_since_epoch": 1756012890,
       "nanos_since_epoch": 860173800
+    },
+    "color_profile": "Display P3"
+  },
+  "landscapes/CRW_1978.jpg": {
+    "dimensions": [
+      2048,
+      3072
+    ],
+    "capture_date": {
+      "secs_since_epoch": 1122708166,
+      "nanos_since_epoch": 0
+    },
+    "camera_info": {
+      "camera_make": "Canon",
+      "camera_model": "Canon EOS DIGITAL REBEL",
+      "lens_model": "28.0-135.0 mm",
+      "iso": null,
+      "aperture": "f/6.3",
+      "shutter_speed": "1/100 s",
+      "focal_length": "33 mm"
+    },
+    "location_info": null,
+    "modification_date": {
+      "secs_since_epoch": 1756012890,
+      "nanos_since_epoch": 862197982
     },
     "color_profile": "Display P3"
   }

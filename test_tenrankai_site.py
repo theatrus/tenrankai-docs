@@ -25,9 +25,10 @@ BLUE = '\033[0;34m'
 NC = '\033[0m'  # No Color
 
 class TenrankaiTester:
-    def __init__(self, port: int = 3456, config: str = "config.toml"):
+    def __init__(self, port: int = 3456, config: str = "config.toml", quit_after: Optional[int] = None):
         self.port = port
         self.config = config
+        self.quit_after = quit_after
         self.base_url = f"http://localhost:{port}"
         self.server_process: Optional[subprocess.Popen] = None
         self.tenrankai_dir = "tenrankai"
@@ -75,7 +76,9 @@ class TenrankaiTester:
         self.print_header("Starting Tenrankai Server")
         
         tenrankai_bin = os.path.join("..", self.tenrankai_dir, "target", "release", "tenrankai")
-        cmd = [tenrankai_bin, "--config", self.config, "--port", str(self.port)]
+        cmd = [tenrankai_bin, "serve", "--config", self.config, "--port", str(self.port)]
+        if self.quit_after:
+            cmd.extend(["--quit-after", str(self.quit_after)])
         
         try:
             self.server_process = subprocess.Popen(
@@ -203,10 +206,10 @@ class TenrankaiTester:
             try:
                 response = requests.get(f"{self.base_url}/api/gallery/main/preview?count=6")
                 data = response.json()
-                if isinstance(data, list):
-                    self.print_success(f"Gallery preview returned {len(data)} images")
+                if isinstance(data, dict) and 'images' in data and isinstance(data['images'], list):
+                    self.print_success(f"Gallery preview returned {len(data['images'])} images")
                 else:
-                    self.print_error("Gallery preview should return an array")
+                    self.print_error("Gallery preview should return an object with 'images' array")
                     success = False
             except:
                 success = False
@@ -304,10 +307,12 @@ def main():
     parser.add_argument('--config', default='config.toml', help='Config file to use')
     parser.add_argument('--keep-running', action='store_true', 
                        help='Keep server running after tests')
+    parser.add_argument('--quit-after', type=int, default=None,
+                       help='Auto-quit server after N seconds (useful for CI)')
     
     args = parser.parse_args()
     
-    tester = TenrankaiTester(port=args.port, config=args.config)
+    tester = TenrankaiTester(port=args.port, config=args.config, quit_after=args.quit_after)
     
     try:
         success = tester.run_all_tests()

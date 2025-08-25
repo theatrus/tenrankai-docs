@@ -7,6 +7,7 @@ port = 3000
 [app]
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery Server"
+cookie_secret = "change-me-in-production-use-a-long-random-string"
 download_secret = "tenrankai-demo-secret-change-in-production"
 download_password = "demo-password-2024"
 copyright_holder = "Tenrankai Project"
@@ -16,7 +17,7 @@ base_url = "https://tenrankai.com"
 directory = "templates"
 
 [static_files]
-directory = "static"
+directories = "static"
 
 # Main demo gallery showcasing Tenrankai's capabilities
 [[galleries]]
@@ -68,8 +69,8 @@ posts_per_page = 20
 refresh_interval_minutes = 30  # Auto-refresh for live documentation updates
 
 # Use default templates
-posts_index_template = "modules/posts_index.html.liquid"
-post_detail_template = "modules/post_detail.html.liquid"
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"
 
 # Blog posts system
 [[posts]]
@@ -80,8 +81,8 @@ posts_per_page = 10
 refresh_interval_minutes = 60
 
 # Use default templates
-posts_index_template = "modules/posts_index.html.liquid"
-post_detail_template = "modules/post_detail.html.liquid"
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"
 
 # Optional: Example of a portfolio gallery
 # [[galleries]]

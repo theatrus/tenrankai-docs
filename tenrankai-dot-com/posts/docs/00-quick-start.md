@@ -34,8 +34,7 @@ port = 3000
 
 [app]
 name = "My Photo Gallery"
-download_secret = "change-me-later"
-download_password = "password123"
+cookie_secret = "change-me-in-production"
 copyright_holder = "Your Name"
 base_url = "http://localhost:3000"
 
@@ -134,6 +133,23 @@ Edit `config.toml`:
 ```toml
 [server]
 port = 8080
+```
+
+### Enable Authentication
+
+Add user database and configure email:
+```toml
+[app]
+user_database = "users.toml"
+
+[email]
+from_address = "noreply@yourdomain.com"
+provider = "null"  # Logs emails for development
+```
+
+Then add users:
+```bash
+./target/release/tenrankai user add admin@example.com --display-name "Admin"
 ```
 
 ### Enable Debug Logging
