@@ -34,9 +34,6 @@ The `[app]` section contains general application settings:
 name = "My Gallery"
 log_level = "info"  # Options: trace, debug, info, warn, error
 cookie_secret = "change-me-in-production-use-long-random-string"
-download_secret = "change-me-in-production"
-download_password = "secure-password-here"
-copyright_holder = "Your Name"
 base_url = "https://yourdomain.com"
 # Optional: Enable authentication
 # user_database = "users.toml"

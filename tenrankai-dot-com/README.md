@@ -68,9 +68,9 @@ For production deployment:
 
 1. Copy `config.production.toml` to `config.toml`
 2. Update all paths to match your server
-3. Generate secure passwords:
+3. Generate secure cookie secret:
    ```bash
-   openssl rand -base64 32  # For download_secret
+   openssl rand -base64 32  # For cookie_secret
    ```
 4. Update `base_url` to your domain
 5. Set up as a systemd service (see config.production.toml comments)
