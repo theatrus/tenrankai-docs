@@ -5,7 +5,7 @@
 
 [server]
 host = "127.0.0.1"  # Listen on all interfaces
-port = 8089       # Common port for reverse proxy setups
+port = 8091       # Common port for reverse proxy setups
 
 [app]
 log_level = "info"
