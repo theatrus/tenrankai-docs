@@ -69,7 +69,6 @@ port = 3000
 [app]
 name = "My Gallery"
 cookie_secret = "change-me-in-production"
-copyright_holder = "Your Name"
 base_url = "https://yourdomain.com"
 
 [[galleries]]
@@ -78,6 +77,7 @@ url_prefix = "/gallery"
 source_directory = "/path/to/your/photos"
 cache_directory = "cache/main"
 images_per_page = 50
+copyright_holder = "Your Name"
 ```
 
 ### 2. Create Required Directories

@@ -13,7 +13,6 @@ name = "Tenrankai - High-Performance Photo Gallery CMS Server"
 # IMPORTANT: Generate strong secrets for production!
 # Use: openssl rand -base64 32
 cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
-copyright_holder = "Tenrankai Project"
 base_url = "https://tenrankai.com"
 
 [templates]
@@ -35,6 +34,7 @@ cache_refresh_interval_minutes = 360  # 6 hours
 jpeg_quality = 85
 webp_quality = 85.0
 approximate_dates_for_public = false  # Full dates for demo purposes
+copyright_holder = "Tenrankai Project"
 
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"

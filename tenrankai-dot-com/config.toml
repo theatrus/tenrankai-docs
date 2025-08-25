@@ -8,9 +8,6 @@ port = 3000
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery Server"
 cookie_secret = "change-me-in-production-use-a-long-random-string"
-download_secret = "tenrankai-demo-secret-change-in-production"
-download_password = "demo-password-2024"
-copyright_holder = "Tenrankai Project"
 base_url = "https://tenrankai.com"
 
 [templates]
@@ -32,6 +29,7 @@ cache_refresh_interval_minutes = 120
 jpeg_quality = 85
 webp_quality = 85.0
 approximate_dates_for_public = false  # Full dates visible for demo gallery
+copyright_holder = "Tenrankai Project"  # Copyright watermark for medium images
 
 # Use default templates
 gallery_template = "modules/gallery.html.liquid"

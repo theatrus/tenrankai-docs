@@ -56,7 +56,6 @@ directories = "static"
 - **name**: Display name for your gallery
 - **log_level**: Logging verbosity (trace, debug, info, warn, error)
 - **cookie_secret**: Secret key for signing session cookies (change in production!)
-- **copyright_holder**: Name to display in copyright watermarks
 - **base_url**: Full URL of your site (used for OpenGraph meta tags and login emails)
 - **user_database**: Optional path to user database file for authentication
 
@@ -72,7 +71,9 @@ The `[templates]` and `[static_files]` sections are required:
 
 ## Gallery Configuration
 
-Tenrankai supports multiple independent galleries. Each gallery is configured in a `[[galleries]]` section:
+Tenrankai supports multiple independent galleries. Each gallery is configured in a `[[galleries]]` section.
+
+> **Breaking Change**: As of December 2025, `copyright_holder` must be configured per-gallery instead of globally in the `[app]` section. This allows different copyright holders for different galleries (e.g., personal vs. client work).
 
 ```toml
 [[galleries]]
@@ -87,6 +88,7 @@ cache_refresh_interval_minutes = 60    # Auto-refresh interval
 jpeg_quality = 85                      # JPEG compression (1-100)
 webp_quality = 85.0                    # WebP compression (0.0-100.0)
 approximate_dates_for_public = false   # Show only month/year to non-authenticated users
+copyright_holder = "Your Name"         # Copyright watermark for medium-sized images
 
 # User access control (optional)
 # When user_access_list is set, only listed users can view this gallery
@@ -145,6 +147,7 @@ images_per_page = 20
 jpeg_quality = 90
 webp_quality = 90.0
 pregenerate_cache = true
+copyright_holder = "My Photography Studio"
 
 [galleries.thumbnail]
 width = 400
@@ -165,6 +168,7 @@ new_threshold_days = 30
 # Only family members can view this gallery
 user_access_list = ["mom@family.com", "dad@family.com", "kids@family.com"]
 approximate_dates_for_public = true  # Extra privacy
+copyright_holder = "The Smith Family"
 
 # Client galleries (restricted to specific clients)
 [[galleries]]
@@ -175,6 +179,7 @@ cache_directory = "cache/clients"
 images_per_page = 50
 # Each client can only see their own gallery
 user_access_list = ["client@company1.com", "contact@agency2.com"]
+copyright_holder = "Professional Photography Inc."
 ```
 
 ## Posts Configuration

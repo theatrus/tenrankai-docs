@@ -9,9 +9,6 @@ port = 3000
 log_level = "info"
 name = "Tenrankai Dev"
 cookie_secret = "dev-cookie-secret"
-download_secret = "dev-secret"
-download_password = "dev"
-copyright_holder = "Tenrankai Project"
 base_url = "http://localhost:3000"
 
 [templates]
@@ -29,6 +26,7 @@ cache_directory = "cache"
 images_per_page = 12
 jpeg_quality = 80
 webp_quality = 80.0
+copyright_holder = "Tenrankai Project"
 
 # Minimal documentation
 [[posts]]

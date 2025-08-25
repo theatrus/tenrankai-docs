@@ -35,7 +35,6 @@ port = 3000
 [app]
 name = "My Photo Gallery"
 cookie_secret = "change-me-in-production"
-copyright_holder = "Your Name"
 base_url = "http://localhost:3000"
 
 [[galleries]]
@@ -44,6 +43,7 @@ url_prefix = "/gallery"
 source_directory = "photos"
 cache_directory = "cache"
 images_per_page = 50
+copyright_holder = "Your Name"
 ```
 
 ### 3. Set Up Directories
