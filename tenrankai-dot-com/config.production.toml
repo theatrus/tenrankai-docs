@@ -4,32 +4,30 @@
 # Copy to config.toml and adjust for your environment.
 
 [server]
-host = "0.0.0.0"  # Listen on all interfaces
-port = 8080       # Common port for reverse proxy setups
+host = "127.0.0.1"  # Listen on all interfaces
+port = 8089       # Common port for reverse proxy setups
 
 [app]
 log_level = "info"
-name = "Tenrankai - High-Performance Photo Gallery Server"
+name = "Tenrankai - High-Performance Photo Gallery CMS Server"
 # IMPORTANT: Generate strong secrets for production!
 # Use: openssl rand -base64 32
 cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
-download_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
-download_password = "CHANGE_ME_USE_STRONG_PASSWORD"
 copyright_holder = "Tenrankai Project"
 base_url = "https://tenrankai.com"
 
 [templates]
-directory = "/var/www/tenrankai/templates"
+directory = "templates"
 
 [static_files]
-directories = "/var/www/tenrankai/static"
+directories = "static"
 
 # Main demo gallery
 [[galleries]]
 name = "main"
 url_prefix = "/gallery"
-source_directory = "/var/www/tenrankai/photos"  # Absolute path recommended
-cache_directory = "/var/www/tenrankai/cache/gallery"
+source_directory = "photos"  # Absolute path recommended
+cache_directory = "cache/gallery"
 images_per_page = 24
 new_threshold_days = 30
 pregenerate_cache = true  # Recommended for production
@@ -65,7 +63,7 @@ max_per_folder = 2
 # Documentation
 [[posts]]
 name = "docs"
-source_directory = "/var/www/tenrankai/posts/docs"
+source_directory = "posts/docs"
 url_prefix = "/docs"
 posts_per_page = 50  # Show more docs per page
 refresh_interval_minutes = 60  # Check for updates hourly
@@ -76,67 +74,10 @@ post_template = "modules/post_detail.html.liquid"
 # Blog
 [[posts]]
 name = "blog"
-source_directory = "/var/www/tenrankai/posts/blog"
+source_directory = "posts/blog"
 url_prefix = "/blog"
 posts_per_page = 10
 refresh_interval_minutes = 120  # Check every 2 hours
 
 index_template = "modules/posts_index.html.liquid"
 post_template = "modules/post_detail.html.liquid"
-
-# Showcase galleries demonstrating different use cases
-[[galleries]]
-name = "showcase_portfolio"
-url_prefix = "/showcase/portfolio"
-source_directory = "/var/www/tenrankai/showcases/portfolio"
-cache_directory = "/var/www/tenrankai/cache/showcase_portfolio"
-images_per_page = 20
-jpeg_quality = 90  # Higher quality for portfolio
-webp_quality = 90.0
-pregenerate_cache = true
-
-[galleries.thumbnail]
-width = 400
-height = 400
-
-[galleries.gallery_size]
-width = 1000
-height = 1000
-
-[galleries.medium]
-width = 1400
-height = 1400
-
-[[galleries]]
-name = "showcase_events"
-url_prefix = "/showcase/events"
-source_directory = "/var/www/tenrankai/showcases/events"
-cache_directory = "/var/www/tenrankai/cache/showcase_events"
-images_per_page = 100  # More images for event galleries
-new_threshold_days = 7  # Highlight recent event photos
-pregenerate_cache = false  # Events might have many photos
-approximate_dates_for_public = true  # Privacy: Show only month/year to public
-
-# Production optimizations (these would be command line flags or env vars)
-# Run with:
-# RUST_LOG=info tenrankai --config config.production.toml
-# 
-# For systemd service:
-# Environment="RUST_LOG=info"
-# ExecStart=/usr/local/bin/tenrankai --config /etc/tenrankai/config.production.toml
-#
-# Recommended nginx configuration:
-# location / {
-#     proxy_pass http://127.0.0.1:8080;
-#     proxy_set_header Host $host;
-#     proxy_set_header X-Real-IP $remote_addr;
-#     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#     proxy_set_header X-Forwarded-Proto $scheme;
-#     
-#     # Cache static assets
-#     location ~* \.(jpg|jpeg|png|webp|gif|ico|css|js)$ {
-#         expires 1y;
-#         add_header Cache-Control "public, immutable";
-#     }
-# }
-
