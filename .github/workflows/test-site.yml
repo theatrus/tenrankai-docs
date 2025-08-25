@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
@@ -68,6 +70,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
     - name: Check required files
       run: |
@@ -105,28 +109,28 @@ jobs:
       run: |
         # Simple TOML validation
         python3 -c "
-        import toml
-        import sys
+import toml
+import sys
+
+configs = [
+    'tenrankai-dot-com/config.toml',
+    'tenrankai-dot-com/config.dev.toml',
+    'tenrankai-dot-com/config.production.toml'
+]
+
+for config in configs:
+    try:
+        with open(config, 'r') as f:
+            data = toml.load(f)
+        print(f'✓ {config} is valid TOML')
         
-        configs = [
-            'tenrankai-dot-com/config.toml',
-            'tenrankai-dot-com/config.dev.toml',
-            'tenrankai-dot-com/config.production.toml'
-        ]
-        
-        for config in configs:
-            try:
-                with open(config, 'r') as f:
-                    data = toml.load(f)
-                print(f'✓ {config} is valid TOML')
-                
-                # Check required sections
-                required = ['server', 'app', 'templates', 'static_files']
-                for section in required:
-                    if section not in data:
-                        print(f'✗ {config} missing required section: {section}')
-                        sys.exit(1)
-            except Exception as e:
-                print(f'✗ {config} failed validation: {e}')
+        # Check required sections
+        required = ['server', 'app', 'templates', 'static_files']
+        for section in required:
+            if section not in data:
+                print(f'✗ {config} missing required section: {section}')
                 sys.exit(1)
+    except Exception as e:
+        print(f'✗ {config} failed validation: {e}')
+        sys.exit(1)
         "
