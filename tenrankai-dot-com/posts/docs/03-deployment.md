@@ -233,69 +233,55 @@ Create `/etc/apache2/sites-available/tenrankai.conf`:
 
 ## Docker Deployment
 
-### 1. Dockerfile
+Tenrankai provides official Docker images for easy containerized deployment. For comprehensive Docker deployment instructions, see the [Docker Guide](/docs/06-docker).
 
-Create a `Dockerfile`:
+### Quick Start
 
-```dockerfile
-FROM rust:1.89-slim as builder
-
-WORKDIR /app
-COPY . .
-RUN cargo build --release
-
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-COPY --from=builder /app/target/release/tenrankai /usr/local/bin/
-COPY static/ ./static/
-COPY templates/ ./templates/
-
-EXPOSE 3000
-CMD ["tenrankai"]
+```bash
+# Using official image
+docker run -d \
+  --name tenrankai \
+  -p 3000:3000 \
+  -v $(pwd)/config.toml:/config.toml:ro \
+  -v $(pwd)/photos:/photos:ro \
+  -v tenrankai-cache:/cache \
+  theatrus/tenrankai:latest
 ```
 
-### 2. Docker Compose
-
-Create `docker-compose.yml`:
+### Docker Compose
 
 ```yaml
 version: '3.8'
 
 services:
   tenrankai:
-    build: .
+    image: theatrus/tenrankai:latest
+    container_name: tenrankai
     ports:
       - "3000:3000"
     volumes:
-      - ./config.toml:/app/config.toml:ro
-      - ./photos:/app/photos:ro
-      - cache_data:/app/cache
+      - ./config.toml:/config.toml:ro
+      - ./photos:/photos:ro
+      - cache_data:/cache
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    user: "1000:1000"
+    read_only: true
+    tmpfs:
+      - /tmp
 
 volumes:
   cache_data:
 ```
 
-### 3. Deploy with Docker
+For advanced Docker configurations including:
+- Security hardening
+- Environment variable overrides
+- Multi-stage builds
+- Kubernetes deployments
+- Docker Swarm configurations
 
-```bash
-# Build and start
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Update deployment
-docker-compose pull
-docker-compose up -d
-```
+See the comprehensive [Docker Guide](/docs/06-docker).
 
 ## SSL/TLS Configuration
 

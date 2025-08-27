@@ -70,7 +70,6 @@ The `[templates]` and `[static_files]` sections are required:
 
 Tenrankai supports multiple independent galleries. Each gallery is configured in a `[[galleries]]` section.
 
-> **Breaking Change**: As of December 2025, `copyright_holder` must be configured per-gallery instead of globally in the `[app]` section. This allows different copyright holders for different galleries (e.g., personal vs. client work).
 
 ```toml
 [[galleries]]

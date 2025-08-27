@@ -664,6 +664,96 @@ curl -X GET "http://localhost:3000/api/v1/galleries/main/images?path=/vacation/s
      -H "Accept: application/json"
 ```
 
+## Authentication API Endpoints
+
+### WebAuthn Registration
+
+Register a new passkey for the authenticated user.
+
+**Endpoint**: `POST /_login/passkey/register/start`
+
+**Response**:
+```json
+{
+  "challenge": "base64-encoded-challenge",
+  "rp": {
+    "name": "Tenrankai",
+    "id": "your-domain.com"
+  },
+  "user": {
+    "id": "base64-encoded-user-id",
+    "name": "username",
+    "displayName": "User Display Name"
+  },
+  "pubKeyCredParams": [
+    { "type": "public-key", "alg": -7 },
+    { "type": "public-key", "alg": -257 }
+  ],
+  "authenticatorSelection": {
+    "userVerification": "preferred"
+  }
+}
+```
+
+**Endpoint**: `POST /_login/passkey/register/finish`
+
+**Request**:
+```json
+{
+  "id": "credential-id",
+  "rawId": "base64-encoded-raw-id",
+  "response": {
+    "clientDataJSON": "base64-encoded-client-data",
+    "attestationObject": "base64-encoded-attestation"
+  },
+  "type": "public-key"
+}
+```
+
+### WebAuthn Authentication
+
+Authenticate using a registered passkey.
+
+**Endpoint**: `POST /_login/passkey/authenticate/start`
+
+**Response**:
+```json
+{
+  "challenge": "base64-encoded-challenge",
+  "allowCredentials": [
+    {
+      "type": "public-key",
+      "id": "base64-encoded-credential-id"
+    }
+  ],
+  "userVerification": "preferred"
+}
+```
+
+**Endpoint**: `POST /_login/passkey/authenticate/finish`
+
+**Request**:
+```json
+{
+  "id": "credential-id",
+  "rawId": "base64-encoded-raw-id",
+  "response": {
+    "clientDataJSON": "base64-encoded-client-data",
+    "authenticatorData": "base64-encoded-authenticator-data",
+    "signature": "base64-encoded-signature"
+  },
+  "type": "public-key"
+}
+```
+
+### User Profile
+
+Get authenticated user profile information.
+
+**Endpoint**: `GET /_login/profile`
+
+**Response**: HTML page with user profile and passkey management
+
 ## OpenAPI Specification
 
 Tenrankai provides an OpenAPI 3.0 specification at:
