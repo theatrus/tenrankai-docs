@@ -29,6 +29,7 @@ cache_refresh_interval_minutes = 120
 jpeg_quality = 85
 webp_quality = 85.0
 approximate_dates_for_public = false  # Full dates visible for demo gallery
+hide_location_from_public = false      # Show location data for demo gallery
 copyright_holder = "Tenrankai Project"  # Copyright watermark for medium images
 
 # Use default templates

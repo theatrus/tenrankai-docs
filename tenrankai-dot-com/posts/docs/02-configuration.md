@@ -85,6 +85,7 @@ jpeg_quality = 85                      # JPEG compression (1-100)
 webp_quality = 85.0                    # WebP compression (0.0-100.0)
 approximate_dates_for_public = false   # Show only month/year to non-authenticated users
 copyright_holder = "Your Name"         # Copyright watermark for medium-sized images
+hide_location_from_public = false      # Hide GPS/location data from non-authenticated users
 
 # User access control (optional)
 # When user_access_list is set, only listed users can view this gallery
@@ -164,6 +165,7 @@ new_threshold_days = 30
 # Only family members can view this gallery
 user_access_list = ["mom@family.com", "dad@family.com", "kids@family.com"]
 approximate_dates_for_public = true  # Extra privacy
+hide_location_from_public = true     # Hide GPS coordinates from public
 copyright_holder = "The Smith Family"
 
 # Client galleries (restricted to specific clients)
@@ -325,7 +327,11 @@ concurrent_processing = 4
 
 ### Privacy Settings
 
-The `approximate_dates_for_public` option helps protect privacy by showing only approximate capture dates to non-authenticated users:
+Tenrankai provides several privacy controls to protect sensitive information in your galleries:
+
+#### Date Privacy
+
+The `approximate_dates_for_public` option protects privacy by showing only approximate capture dates to non-authenticated users:
 
 ```toml
 [[galleries]]
@@ -341,10 +347,31 @@ When enabled:
 - Public visitors see: "October 2024"
 - Authenticated users see: "October 15, 2024 at 3:45 PM"
 
-This is useful for:
-- Family photo galleries where exact timestamps reveal personal schedules
-- Event galleries where you want to show the month but not specific dates
-- Any situation where temporal privacy is a concern
+#### Location Privacy
+
+The `hide_location_from_public` option protects GPS coordinates and location information from non-authenticated users:
+
+```toml
+[[galleries]]
+name = "travel"
+# ... other settings ...
+
+# Hide GPS coordinates from public viewers
+# Users must be logged in to see location information
+hide_location_from_public = true
+```
+
+When enabled:
+- Public visitors: Location information is completely hidden
+- Authenticated users: Full GPS coordinates, maps, and location metadata are visible
+
+#### Privacy Use Cases
+
+These privacy controls are useful for:
+- **Family photo galleries**: Hide exact timestamps and locations that reveal personal schedules and home addresses
+- **Travel galleries**: Share beautiful photos while keeping specific locations private until visitors authenticate
+- **Event galleries**: Show the month/event but not specific dates or venues
+- **Portfolio galleries**: Protect client locations and session details
 
 ### Hidden Folders
 
