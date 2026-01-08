@@ -58,13 +58,28 @@ directories = "static"
 
 ## Template and Static Files Configuration
 
-The `[templates]` and `[static_files]` sections are required:
+The `[templates]` and `[static_files]` sections support cascading directories for easy customization:
 
-- **templates.directory**: Path to your Liquid template files
+```toml
+[templates]
+# Single directory
+directories = "templates"
+
+# Or cascading directories (files in first directory override later ones)
+# directories = ["templates-custom", "templates"]
+
+[static_files]
+# Single directory
+directories = "static"
+
+# Or cascading directories for customization
+# directories = ["static-custom", "static"]
+```
+
+- **templates.directories**: Path(s) to your Liquid template files
 - **static_files.directories**: Path(s) to static assets (CSS, JavaScript, fonts, images)
-  - Can be a single string: `directories = "static"`
-  - Or an array for cascading directories: `directories = ["static-custom", "static"]`
-  - Files in earlier directories override files in later directories
+- Files in earlier directories take precedence over files in later directories
+- Perfect for customizing themes without modifying core files
 
 ## Gallery Configuration
 
@@ -86,6 +101,7 @@ webp_quality = 85.0                    # WebP compression (0.0-100.0)
 approximate_dates_for_public = false   # Show only month/year to non-authenticated users
 copyright_holder = "Your Name"         # Copyright watermark for medium-sized images
 hide_location_from_public = false      # Hide GPS/location data from non-authenticated users
+image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id"
 
 # User access control (optional)
 # When user_access_list is set, only listed users can view this gallery
@@ -166,6 +182,7 @@ new_threshold_days = 30
 user_access_list = ["mom@family.com", "dad@family.com", "kids@family.com"]
 approximate_dates_for_public = true  # Extra privacy
 hide_location_from_public = true     # Hide GPS coordinates from public
+image_indexing = "unique_id"         # Prevent URL guessing
 copyright_holder = "The Smith Family"
 
 # Client galleries (restricted to specific clients)
@@ -276,6 +293,62 @@ When `user_access_list` is configured:
 - Users not in the list receive a 403 forbidden error
 - Omit the field to make a gallery public
 
+## Folder-Level Configuration
+
+In addition to gallery-wide settings, you can configure individual folders using `_folder.md` files. Place a `_folder.md` file in any gallery folder to customize that folder's behavior.
+
+### Privacy Controls
+
+Hide technical details for specific folders:
+
+```markdown
++++
+title = "Family Vacation 2024"
+description = "Our trip to the mountains"
+hide_technical_details = true
++++
+
+Optional markdown content shown at the top of the folder page.
+```
+
+When `hide_technical_details = true`, the following are hidden from image detail pages:
+- Image metadata (dimensions, file size, capture date, color profile)
+- Camera information (make, model, lens, aperture, ISO, shutter speed)
+- Location information (GPS coordinates, embedded maps)
+
+### Folder Access Control
+
+Restrict folder access to specific users:
+
+```markdown
++++
+title = "Private Photos"
+require_auth = true
+allowed_users = ["user1@example.com", "user2@example.com"]
++++
+```
+
+Options:
+- **require_auth**: Requires authentication to view the folder
+- **allowed_users**: List of email addresses allowed to view (if omitted, all authenticated users can access)
+
+### Combining Settings
+
+You can combine multiple settings:
+
+```markdown
++++
+title = "Client Project - Wedding"
+description = "Sarah & John's Wedding - June 2024"
+require_auth = true
+allowed_users = ["sarah@example.com", "john@example.com", "photographer@studio.com"]
+hide_technical_details = true
++++
+
+Welcome! Your wedding photos are ready for review. 
+Please let me know if you'd like any adjustments to the editing.
+```
+
 ## Advanced Configuration Options
 
 ### Cascading Static Directories
@@ -364,6 +437,44 @@ hide_location_from_public = true
 When enabled:
 - Public visitors: Location information is completely hidden
 - Authenticated users: Full GPS coordinates, maps, and location metadata are visible
+
+#### Image Indexing Modes
+
+The `image_indexing` option controls how images are referenced in URLs, providing different levels of privacy and organization:
+
+```toml
+[[galleries]]
+name = "portfolio"
+# ... other settings ...
+
+# Choose URL format: "filename" (default), "sequence", or "unique_id"
+image_indexing = "unique_id"
+```
+
+**Available modes:**
+
+1. **filename** (default): Traditional URLs exposing actual filenames
+   - Example: `/gallery/image/vacation/IMG_1234.jpg`
+   - Best for: Public galleries where filenames don't contain sensitive information
+   - Pros: SEO-friendly, predictable URLs
+   - Cons: Exposes file naming patterns, allows enumeration
+
+2. **sequence**: URLs use sequential numbers within each folder
+   - Example: `/gallery/image/vacation/1`, `/gallery/image/vacation/2`
+   - Best for: Organized collections where order matters
+   - Pros: Clean URLs, easy navigation
+   - Cons: Still allows enumeration, order may change if files are added/removed
+
+3. **unique_id**: URLs use short base36 identifiers
+   - Example: `/gallery/image/vacation/a3k2x`, `/gallery/image/vacation/b7n9p`
+   - Best for: Maximum privacy, preventing URL guessing
+   - Pros: Cannot enumerate images, hides file organization
+   - Cons: URLs are not human-readable, harder to share specific images verbally
+
+**Choosing the Right Mode:**
+- Use `filename` for public portfolios and marketing galleries
+- Use `sequence` for ordered collections like tutorials or stories
+- Use `unique_id` for private galleries, client work, or sensitive collections
 
 #### Privacy Use Cases
 
