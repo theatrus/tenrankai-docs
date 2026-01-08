@@ -11,10 +11,12 @@ cookie_secret = "change-me-in-production-use-a-long-random-string"
 base_url = "https://tenrankai.com"
 
 [templates]
-directory = "templates"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
+directories = ["templates", "../../tenrankai/templates"]
 
 [static_files]
-directories = "static"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
+directories = ["static", "../../tenrankai/static"]
 
 # Main demo gallery showcasing Tenrankai's capabilities
 [[galleries]]

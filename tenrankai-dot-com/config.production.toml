@@ -16,10 +16,12 @@ cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
 base_url = "https://tenrankai.com"
 
 [templates]
-directory = "templates"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
+directories = ["templates", "../tenrankai/templates"]
 
 [static_files]
-directories = "static"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
+directories = ["static", "../tenrankai/static"]
 
 # Main demo gallery
 [[galleries]]

@@ -12,10 +12,12 @@ cookie_secret = "dev-cookie-secret"
 base_url = "http://localhost:3000"
 
 [templates]
-directory = "templates"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
+directories = ["templates", "../../tenrankai/templates"]
 
 [static_files]
-directories = "static"
+# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
+directories = ["static", "../../tenrankai/static"]
 
 # Single gallery for testing
 [[galleries]]
