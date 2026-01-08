@@ -2,7 +2,7 @@
 title = "Tenrankai's Latest Features: Enhanced Privacy, Security, and Flexibility"
 date = "2026-01-08"
 slug = "new-features-2026"
-description = "Discover the latest features in Tenrankai including flexible image indexing, enhanced privacy controls, WebAuthn support, and more."
+summary = "Discover the latest features in Tenrankai including flexible image indexing, enhanced privacy controls, WebAuthn support, and more."
 +++
 
 We're excited to announce several powerful new features in Tenrankai that make it even more flexible, secure, and privacy-focused. These updates reflect our commitment to providing a photo gallery server that respects both photographers and viewers while maintaining the simplicity of our file-based approach.
