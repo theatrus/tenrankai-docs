@@ -45,20 +45,7 @@ default_authenticated_role = "demo_viewer"
 
 # Define a custom role that shows all features for the demo
 [galleries.permissions.roles.demo_viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_see_technical_details",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_download_medium",
-    "can_download_large",
-    "can_read_metadata",      # NEW: Enable metadata reading for comments, picks, tags
-    "can_use_zoom"           # NEW: Enable zoom functionality
-]
+permissions = { can_view = true, can_browse_folders = true, can_see_metadata = true, can_see_exact_dates = true, can_see_location = true, can_see_technical_details = true, can_download_thumbnail = true, can_download_gallery_size = true, can_download_medium = true, can_download_large = true, can_read_metadata = true, can_use_zoom = true }
 
 # Image size configurations
 [galleries.thumbnail]
