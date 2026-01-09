@@ -42,10 +42,22 @@ image_indexing = "filename"
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
 
-# Production permissions: Demo gallery shows everything
+# Permission configuration for this gallery
+# Since user_database is configured, we want to restrict public access
 [galleries.permissions]
-public_role = "full_access"
-default_authenticated_role = "full_access"
+public_role = "viewer"  # Public users get limited viewer role
+default_authenticated_role = "contributor"  # Authenticated users get contributor role
+
+# Define the viewer role for public/unauthenticated users
+[galleries.permissions.roles.viewer]
+name = "viewer"
+permissions = { can_view = true, can_download_medium = true, can_see_technical_details = true }
+# Note: Public viewers cannot see exact dates, location, or technical details
+
+# Define the contributor role for authenticated users
+[galleries.permissions.roles.contributor]
+name = "contributor"
+permissions = { can_view = true, can_see_technical_details = true, can_see_exact_dates = true, can_see_location = true, can_download_medium = true, can_download_large = true, can_read_metadata = true, can_add_comments = true, can_edit_own_comments = true, can_delete_own_comments = true, can_set_picks = true, can_add_tags = true }
 
 [galleries.thumbnail]
 width = 300

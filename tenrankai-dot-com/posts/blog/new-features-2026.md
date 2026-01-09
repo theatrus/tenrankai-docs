@@ -99,13 +99,14 @@ For those using AVIF images (with HDR and gain maps), Tenrankai now intelligentl
 - Resized images automatically fall back to WebP or JPEG for incompatible browsers
 - No configuration needed - it just works!
 
-## React-Powered Gallery Interface
+## Modern JavaScript-Enhanced Interface
 
-The gallery now uses a modern React + Vite frontend, providing:
-- Faster navigation and image loading
-- Smooth animations and transitions
-- Better mobile experience
-- Improved accessibility
+The gallery now includes a unified JavaScript bundle that provides:
+- Faster navigation with smooth transitions
+- Lazy loading for optimal performance
+- Enhanced mobile touch interactions
+- Improved accessibility with keyboard navigation
+- Automatic theme switching (dark/light mode)
 
 ## What's Next?
 

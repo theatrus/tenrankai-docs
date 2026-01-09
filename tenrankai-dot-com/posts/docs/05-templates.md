@@ -314,7 +314,8 @@ description = "A custom theme for Tenrankai"
 
 [assets]
 css = ["css/main.css", "css/gallery.css"]
-js = ["js/main.js"]
+# JavaScript is handled by the unified Tenrankai bundle
+# No separate JS files needed
 ```
 
 ### 3. Base Layout Template
@@ -347,8 +348,7 @@ Create a base layout in `templates/base.html.liquid`:
     
     {% include 'partials/_footer' %}
     
-    <!-- Theme JavaScript -->
-    <script src="/static/js/main.js"></script>
+    <!-- Tenrankai unified JavaScript bundle is already loaded in _header.html.liquid -->
     {% block scripts %}{% endblock %}
 </body>
 </html>
@@ -427,10 +427,17 @@ Use CSS media queries for responsive templates:
 
 ### 3. JavaScript Enhancement
 
-Add interactive features with JavaScript:
+Tenrankai includes a unified JavaScript bundle (`dist/tenrankai.js`) that provides all interactive functionality:
+
+- **Theme Management**: Automatic dark/light mode with system preference detection
+- **Gallery Features**: Image lazy loading, smooth transitions, keyboard navigation
+- **Authentication**: WebAuthn/passkey support, secure login flows
+- **UI Enhancements**: Toast notifications, form validation, responsive menus
+
+The bundle is automatically loaded in the header template. For custom JavaScript:
 
 ```javascript
-// In static/js/main.js
+// Add to your template or create a custom script file
 document.addEventListener('DOMContentLoaded', function() {
     // Lazy loading for images
     const images = document.querySelectorAll('img[loading="lazy"]');
