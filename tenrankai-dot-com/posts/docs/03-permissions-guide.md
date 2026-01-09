@@ -36,18 +36,18 @@ default_authenticated_role = "member"
 
 # Define custom roles
 [galleries.permissions.roles.viewer]
-permissions = ["can_view", "can_browse_folders", "can_see_metadata"]
+permissions = { can_view = true, can_browse_folders = true, can_see_metadata = true }
 
 [galleries.permissions.roles.member]
-permissions = [
-    "can_view",
-    "can_browse_folders", 
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_download_thumbnail",
-    "can_download_gallery_size"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_see_location = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true
+}
 
 # Assign users to specific roles
 [[galleries.permissions.user_roles]]
@@ -59,8 +59,6 @@ role = "member"
 
 #### Viewing Permissions
 - **`can_view`** - Basic permission to see images
-- **`can_browse_folders`** - Ability to navigate folder structure
-- **`can_see_metadata`** - View basic image information (title, dimensions)
 
 #### Privacy Permissions
 - **`can_see_exact_dates`** - See exact capture date/time vs approximate month/year
@@ -68,9 +66,7 @@ role = "member"
 - **`can_see_technical_details`** - Access camera, lens, and EXIF data
 
 #### Download Permissions
-- **`can_download_thumbnail`** - Download small preview images
-- **`can_download_gallery_size`** - Download medium-quality images
-- **`can_download_medium`** - Download higher resolution images
+- **`can_download_medium`** - Download medium resolution images
 - **`can_download_large`** - Download large resolution images
 - **`can_download_original`** - Access original, unmodified files
 
@@ -89,6 +85,9 @@ role = "member"
 - **`can_edit_any_comments`** - Edit any user's comments
 - **`can_delete_any_comments`** - Delete any user's comments
 
+#### Special Permissions
+- **`owner_access`** - Full access to everything (overrides all other permissions)
+
 ## Common Permission Patterns
 
 ### Public Portfolio
@@ -104,15 +103,16 @@ public_role = "viewer"
 default_authenticated_role = "viewer"
 
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_technical_details",  # Show camera info for credibility
-    "can_download_thumbnail",
-    "can_download_gallery_size"
-    # No location data or high-res downloads
-]
+# Show camera info for credibility
+# No location data or high-res downloads
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_technical_details = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true
+}
 ```
 
 ### Family Gallery
@@ -129,35 +129,35 @@ default_authenticated_role = "family_member"
 
 # Public sees limited info with approximate dates
 [galleries.permissions.roles.limited]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    # No exact dates - shows "October 2026" instead
-    # No location - protects home addresses
-    "can_download_thumbnail"
-]
+# No exact dates - shows "October 2026" instead
+# No location - protects home addresses
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_thumbnail = true
+}
 
 # Family members see everything
 [galleries.permissions.roles.family_member]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",      # Full timestamps
-    "can_see_location",         # GPS data
-    "can_see_technical_details",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_download_medium",
-    "can_download_large",
-    "can_download_original",
-    "can_use_zoom",             # Zoom for detailed viewing
-    "can_read_metadata",        # Read comments and tags
-    "can_add_comments",         # Comment on family photos
-    "can_set_picks",            # Mark favorite photos
-    "can_add_tags"              # Tag family members
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,      # Full timestamps
+    can_see_location = true,         # GPS data
+    can_see_technical_details = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true,
+    can_download_medium = true,
+    can_download_large = true,
+    can_download_original = true,
+    can_use_zoom = true,             # Zoom for detailed viewing
+    can_read_metadata = true,        # Read comments and tags
+    can_add_comments = true,         # Comment on family photos
+    can_set_picks = true,            # Mark favorite photos
+    can_add_tags = true              # Tag family members
+}
 
 # Assign family members
 [[galleries.permissions.user_roles]]
@@ -183,20 +183,20 @@ default_authenticated_role = "preview"
 
 # Minimal public access
 [galleries.permissions.roles.preview]
-permissions = ["can_view"]  # Can see images but not browse
+permissions = { can_view = true }  # Can see images but not browse
 
 # Client access with downloads
 [galleries.permissions.roles.client]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_download_medium",
-    "can_download_original"
-    # No technical details or location
-]
+# No technical details or location
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true,
+    can_download_medium = true,
+    can_download_original = true
+}
 
 # Assign specific clients
 [[galleries.permissions.user_roles]]
@@ -217,15 +217,15 @@ name = "private"
 default_authenticated_role = "viewer"
 
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_download_thumbnail",
-    "can_download_gallery_size"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_see_location = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true
+}
 ```
 
 ## Folder-Level Permissions
@@ -247,14 +247,14 @@ public_role = "none"
 default_authenticated_role = "family"
 
 [permissions.roles.family]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_download_original"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_see_location = true,
+    can_download_original = true
+}
 +++
 
 These photos are only for family members.
@@ -272,19 +272,19 @@ public_role = "none"
 default_authenticated_role = "preview"
 
 [permissions.roles.preview]
-permissions = [
-    "can_view",
-    "can_see_metadata"
-    # No downloads until approved
-]
+# No downloads until approved
+permissions = {
+    can_view = true,
+    can_see_metadata = true
+}
 
 [permissions.roles.client]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_download_original"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_original = true
+}
 +++
 
 Images pending client approval.
@@ -336,7 +336,7 @@ Begin with minimal permissions and add as needed:
 
 ```toml
 [galleries.permissions.roles.public]
-permissions = ["can_view", "can_see_metadata"]
+permissions = { can_view = true, can_see_metadata = true }
 ```
 
 ### 2. Consider Privacy Implications
@@ -355,14 +355,14 @@ Add comments explaining your permission decisions:
 
 ```toml
 [galleries.permissions.roles.public]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    # No exact dates - protects children's schedules
-    # No location - protects home address
-    "can_download_thumbnail"
-]
+# No exact dates - protects children's schedules
+# No location - protects home address
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_thumbnail = true
+}
 ```
 
 ## Common Use Cases
@@ -375,24 +375,24 @@ public_role = "viewer"
 default_authenticated_role = "parent"
 
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    # No exact dates or location for child safety
-    "can_download_thumbnail"
-]
+# No exact dates or location for child safety
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_thumbnail = true
+}
 
 [galleries.permissions.roles.parent]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_download_original"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true,
+    can_download_original = true
+}
 
 [[galleries.permissions.user_roles]]
 email = "parent@school.com"
@@ -408,29 +408,29 @@ default_authenticated_role = "guest"
 
 # Guests can view
 [galleries.permissions.roles.guest]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",  # Event date is public
-    "can_download_thumbnail"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,  # Event date is public
+    can_download_thumbnail = true
+}
 
 # Couple gets everything
 [galleries.permissions.roles.client]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_see_technical_details",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_download_medium",
-    "can_download_large",
-    "can_download_original"
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_see_location = true,
+    can_see_technical_details = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true,
+    can_download_medium = true,
+    can_download_large = true,
+    can_download_original = true
+}
 
 [[galleries.permissions.user_roles]]
 email = "bride@wedding.com"
@@ -448,14 +448,14 @@ role = "client"
 public_role = "visitor"
 
 [galleries.permissions.roles.visitor]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    "can_see_technical_details",  # Shows professional capability
-    "can_download_thumbnail",
-    "can_download_gallery_size"   # Watermarked versions
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_technical_details = true,  # Shows professional capability
+    can_download_thumbnail = true,
+    can_download_gallery_size = true   # Watermarked versions
+}
 ```
 
 And hide work-in-progress with `photos/drafts/_folder.md`:
@@ -488,12 +488,12 @@ hide_technical_details = true
 public_role = "viewer"
 
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata"
-    # Note: No can_see_exact_dates, can_see_location, or can_see_technical_details
-]
+# Note: No can_see_exact_dates, can_see_location, or can_see_technical_details
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true
+}
 ```
 
 ## Troubleshooting

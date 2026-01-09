@@ -50,17 +50,17 @@ copyright_holder = "Your Name"
 public_role = "viewer"
 
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders", 
-    "can_see_metadata",
-    "can_see_exact_dates",
-    "can_see_location",
-    "can_see_technical_details",
-    "can_download_thumbnail",
-    "can_download_gallery_size",
-    "can_use_zoom"          # Enable zoom for exploring images
-]
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_see_exact_dates = true,
+    can_see_location = true,
+    can_see_technical_details = true,
+    can_download_thumbnail = true,
+    can_download_gallery_size = true,
+    can_use_zoom = true          # Enable zoom for exploring images
+}
 ```
 
 ### 3. Set Up Directories
@@ -132,16 +132,16 @@ Want to hide dates and locations from public viewers? Easy:
 
 ```toml
 [galleries.permissions.roles.viewer]
-permissions = [
-    "can_view",
-    "can_browse_folders",
-    "can_see_metadata",
-    # Remove these lines to hide dates/location:
-    # "can_see_exact_dates",  # Shows only month/year when removed
-    # "can_see_location",     # Hides GPS data when removed
-    "can_download_thumbnail",
-    "can_use_zoom"           # Keep zoom for better viewing
-]
+# Remove these lines to hide dates/location:
+# can_see_exact_dates = true,  # Shows only month/year when removed
+# can_see_location = true,     # Hides GPS data when removed
+permissions = {
+    can_view = true,
+    can_browse_folders = true,
+    can_see_metadata = true,
+    can_download_thumbnail = true,
+    can_use_zoom = true           # Keep zoom for better viewing
+}
 ```
 
 ### Enable Blog
