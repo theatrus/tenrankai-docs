@@ -50,15 +50,12 @@ copyright_holder = "Your Name"
 public_role = "viewer"
 
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
+    can_view = true,             # Includes thumbnail & gallery size downloads
     can_see_exact_dates = true,
     can_see_location = true,
     can_see_technical_details = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true,
     can_use_zoom = true          # Enable zoom for exploring images
 }
 ```
@@ -132,14 +129,12 @@ Want to hide dates and locations from public viewers? Easy:
 
 ```toml
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 # Remove these lines to hide dates/location:
 # can_see_exact_dates = true,  # Shows only month/year when removed
 # can_see_location = true,     # Hides GPS data when removed
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_download_thumbnail = true,
+    can_view = true,             # Includes thumbnail & gallery size downloads
     can_use_zoom = true           # Keep zoom for better viewing
 }
 ```

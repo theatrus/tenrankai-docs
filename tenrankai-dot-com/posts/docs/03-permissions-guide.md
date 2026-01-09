@@ -36,29 +36,27 @@ default_authenticated_role = "member"
 
 # Define custom roles
 [galleries.permissions.roles.viewer]
-permissions = { can_view = true, can_browse_folders = true, can_see_metadata = true }
+name = "Viewer"
+permissions = { can_view = true }
 
 [galleries.permissions.roles.member]
+name = "Member"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,
-    can_see_location = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true
+    can_see_location = true
 }
 
 # Assign users to specific roles
 [[galleries.permissions.user_roles]]
-email = "grandma@family.com"
-role = "member"
+username = "grandma"
+roles = ["member"]
 ```
 
 ### Available Permissions
 
 #### Viewing Permissions
-- **`can_view`** - Basic permission to see images
+- **`can_view`** - Basic permission to see images (automatically includes thumbnail and gallery size downloads)
 
 #### Privacy Permissions
 - **`can_see_exact_dates`** - See exact capture date/time vs approximate month/year
@@ -66,8 +64,10 @@ role = "member"
 - **`can_see_technical_details`** - Access camera, lens, and EXIF data
 
 #### Download Permissions
-- **`can_download_medium`** - Download medium resolution images
-- **`can_download_large`** - Download large resolution images
+- **`can_download_medium`** - Download medium resolution images (1200px)
+
+Note: Thumbnail and gallery size downloads are automatically included with the `can_view` permission.
+- **`can_download_large`** - Download large resolution images (1600px)
 - **`can_download_original`** - Access original, unmodified files
 
 #### Interactive Permissions
@@ -103,15 +103,12 @@ public_role = "viewer"
 default_authenticated_role = "viewer"
 
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 # Show camera info for credibility
 # No location data or high-res downloads
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_see_technical_details = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true
+    can_see_technical_details = true
 }
 ```
 
@@ -129,26 +126,21 @@ default_authenticated_role = "family_member"
 
 # Public sees limited info with approximate dates
 [galleries.permissions.roles.limited]
+name = "Limited Viewer"
 # No exact dates - shows "October 2026" instead
 # No location - protects home addresses
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_download_thumbnail = true
+    can_view = true
 }
 
 # Family members see everything
 [galleries.permissions.roles.family_member]
+name = "Family Member"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,      # Full timestamps
     can_see_location = true,         # GPS data
     can_see_technical_details = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true,
     can_download_medium = true,
     can_download_large = true,
     can_download_original = true,
@@ -161,12 +153,12 @@ permissions = {
 
 # Assign family members
 [[galleries.permissions.user_roles]]
-email = "mom@family.com"
-role = "family_member"
+username = "mom"
+roles = ["family_member"]
 
 [[galleries.permissions.user_roles]]
-email = "dad@family.com"
-role = "family_member"
+username = "dad"
+roles = ["family_member"]
 ```
 
 ### Client Gallery
@@ -183,25 +175,23 @@ default_authenticated_role = "preview"
 
 # Minimal public access
 [galleries.permissions.roles.preview]
+name = "Preview"
 permissions = { can_view = true }  # Can see images but not browse
 
 # Client access with downloads
 [galleries.permissions.roles.client]
+name = "Client"
 # No technical details or location
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true,
     can_download_medium = true,
     can_download_original = true
 }
 
 # Assign specific clients
 [[galleries.permissions.user_roles]]
-email = "client@company.com"
-role = "client"
+username = "client"
+roles = ["client"]
 ```
 
 ### Private Gallery
@@ -217,14 +207,11 @@ name = "private"
 default_authenticated_role = "viewer"
 
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,
-    can_see_location = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true
+    can_see_location = true
 }
 ```
 
@@ -247,10 +234,9 @@ public_role = "none"
 default_authenticated_role = "family"
 
 [permissions.roles.family]
+name = "Family"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,
     can_see_location = true,
     can_download_original = true
@@ -272,17 +258,16 @@ public_role = "none"
 default_authenticated_role = "preview"
 
 [permissions.roles.preview]
+name = "Preview"
 # No downloads until approved
 permissions = {
-    can_view = true,
-    can_see_metadata = true
+    can_view = true
 }
 
 [permissions.roles.client]
+name = "Client"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_download_original = true
 }
 +++
@@ -336,7 +321,8 @@ Begin with minimal permissions and add as needed:
 
 ```toml
 [galleries.permissions.roles.public]
-permissions = { can_view = true, can_see_metadata = true }
+name = "Public"
+permissions = { can_view = true }
 ```
 
 ### 2. Consider Privacy Implications
@@ -355,13 +341,11 @@ Add comments explaining your permission decisions:
 
 ```toml
 [galleries.permissions.roles.public]
+name = "Public"
 # No exact dates - protects children's schedules
 # No location - protects home address
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_download_thumbnail = true
+    can_view = true
 }
 ```
 
@@ -375,28 +359,23 @@ public_role = "viewer"
 default_authenticated_role = "parent"
 
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 # No exact dates or location for child safety
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_download_thumbnail = true
+    can_view = true
 }
 
 [galleries.permissions.roles.parent]
+name = "Parent"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true,
     can_download_original = true
 }
 
 [[galleries.permissions.user_roles]]
-email = "parent@school.com"
-role = "parent"
+username = "parent"
+roles = ["parent"]
 ```
 
 ### Wedding Photography
@@ -408,37 +387,32 @@ default_authenticated_role = "guest"
 
 # Guests can view
 [galleries.permissions.roles.guest]
+name = "Guest"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_see_exact_dates = true,  # Event date is public
-    can_download_thumbnail = true
+    can_see_exact_dates = true  # Event date is public
 }
 
 # Couple gets everything
 [galleries.permissions.roles.client]
+name = "Client"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
     can_see_exact_dates = true,
     can_see_location = true,
     can_see_technical_details = true,
-    can_download_thumbnail = true,
-    can_download_gallery_size = true,
     can_download_medium = true,
     can_download_large = true,
     can_download_original = true
 }
 
 [[galleries.permissions.user_roles]]
-email = "bride@wedding.com"
-role = "client"
+username = "bride"
+roles = ["client"]
 
 [[galleries.permissions.user_roles]]
-email = "groom@wedding.com"
-role = "client"
+username = "groom"
+roles = ["client"]
 ```
 
 ### Artist Portfolio
@@ -448,13 +422,10 @@ role = "client"
 public_role = "visitor"
 
 [galleries.permissions.roles.visitor]
+name = "Visitor"
 permissions = {
     can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true,
-    can_see_technical_details = true,  # Shows professional capability
-    can_download_thumbnail = true,
-    can_download_gallery_size = true   # Watermarked versions
+    can_see_technical_details = true  # Shows professional capability
 }
 ```
 
@@ -488,11 +459,10 @@ hide_technical_details = true
 public_role = "viewer"
 
 [galleries.permissions.roles.viewer]
+name = "Viewer"
 # Note: No can_see_exact_dates, can_see_location, or can_see_technical_details
 permissions = {
-    can_view = true,
-    can_browse_folders = true,
-    can_see_metadata = true
+    can_view = true
 }
 ```
 
