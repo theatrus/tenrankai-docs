@@ -1,21 +1,21 @@
 +++
 title = "Authentication Guide"
 summary = "Configure user authentication, WebAuthn/Passkeys, and gallery access control"
-date = "2025-08-26"
+date = "2026-01-09"
 +++
 
 # Authentication Guide
 
-Tenrankai provides multiple authentication methods including traditional passwords, modern WebAuthn/Passkeys, and fine-grained gallery access control.
+Tenrankai provides modern authentication with WebAuthn/Passkey support and fine-grained access control using a role-based permission system.
 
 ## Authentication Overview
 
 Tenrankai supports:
 
-- **Password Authentication** - Traditional username/password login
-- **WebAuthn/Passkeys** - Passwordless authentication using biometrics or security keys
-- **Gallery Access Control** - Restrict galleries to specific users
-- **Folder-Level Permissions** - Control access to individual folders
+- **Email-based Magic Links** - Passwordless authentication via email
+- **WebAuthn/Passkeys** - Biometric and security key authentication
+- **Role-Based Permissions** - Fine-grained access control with custom roles
+- **Gallery Access Control** - Per-gallery permission configuration
 
 ## Enabling Authentication
 
@@ -26,372 +26,396 @@ Enable authentication in your `config.toml`:
 ```toml
 [app]
 name = "My Gallery"
-user_database = "users.toml"  # Enable authentication
-cookie_secret = "your-32-character-secret-key-here"
+base_url = "https://yourdomain.com"  # Required for WebAuthn
+user_database = "users.db"            # Enables authentication
+cookie_secret = "your-32-character-secret-key-here"  # Generate with: openssl rand -base64 32
 ```
 
-### 2. Create Users Database
+When `user_database` is set:
+- Authentication system is enabled
+- WebAuthn/Passkeys are automatically configured
+- User profiles are accessible at `/_login/profile`
 
-Create `users.toml` with initial users:
+### 2. Email Configuration
+
+Configure an email provider for magic link authentication:
 
 ```toml
-[[users]]
-username = "admin"
-password_hash = "$argon2id$v=19$m=19456,t=2,p=1$..."  # Generated hash
-email = "admin@example.com"
-is_admin = true
+[email]
+# For development - logs emails to console
+provider = "null"
+from_address = "noreply@yourdomain.com"
 
-[[users]]
-username = "family"
-password_hash = "$argon2id$v=19$m=19456,t=2,p=1$..."
-email = "family@example.com"
-is_admin = false
+# For production with Amazon SES
+# provider = "ses"
+# from_address = "noreply@yourdomain.com"
+# from_name = "My Gallery"  # Optional
+# region = "us-east-1"      # Optional, uses AWS credential chain
 ```
 
-### 3. Generate Password Hashes
+Note: SMTP provider is planned but not yet implemented.
 
-Use the built-in password hasher:
+### 3. Create Initial Admin User
+
+Use the CLI to create your first admin user:
 
 ```bash
-tenrankai hash-password
-# Enter password when prompted
-# Copy the generated hash to users.toml
+tenrankai user add admin@example.com --display-name "Admin User"
 ```
 
 ## WebAuthn/Passkey Setup
 
 WebAuthn enables passwordless authentication using:
 
-- **Biometric authentication** - Fingerprint, Face ID, Windows Hello
+- **Biometric authentication** - Touch ID, Face ID, Windows Hello
 - **Security keys** - YubiKey, Google Titan, etc.
-- **Platform authenticators** - Built-in device authentication
+- **Cross-device passkeys** - Synced via iCloud Keychain, Google Password Manager
 
-### 1. Enable WebAuthn
+### How It Works
 
-WebAuthn is automatically enabled when authentication is configured. Users can register passkeys from their profile page.
+1. WebAuthn is automatically enabled when `user_database` is configured
+2. The system uses your `base_url` hostname as the Relying Party ID
+3. Your `app.name` is used as the Relying Party name
+4. No additional configuration needed!
 
-### 2. User Registration Flow
+### User Registration Flow
 
-1. User logs in with password initially
-2. Navigates to profile page (`/_login/profile`)
-3. Clicks "Register New Passkey"
-4. Follows browser prompts for biometric or security key
-5. Passkey is saved to their account
+1. User requests login at `/_login`
+2. Enters email address
+3. Receives magic link via email
+4. Clicks link to authenticate
+5. Can then register passkeys at `/_login/profile`
 
-### 3. Login with Passkey
+### Managing Passkeys
 
-Once registered, users can:
+Users can manage passkeys at `/_login/profile`:
+- View all registered passkeys
+- Register new passkeys (biometric or security key)
+- Delete existing passkeys
+- See last used timestamps
 
-1. Click "Sign in with Passkey" on login page
-2. Browser prompts for biometric or security key
-3. User is authenticated without password
+## Role-Based Permissions
 
-### 4. Security Considerations
+Tenrankai uses a flexible role-based permission system instead of simple access lists.
 
-- Passkeys are tied to the domain (origin)
-- Each passkey is unique per device
-- Users should register multiple passkeys as backup
-- Passkeys cannot be phished or reused
+### Understanding Roles
 
-## Gallery Access Control
-
-### 1. Public Galleries
-
-By default, galleries are public:
-
-```toml
-[[galleries]]
-name = "public"
-url_prefix = "/gallery"
-source_directory = "photos/public"
-# No user_access_list = public access
-```
-
-### 2. Restricted Galleries
-
-Limit gallery access to specific users:
+Each gallery can define custom roles with specific permissions:
 
 ```toml
 [[galleries]]
 name = "family"
 url_prefix = "/family"
 source_directory = "photos/family"
-user_access_list = ["admin@example.com", "family@example.com"]
+
+[galleries.permissions]
+# Define which role unauthenticated users get
+public_role = "viewer"
+
+# Define which role authenticated users get by default
+default_authenticated_role = "family_member"
+
+# Define custom roles with specific permissions
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_download_thumbnail"
+]
+
+[galleries.permissions.roles.family_member]
+permissions = [
+    "can_view",
+    "can_browse_folders", 
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_see_technical_details",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_download_large",
+    "can_download_original"
+]
 ```
 
-### 3. Admin-Only Galleries
+### Available Permissions
 
-Create admin-only galleries:
+- **can_view** - View images in the gallery
+- **can_browse_folders** - Navigate folder structure
+- **can_see_metadata** - View basic image information
+- **can_see_exact_dates** - See exact timestamps (vs approximate dates)
+- **can_see_location** - View GPS coordinates and maps
+- **can_see_technical_details** - See camera/EXIF data
+- **can_download_thumbnail** - Download small images
+- **can_download_gallery_size** - Download medium quality
+- **can_download_medium** - Download larger images
+- **can_download_large** - Download high resolution
+- **can_download_original** - Access original files
+
+### Assigning Users to Roles
+
+Assign specific users to custom roles:
+
+```toml
+[[galleries.permissions.user_roles]]
+email = "grandma@family.com"
+role = "family_member"
+
+[[galleries.permissions.user_roles]]
+email = "friend@example.com"
+role = "viewer"
+```
+
+## Gallery Access Patterns
+
+### 1. Public Gallery
+
+Anyone can view, but only see basic information:
 
 ```toml
 [[galleries]]
-name = "admin"
-url_prefix = "/admin-gallery"
-source_directory = "photos/admin"
-user_access_list = ["admin@example.com"]
+name = "portfolio"
+
+[galleries.permissions]
+public_role = "viewer"
+default_authenticated_role = "viewer"
+
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_technical_details",  # Show camera info
+    "can_download_thumbnail",
+    "can_download_gallery_size"
+]
+```
+
+### 2. Private Gallery
+
+No public access, authenticated users only:
+
+```toml
+[[galleries]]
+name = "private"
+
+[galleries.permissions]
+# No public_role defined = no public access
+default_authenticated_role = "member"
+
+[galleries.permissions.roles.member]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_original"
+]
+```
+
+### 3. Client Gallery
+
+Limited public preview, full access for clients:
+
+```toml
+[[galleries]]
+name = "clients"
+
+[galleries.permissions]
+public_role = "preview"
+default_authenticated_role = "preview"
+
+[galleries.permissions.roles.preview]
+permissions = ["can_view"]  # View only, no downloads
+
+[galleries.permissions.roles.client]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_download_original"
+]
+
+# Assign specific client
+[[galleries.permissions.user_roles]]
+email = "client@company.com"
+role = "client"
 ```
 
 ## User Management
 
-### 1. User Profile Structure
-
-Users in `users.toml` have these fields:
-
-```toml
-[[users]]
-username = "johndoe"                    # Login username
-password_hash = "$argon2id$..."         # Argon2 password hash
-email = "john@example.com"              # Email (used for access lists)
-is_admin = false                        # Admin privileges
-webauthn_credentials = []               # Registered passkeys (auto-managed)
-```
-
-### 2. Adding Users
+### CLI Commands
 
 ```bash
-# Generate password hash
-tenrankai hash-password
+# Add a new user
+tenrankai user add user@example.com --display-name "User Name"
 
-# Add to users.toml
-[[users]]
-username = "newuser"
-password_hash = "paste-generated-hash-here"
-email = "newuser@example.com"
-is_admin = false
+# List all users
+tenrankai user list
+
+# Remove a user
+tenrankai user remove user@example.com
 ```
 
-### 3. Modifying Users
+### User Database Structure
 
-Edit `users.toml` directly:
-
-- Change `is_admin` to grant/revoke admin access
-- Update `email` to change gallery access
-- Remove `[[users]]` block to delete user
-- Clear `webauthn_credentials = []` to reset passkeys
-
-### 4. User Self-Service
-
-Users can manage their own accounts at `/_login/profile`:
-
-- View registered passkeys
-- Register new passkeys
-- Remove existing passkeys
-- View account information
+Users are stored in the SQLite database specified by `user_database`. The system manages:
+- User ID and email
+- Display name
+- Authentication timestamps
+- WebAuthn credentials
+- Role assignments
 
 ## Authentication Flow
 
-### 1. Login Process
+### 1. Email Login Flow
 
-1. User visits protected resource
-2. Redirected to `/_login`
-3. Enters username/password or uses passkey
-4. Session cookie created
-5. Redirected back to original resource
+1. User visits `/_login`
+2. Enters email address
+3. System sends magic link
+4. User clicks link in email
+5. Session created, redirected to original destination
 
-### 2. Session Management
+### 2. Passkey Login Flow
 
-```toml
-[app]
-# Session configuration
-cookie_secret = "32-character-secret-key"
-# Sessions expire after browser close by default
-# Or configure explicit timeout (in seconds)
-# session_timeout = 86400  # 24 hours
-```
+1. User visits `/_login`
+2. Clicks "Sign in with Passkey"
+3. Browser prompts for biometric/security key
+4. Direct authentication without email
+5. Session created, redirected
 
-### 3. Logout
+### 3. Session Management
 
-Users can logout by:
-- Visiting `/_login/logout`
-- Clearing browser cookies
-- Session expiration
+Sessions are managed via secure cookies:
+- Signed with `cookie_secret`
+- HTTP-only and secure flags in production
+- Expire on browser close by default
 
-## Advanced Configuration
+## Authentication Endpoints
 
-### 1. Email Providers
-
-Configure email for notifications:
-
-```toml
-[email]
-provider = "smtp"  # or "null" for development
-
-[email.smtp]
-server = "smtp.gmail.com"
-port = 587
-username = "your-email@gmail.com"
-password = "your-app-password"
-from = "Tenrankai <noreply@example.com>"
-```
-
-For development, use null provider:
-
-```toml
-[email]
-provider = "null"  # Logs emails to console
-```
-
-### 2. Authentication Paths
-
-Tenrankai uses these authentication endpoints:
+Tenrankai provides these authentication endpoints:
 
 - `/_login` - Login page
-- `/_login/logout` - Logout endpoint
 - `/_login/profile` - User profile and passkey management
-- `/_login/passkey/register` - WebAuthn registration API
-- `/_login/passkey/authenticate` - WebAuthn authentication API
-
-### 3. Custom Login Page
-
-Customize the login page by editing `templates/modules/login.html.liquid`:
-
-```liquid
-<div class="login-container">
-    <h1>{{ app_name }} Login</h1>
-    
-    <!-- Password login form -->
-    <form method="post" action="/_login">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Sign In</button>
-    </form>
-    
-    <!-- WebAuthn login -->
-    <div class="passkey-login">
-        <button id="passkey-signin">Sign in with Passkey</button>
-    </div>
-</div>
-```
+- `/_login/logout` - Logout endpoint
+- `/_login/verify` - Magic link verification
+- `/_login/api/webauthn/*` - WebAuthn API endpoints
 
 ## Security Best Practices
 
-### 1. Password Requirements
-
-While Tenrankai doesn't enforce password policies, consider:
-
-- Minimum 12 characters
-- Mix of letters, numbers, symbols
-- Unique per user
-- Regular rotation for high-security deployments
-
-### 2. Session Security
+### 1. Configuration Security
 
 ```toml
 [app]
-# Use long, random secret
-cookie_secret = "generated-32-character-random-string"
+# Generate strong secret
+cookie_secret = "use-output-from: openssl rand -base64 32"
 
-# Enable HTTPS-only cookies in production
-# secure_cookies = true  # Set when using HTTPS
+# Use HTTPS in production (required for WebAuthn)
+base_url = "https://yourdomain.com"
 ```
 
-### 3. Access Control Patterns
+### 2. Permission Design
 
-**Least Privilege**:
-```toml
-# Default: no access
-# Explicitly grant access per gallery
-user_access_list = ["specific@user.com"]
-```
+- Start with minimal permissions and add as needed
+- Use role inheritance to avoid repetition
+- Regularly audit user role assignments
+- Consider privacy implications of each permission
 
-**Role-Based Access**:
-```toml
-# Create galleries for different roles
-[[galleries]]
-name = "public"
-# No user_access_list
+### 3. WebAuthn Security
 
-[[galleries]]
-name = "members"
-user_access_list = ["member1@example.com", "member2@example.com"]
-
-[[galleries]]
-name = "premium"
-user_access_list = ["premium1@example.com", "admin@example.com"]
-```
-
-### 4. WebAuthn Security
-
-- Passkeys are cryptographically secure
+- Passkeys are phishing-resistant
 - Private keys never leave the device
-- Resistant to phishing attacks
 - Support for attestation (device verification)
+- Users should register multiple passkeys as backup
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Invalid username or password"**:
-   - Verify username exists in users.toml
-   - Check password hash is correct
-   - Ensure users.toml is readable
-
-2. **WebAuthn registration fails**:
+1. **"WebAuthn not available"**:
    - Ensure HTTPS is enabled (required for WebAuthn)
-   - Check browser compatibility
-   - Verify domain matches configuration
+   - Check browser supports WebAuthn
+   - Verify `base_url` is correctly set
 
-3. **Session expires immediately**:
-   - Check cookie_secret is set
-   - Verify system time is correct
-   - Ensure cookies are enabled
+2. **"Email not sent"**:
+   - Check email provider configuration
+   - Verify `from_address` is valid
+   - For development, use `provider = "null"` to log emails
 
-4. **Gallery access denied**:
-   - Verify user email in access list
-   - Check email case sensitivity
-   - Ensure user is logged in
+3. **"Access denied"**:
+   - Check user's role assignment
+   - Verify permission configuration
+   - Ensure user is authenticated
 
-### Debug Authentication
+4. **"Invalid session"**:
+   - Check `cookie_secret` hasn't changed
+   - Verify cookies are enabled
+   - Clear browser cookies and try again
 
-Enable debug logging:
+### Debug Mode
+
+Enable debug logging to troubleshoot:
 
 ```toml
 [app]
 log_level = "debug"
 ```
 
-Check logs for:
+This will log:
 - Authentication attempts
-- Session creation/validation
-- Access control decisions
+- Permission checks
+- Email sending
 - WebAuthn operations
 
-## Migration Guide
+## Migration Notes
 
-### From Basic Auth
+### From Old Permission System
 
-If migrating from HTTP Basic Auth:
+If you were using the old system with `hide_location_from_public` or `require_auth`:
 
-1. Create users.toml with same usernames
-2. Generate password hashes
-3. Update nginx/apache configuration
-4. Remove basic auth headers
+**Old:**
+```toml
+hide_location_from_public = true
+approximate_dates_for_public = true
+```
 
-### Adding Authentication to Existing Site
+**New:**
+```toml
+[galleries.permissions]
+public_role = "viewer"
 
-1. Create users.toml with admin user
-2. Add `user_database = "users.toml"` to config
-3. Restart Tenrankai
-4. Login and add additional users
-5. Configure gallery access lists as needed
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata"
+    # Note: No can_see_location or can_see_exact_dates
+]
+```
 
 ## API Authentication
 
-The REST API supports authentication via:
-
-1. **Session cookies** - From web login
-2. **HTTP Basic Auth** - Using password directly
+The API recognizes authenticated sessions:
 
 ```bash
-# With session cookie
-curl -b "session=cookie-value" http://localhost:3000/api/v1/galleries
+# Login and save cookies
+curl -c cookies.txt -X POST http://localhost:3000/_login \
+  -d "email=user@example.com"
 
-# With Basic Auth  
-curl -u "username:password" http://localhost:3000/api/v1/galleries
+# Use session for API calls
+curl -b cookies.txt http://localhost:3000/api/galleries/main
 ```
 
 ## Next Steps
 
-- [Configuration Reference](/docs/02-configuration) - Full authentication options
-- [API Documentation](/docs/04-api) - Authentication endpoints
-- [Template Customization](/docs/05-templates) - Customize login pages
+- [Configuration Reference](/docs/02-configuration) - Full configuration options
+- [Permissions Guide](/docs/03-permissions-guide) - Detailed permission examples
+- [API Documentation](/docs/04-api) - API authentication details

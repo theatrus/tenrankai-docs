@@ -1,7 +1,7 @@
 +++
 title = "Docker Guide"
 summary = "Deploy Tenrankai using Docker and Docker Compose"
-date = "2025-08-26"
+date = "2026-01-09"
 +++
 
 # Docker Guide
@@ -395,11 +395,11 @@ docker stop tenrankai
 # Restore cache volume
 docker run --rm \
   -v tenrankai_cache_data:/cache \
-  -v /backups/tenrankai/20250826_120000:/backup:ro \
+  -v /backups/tenrankai/20260109_120000:/backup:ro \
   alpine sh -c "cd / && tar xzf /backup/cache.tar.gz"
 
 # Restore configuration
-cp /backups/tenrankai/20250826_120000/config.toml .
+cp /backups/tenrankai/20260109_120000/config.toml .
 
 # Start container
 docker start tenrankai

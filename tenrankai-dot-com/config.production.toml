@@ -14,6 +14,7 @@ name = "Tenrankai - High-Performance Photo Gallery CMS Server"
 # Use: openssl rand -base64 32
 cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
 base_url = "https://tenrankai.com"
+# user_database = "users.db"  # Uncomment to enable authentication & WebAuthn
 
 [templates]
 # Cascade: use tenrankai-dot-com customizations first, fall back to main templates
@@ -27,20 +28,24 @@ directories = ["static", "../tenrankai/static"]
 [[galleries]]
 name = "main"
 url_prefix = "/gallery"
-source_directory = "photos"  # Absolute path recommended
-cache_directory = "cache/gallery"
+source_directory = "photos"  # Change to absolute path for production: /srv/tenrankai/photos
+cache_directory = "cache/gallery"  # Change to absolute path for production: /srv/tenrankai/cache/gallery
 images_per_page = 24
 new_threshold_days = 30
 pregenerate_cache = true  # Recommended for production
 cache_refresh_interval_minutes = 360  # 6 hours
 jpeg_quality = 85
 webp_quality = 85.0
-approximate_dates_for_public = false  # Full dates for demo purposes
-hide_location_from_public = false      # Show location data for demo
 copyright_holder = "Tenrankai Project"
+image_indexing = "filename"
 
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
+
+# Production permissions: Demo gallery shows everything
+[galleries.permissions]
+public_role = "full_access"
+default_authenticated_role = "full_access"
 
 [galleries.thumbnail]
 width = 300
@@ -84,3 +89,58 @@ refresh_interval_minutes = 120  # Check every 2 hours
 
 index_template = "modules/posts_index.html.liquid"
 post_template = "modules/post_detail.html.liquid"
+
+# Email configuration for production (required for user registration)
+# Note: SMTP provider is not yet implemented. Use SES or null provider for now.
+[email]
+provider = "null"  # Change to "ses" for Amazon SES in production
+from_address = "noreply@tenrankai.com"
+# from_name = "Tenrankai Gallery"  # Optional
+# reply_to = "support@tenrankai.com"  # Optional
+
+# For Amazon SES (when provider = "ses"):
+# region = "us-east-1"  # Optional, uses AWS credential chain
+# access_key_id = "your-key"  # Optional
+# secret_access_key = "your-secret"  # Optional
+
+# Note: WebAuthn/Passkey support is automatically enabled when:
+# 1. user_database is configured in [app] section
+# 2. base_url is set with a valid hostname
+# WebAuthn will use the base_url hostname as the RP ID
+
+# Example systemd service file (save as /etc/systemd/system/tenrankai.service):
+# [Unit]
+# Description=Tenrankai Photo Gallery Server
+# After=network.target
+# 
+# [Service]
+# Type=simple
+# User=tenrankai
+# Group=tenrankai
+# WorkingDirectory=/srv/tenrankai/tenrankai-dot-com
+# Environment="RUST_LOG=info"
+# ExecStart=/srv/tenrankai/tenrankai/target/release/tenrankai
+# Restart=always
+# RestartSec=10
+# 
+# [Install]
+# WantedBy=multi-user.target
+
+# Example nginx configuration:
+# server {
+#     listen 443 ssl http2;
+#     server_name tenrankai.com;
+#     
+#     ssl_certificate /etc/letsencrypt/live/tenrankai.com/fullchain.pem;
+#     ssl_certificate_key /etc/letsencrypt/live/tenrankai.com/privkey.pem;
+#     
+#     client_max_body_size 50M;  # For photo uploads if enabled
+#     
+#     location / {
+#         proxy_pass http://127.0.0.1:8091;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#     }
+# }

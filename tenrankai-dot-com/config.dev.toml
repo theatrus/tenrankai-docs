@@ -29,6 +29,12 @@ images_per_page = 12
 jpeg_quality = 80
 webp_quality = 80.0
 copyright_holder = "Tenrankai Project"
+image_indexing = "filename"
+
+# Simple dev permissions - everything visible
+[galleries.permissions]
+public_role = "viewer"
+default_authenticated_role = "member"
 
 # Minimal documentation
 [[posts]]
@@ -43,4 +49,14 @@ name = "blog"
 source_directory = "posts/blog"
 url_prefix = "/blog"
 posts_per_page = 10
+
+# Development email configuration - logs emails instead of sending
+[email]
+provider = "null"  # Null provider for development
+from_address = "noreply@localhost"
+
+# Optional: Enable authentication in dev
+# Add to [app] section above:
+# user_database = "users.db"
+# This will automatically enable WebAuthn with localhost as the RP ID
 

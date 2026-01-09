@@ -1,7 +1,7 @@
 +++
 title = "Quick Start Guide"
 summary = "Get Tenrankai up and running in 5 minutes"
-date = "2024-12-01"
+date = "2026-01-09"
 +++
 
 # Quick Start Guide
@@ -44,6 +44,19 @@ source_directory = "photos"
 cache_directory = "cache"
 images_per_page = 50
 copyright_holder = "Your Name"
+
+# Simple permissions for a public gallery
+[[galleries.roles]]
+name = "public"
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_download_thumbnail",
+    "can_download_gallery_size"
+]
 ```
 
 ### 3. Set Up Directories
@@ -91,7 +104,7 @@ Create subdirectories for organization:
 
 ```bash
 photos/
-├── vacation-2024/
+├── vacation-2026/
 │   ├── beach-photos/
 │   └── city-tour/
 └── family-events/
@@ -104,9 +117,27 @@ photos/
 Create `_folder.md` in any directory:
 
 ```markdown
-# Summer Vacation 2024
+# Summer Vacation 2026
 
 Photos from our amazing trip to the coast. Perfect weather and great memories!
+```
+
+### Control Privacy
+
+Want to hide dates and locations from public viewers? Easy:
+
+```toml
+[[galleries.roles]]
+name = "public"
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    # Remove these lines to hide dates/location:
+    # "can_see_exact_dates",  # Shows only month/year when removed
+    # "can_see_location",     # Hides GPS data when removed
+    "can_download_thumbnail"
+]
 ```
 
 ### Enable Blog
@@ -117,7 +148,7 @@ Create a blog post in `posts/blog/`:
 +++
 title = "Welcome to My Gallery"
 summary = "Introduction to my photo collection"
-date = "2024-01-01"
+date = "2026-01-01"
 +++
 
 # Welcome!
@@ -143,8 +174,11 @@ Add user database and configure email:
 user_database = "users.toml"
 
 [email]
+provider = "null"  # Logs emails for development (NEW: null provider)
 from_address = "noreply@yourdomain.com"
-provider = "null"  # Logs emails for development
+
+# WebAuthn/Passkeys are automatically enabled when user_database is set
+# No additional configuration needed!
 ```
 
 Then add users:

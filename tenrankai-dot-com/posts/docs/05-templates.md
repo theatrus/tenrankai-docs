@@ -1,7 +1,7 @@
 +++
 title = "Template Customization"
 summary = "Learn how to customize Tenrankai's templates and create custom themes"
-date = "2025-08-25"
+date = "2026-01-09"
 +++
 
 # Template Customization

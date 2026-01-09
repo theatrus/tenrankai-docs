@@ -30,13 +30,18 @@ pregenerate_cache = true  # Pre-generate for better demo experience
 cache_refresh_interval_minutes = 120
 jpeg_quality = 85
 webp_quality = 85.0
-approximate_dates_for_public = false  # Full dates visible for demo gallery
-hide_location_from_public = false      # Show location data for demo gallery
-copyright_holder = "Tenrankai Project"  # Copyright watermark for medium images
+copyright_holder = "Tenrankai Project"  # Per-gallery copyright holder (NEW: moved from [app] section)
+image_indexing = "filename"  # Options: filename, sequence, unique_id (NEW)
 
 # Use default templates
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
+
+# NEW: Role-based permissions (replaces old hide_location_from_public, approximate_dates_for_public, etc.)
+[galleries.permissions]
+# For this demo gallery, we'll show everything to the public
+public_role = "full_access"
+default_authenticated_role = "full_access"
 
 # Image size configurations
 [galleries.thumbnail]
@@ -85,7 +90,25 @@ refresh_interval_minutes = 60
 index_template = "modules/posts_index.html.liquid"
 post_template = "modules/post_detail.html.liquid"
 
-# Optional: Example of a portfolio gallery
+# Optional: Email configuration for user registration and notifications
+# [email]
+# provider = "null"  # Use null provider for development (logs emails instead of sending)
+# from_address = "noreply@tenrankai.com"
+# 
+# # For production, use SMTP:
+# # provider = "smtp"
+# # from_address = "noreply@tenrankai.com"
+# # smtp_host = "smtp.gmail.com"
+# # smtp_port = 587
+# # smtp_username = "your-email@gmail.com"
+# # smtp_password = "your-app-password"
+
+# Note: To enable authentication and WebAuthn/Passkey support:
+# 1. Add user_database = "users.db" to the [app] section
+# 2. Ensure base_url is set with a valid hostname
+# WebAuthn will automatically use the hostname from base_url as the RP ID
+
+# Optional: Example of a portfolio gallery with clean URLs
 # [[galleries]]
 # name = "portfolio"
 # url_prefix = "/examples/portfolio"
@@ -94,6 +117,12 @@ post_template = "modules/post_detail.html.liquid"
 # images_per_page = 20
 # jpeg_quality = 90
 # webp_quality = 90.0
+# copyright_holder = "Your Name"
+# image_indexing = "sequence"  # Clean URLs like /1, /2 instead of filenames
+# 
+# [galleries.permissions]
+# public_role = "viewer"  # Limited public access
+# default_authenticated_role = "member"
 # 
 # [galleries.thumbnail]
 # width = 400
@@ -103,7 +132,7 @@ post_template = "modules/post_detail.html.liquid"
 # width = 1000
 # height = 1000
 
-# Optional: Example of a family gallery with hidden folders
+# Optional: Example of a family gallery with privacy settings
 # [[galleries]]
 # name = "family"
 # url_prefix = "/examples/family"
@@ -111,4 +140,9 @@ post_template = "modules/post_detail.html.liquid"
 # cache_directory = "cache/family"
 # images_per_page = 50
 # new_threshold_days = 7
+# copyright_holder = "The Smith Family"
+# 
+# [galleries.permissions]
+# public_role = "viewer"  # Limited public access
+# default_authenticated_role = "family"  # Family members get full access
 

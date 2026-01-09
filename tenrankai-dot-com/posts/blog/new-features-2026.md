@@ -1,7 +1,6 @@
 +++
 title = "Tenrankai's Latest Features: Enhanced Privacy, Security, and Flexibility"
 date = "2026-01-08"
-slug = "new-features-2026"
 summary = "Discover the latest features in Tenrankai including flexible image indexing, enhanced privacy controls, WebAuthn support, and more."
 +++
 

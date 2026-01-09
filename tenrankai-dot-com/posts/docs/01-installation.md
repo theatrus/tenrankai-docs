@@ -1,7 +1,7 @@
 +++
 title = "Installation Guide"
 summary = "Learn how to install and set up Tenrankai on your server"
-date = "2024-12-01"
+date = "2026-01-09"
 +++
 
 # Installation Guide

@@ -1,7 +1,7 @@
 +++
 title = "Deployment Guide"
 summary = "Production deployment strategies and best practices for Tenrankai"
-date = "2025-08-25"
+date = "2026-01-09"
 +++
 
 # Deployment Guide

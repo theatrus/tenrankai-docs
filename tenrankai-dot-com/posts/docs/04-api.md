@@ -1,7 +1,7 @@
 +++
 title = "API Documentation"
 summary = "REST API reference for integrating with Tenrankai programmatically"
-date = "2025-08-25"
+date = "2026-01-09"
 +++
 
 # API Documentation
@@ -49,7 +49,7 @@ All responses are JSON with consistent structure:
   "success": true,
   "data": { /* response data */ },
   "error": null,
-  "timestamp": "2025-08-25T22:16:48Z"
+  "timestamp": "2026-01-09T22:16:48Z"
 }
 ```
 
@@ -62,7 +62,7 @@ Error responses:
     "code": "NOT_FOUND",
     "message": "Gallery not found"
   },
-  "timestamp": "2025-08-25T22:16:48Z"
+  "timestamp": "2026-01-09T22:16:48Z"
 }
 ```
 
@@ -86,7 +86,7 @@ Get all configured galleries and their metadata.
         "description": "Main photo gallery",
         "image_count": 245,
         "folder_count": 12,
-        "last_updated": "2025-08-25T20:30:15Z"
+        "last_updated": "2026-01-09T20:30:15Z"
       }
     ]
   }
@@ -146,7 +146,7 @@ Get the contents of a gallery or folder within a gallery.
         "path": "/vacation/2025/beach",
         "image_count": 34,
         "description": "Beach photos from the trip",
-        "created": "2025-07-15T10:00:00Z"
+        "created": "2026-01-09T10:00:00Z"
       }
     ],
     "images": [
@@ -158,7 +158,7 @@ Get the contents of a gallery or folder within a gallery.
         "height": 3000,
         "size_bytes": 2048576,
         "format": "JPEG",
-        "created": "2025-07-15T18:30:22Z",
+        "created": "2026-01-09T18:30:22Z",
         "urls": {
           "original": "/gallery/vacation/2025/sunset.jpg",
           "large": "/gallery/vacation/2025/sunset.jpg?size=large",
@@ -199,8 +199,8 @@ Get metadata for a specific image.
     "size_bytes": 2048576,
     "format": "JPEG",
     "color_profile": "sRGB",
-    "created": "2025-07-15T18:30:22Z",
-    "modified": "2025-07-16T09:15:30Z",
+    "created": "2026-01-09T18:30:22Z",
+    "modified": "2026-01-09T09:15:30Z",
     "exif": {
       "camera": "Canon EOS R5",
       "lens": "RF 24-70mm f/2.8L IS USM",
@@ -405,7 +405,7 @@ Get current server configuration (requires authentication).
       }
     ],
     "version": "1.0.0",
-    "build_date": "2025-08-25T12:00:00Z"
+    "build_date": "2026-01-09T12:00:00Z"
   }
 }
 ```
@@ -428,7 +428,7 @@ Get cache status for a gallery.
     "total_cached_variants": 1225,
     "cache_size_bytes": 536870912,
     "cache_directory": "/var/cache/tenrankai/main",
-    "last_cleanup": "2025-08-25T06:00:00Z",
+    "last_cleanup": "2026-01-09T06:00:00Z",
     "pre_generation_status": {
       "enabled": true,
       "progress": {
@@ -489,7 +489,7 @@ Get recent file system events for galleries.
         "gallery": "main",
         "type": "image_added",
         "path": "/new-photos/image001.jpg",
-        "timestamp": "2025-08-25T20:30:15Z",
+        "timestamp": "2026-01-09T20:30:15Z",
         "metadata": {
           "filename": "image001.jpg",
           "size_bytes": 1048576
@@ -500,7 +500,7 @@ Get recent file system events for galleries.
         "gallery": "main", 
         "type": "folder_created",
         "path": "/new-photos",
-        "timestamp": "2025-08-25T20:29:45Z"
+        "timestamp": "2026-01-09T20:29:45Z"
       }
     ],
     "has_more": false

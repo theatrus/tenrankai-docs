@@ -7,6 +7,9 @@
     
     <section class="features-intro">
         <p>Tenrankai is packed with features designed to make hosting and managing photo galleries a breeze. Whether you're a photographer showcasing your portfolio or an organization managing multiple image collections, Tenrankai has you covered.</p>
+        <div class="feature-highlight" style="background-color: #f0f8ff; padding: 1rem; margin-top: 1rem; border-radius: 8px; border-left: 4px solid #0066cc;">
+            <p><strong>🎉 New in Latest Release:</strong> Role-based permissions, WebAuthn/Passkey support, cascading directories, and more! Check out the <a href="/docs/03-permissions-guide">Permissions Guide</a> to learn about the powerful new access control system.</p>
+        </div>
     </section>
 
     <section class="feature-category">
@@ -21,6 +24,7 @@
                 <li>Write blog posts as simple markdown files</li>
                 <li>Configuration is just a TOML file</li>
                 <li>Everything is human-readable and version-control friendly</li>
+                <li><strong>Permissions in config:</strong> Define access rules right in your TOML</li>
             </ul>
         </div>
 
@@ -61,6 +65,8 @@
                 <li>Independent source directories and cache locations</li>
                 <li>Per-gallery configuration for image quality and sizes</li>
                 <li>Custom templates for unique gallery experiences</li>
+                <li><strong>Gallery-specific permissions:</strong> Different access rules per gallery</li>
+                <li><strong>Individual copyright holders:</strong> Different watermarks per gallery</li>
             </ul>
         </div>
 
@@ -106,12 +112,13 @@
             <h4>Format Optimization</h4>
             <p>Intelligent format selection for optimal performance:</p>
             <ul>
-                <li>Full AVIF support with HDR preservation and gain maps</li>
+                <li><strong>Full AVIF support:</strong> HDR preservation and gain maps</li>
                 <li>Automatic WebP conversion for supported browsers</li>
                 <li>JPEG fallback for maximum compatibility</li>
                 <li>PNG support with transparency preservation</li>
                 <li>Configurable quality settings per format</li>
                 <li>Content negotiation based on Accept headers</li>
+                <li>Smart format selection based on browser capabilities</li>
             </ul>
         </div>
 
@@ -201,6 +208,7 @@
                 <li>Subdirectory organization</li>
                 <li>Gallery image embedding support</li>
                 <li>Automatic reload on file changes</li>
+                <li><strong>Permission-aware:</strong> Posts visibility based on user roles</li>
             </ul>
         </div>
 
@@ -212,13 +220,27 @@
                 <li>Automatic periodic refresh options</li>
                 <li>Hot-reload for development</li>
                 <li>Individual file update detection</li>
+                <li><strong>Permission-protected refresh:</strong> Only admins can trigger updates</li>
             </ul>
         </div>
     </section>
 
     <section class="feature-category">
-        <h3>🔒 Security & Protection</h3>
+        <h3>🔒 Security & Permissions</h3>
         
+        <div class="feature-detail">
+            <h4>Role-Based Access Control (RBAC)</h4>
+            <p>Fine-grained permissions system for complete control over access:</p>
+            <ul>
+                <li><strong>Three predefined roles:</strong> Viewer, Member, and Admin</li>
+                <li><strong>Gallery-specific permissions:</strong> Control access per gallery</li>
+                <li><strong>Feature permissions:</strong> Posts, user management, refresh API</li>
+                <li><strong>Flexible role assignment:</strong> Users can have different roles in different galleries</li>
+                <li><strong>Public vs authenticated access:</strong> Define what anonymous users can see</li>
+                <li><strong>Permission inheritance:</strong> Simplified management with sensible defaults</li>
+            </ul>
+        </div>
+
         <div class="feature-detail">
             <h4>Copyright Watermarking</h4>
             <p>Protect your images with intelligent watermarking:</p>
@@ -227,6 +249,7 @@
                 <li>Configurable watermark text and positioning</li>
                 <li>Applied only to medium-sized images</li>
                 <li>Preserves image quality and color profiles</li>
+                <li><strong>Per-gallery copyright holders:</strong> Different watermarks for different galleries</li>
             </ul>
         </div>
 
@@ -234,24 +257,26 @@
             <h4>Modern Authentication</h4>
             <p>Secure, user-friendly authentication system:</p>
             <ul>
-                <li>Email-based passwordless login</li>
-                <li>WebAuthn/Passkey support for biometric login</li>
-                <li>Hardware security key support (YubiKey, etc.)</li>
-                <li>Session management with secure cookies</li>
-                <li>Rate limiting protection against attacks</li>
-                <li>User management CLI tools</li>
+                <li><strong>WebAuthn/Passkey support:</strong> Biometric login on phones and computers</li>
+                <li><strong>Hardware security keys:</strong> YubiKey and FIDO2 device support</li>
+                <li><strong>Passwordless email login:</strong> Simple magic link authentication</li>
+                <li><strong>Session management:</strong> Secure cookies with configurable expiry</li>
+                <li><strong>Rate limiting:</strong> Protection against brute force attacks</li>
+                <li><strong>User management CLI:</strong> Easy user and role administration</li>
+                <li><strong>Permission-aware UI:</strong> Features automatically show/hide based on permissions</li>
             </ul>
         </div>
 
         <div class="feature-detail">
             <h4>Privacy Protection</h4>
-            <p>Control what information is visible to the public:</p>
+            <p>Control what information is visible based on permissions:</p>
             <ul>
-                <li><strong>Date Privacy:</strong> Show only month/year instead of exact timestamps</li>
-                <li><strong>Location Privacy:</strong> Hide GPS coordinates and location data from public viewers</li>
-                <li>Perfect for family galleries, travel photos, or event collections</li>
-                <li>Full details remain available to authenticated users</li>
-                <li>Per-gallery privacy settings for flexible control</li>
+                <li><strong>Date Privacy:</strong> Show only month/year to viewers without permissions</li>
+                <li><strong>Location Privacy:</strong> Hide GPS coordinates based on user roles</li>
+                <li><strong>Permission-based metadata:</strong> Full details only for authorized users</li>
+                <li><strong>Per-gallery privacy:</strong> Different privacy settings for each gallery</li>
+                <li><strong>Public access control:</strong> Configure exactly what anonymous users can see</li>
+                <li>Perfect for family galleries, client work, or event collections</li>
             </ul>
         </div>
     </section>
@@ -320,6 +345,7 @@
                 <li>Image serving with size parameters</li>
                 <li>Content refresh triggers</li>
                 <li>Health check endpoints</li>
+                <li><strong>Permission-aware API:</strong> Responses filtered by user roles</li>
             </ul>
         </div>
 

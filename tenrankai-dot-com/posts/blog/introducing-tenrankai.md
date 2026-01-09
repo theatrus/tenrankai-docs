@@ -1,7 +1,7 @@
 +++
 title = "Introducing Tenrankai - A Modern Photo Gallery Server"
 summary = "Announcing the release of Tenrankai, a high-performance web gallery server built with Rust and designed for photographers."
-date = "2025-08-01"
+date = "2026-01-09"
 +++
 
 # Introducing Tenrankai - A Modern Photo Gallery Server

@@ -1,12 +1,12 @@
 +++
 title = "Configuration Guide"
-summary = "Complete guide to configuring Tenrankai for your needs"
-date = "2024-12-02"
+summary = "Complete guide to configuring Tenrankai with role-based permissions and advanced features"
+date = "2026-01-09"
 +++
 
 # Configuration Guide
 
-Tenrankai is highly configurable, allowing you to tailor it to your specific needs. This guide covers all configuration options in detail.
+Tenrankai is highly configurable, allowing you to tailor it to your specific needs. This guide covers all configuration options including the new role-based permission system.
 
 ## Configuration File
 
@@ -37,17 +37,6 @@ cookie_secret = "change-me-in-production-use-long-random-string"
 base_url = "https://yourdomain.com"
 # Optional: Enable authentication
 # user_database = "users.toml"
-
-[templates]
-directory = "templates"  # Path to Liquid templates
-# OR multiple directories for template overrides
-# directories = ["templates-custom", "templates"]
-
-[static_files]
-# Single directory (backward compatible)
-directories = "static"
-# OR multiple directories with precedence (first overrides later)
-# directories = ["static-custom", "static"]
 ```
 
 - **name**: Display name for your gallery
@@ -62,22 +51,22 @@ The `[templates]` and `[static_files]` sections support cascading directories fo
 
 ```toml
 [templates]
-# Single directory
-directories = "templates"
+# Single directory (backward compatible)
+directory = "templates"
 
 # Or cascading directories (files in first directory override later ones)
-# directories = ["templates-custom", "templates"]
+directories = ["templates-custom", "templates"]
 
 [static_files]
-# Single directory
-directories = "static"
+# Single directory (backward compatible)
+directory = "static"
 
 # Or cascading directories for customization
-# directories = ["static-custom", "static"]
+directories = ["static-custom", "static"]
 ```
 
-- **templates.directories**: Path(s) to your Liquid template files
-- **static_files.directories**: Path(s) to static assets (CSS, JavaScript, fonts, images)
+- **templates.directory/directories**: Path(s) to your Liquid template files
+- **static_files.directory/directories**: Path(s) to static assets (CSS, JavaScript, fonts, images)
 - Files in earlier directories take precedence over files in later directories
 - Perfect for customizing themes without modifying core files
 
@@ -85,6 +74,7 @@ directories = "static"
 
 Tenrankai supports multiple independent galleries. Each gallery is configured in a `[[galleries]]` section.
 
+### Basic Gallery Settings
 
 ```toml
 [[galleries]]
@@ -98,18 +88,183 @@ pregenerate_cache = false              # Pre-generate all sizes on startup
 cache_refresh_interval_minutes = 60    # Auto-refresh interval
 jpeg_quality = 85                      # JPEG compression (1-100)
 webp_quality = 85.0                    # WebP compression (0.0-100.0)
-approximate_dates_for_public = false   # Show only month/year to non-authenticated users
-copyright_holder = "Your Name"         # Copyright watermark for medium-sized images
-hide_location_from_public = false      # Hide GPS/location data from non-authenticated users
-image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id"
-
-# User access control (optional)
-# When user_access_list is set, only listed users can view this gallery
-# user_access_list = ["admin@example.com", "family@example.com"]
+copyright_holder = "Your Name"         # Per-gallery copyright watermark (NEW)
+image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id" (NEW)
 
 # Custom templates (optional)
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
+```
+
+### Role-Based Permissions (RBAC)
+
+Tenrankai uses a role-based permission system that provides fine-grained control over gallery access.
+
+#### Understanding the Permission System
+
+The permission system is configured within each gallery's `[galleries.permissions]` section:
+
+```toml
+[galleries.permissions]
+# Role assigned to unauthenticated visitors
+public_role = "viewer"
+
+# Role assigned to authenticated users by default
+default_authenticated_role = "member"
+
+# Define custom roles with specific permissions
+[galleries.permissions.roles.viewer]
+permissions = ["can_view", "can_browse_folders", "can_see_metadata"]
+
+[galleries.permissions.roles.member]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_download_thumbnail",
+    "can_download_gallery_size"
+]
+
+# Assign specific users to custom roles
+[[galleries.permissions.user_roles]]
+email = "photographer@example.com"
+role = "admin"
+
+[[galleries.permissions.user_roles]]
+email = "client@company.com"
+role = "member"
+```
+
+#### Available Permissions
+
+- **can_view** - View images in the gallery
+- **can_browse_folders** - Browse folder structure
+- **can_see_metadata** - See basic image metadata
+- **can_see_exact_dates** - See exact capture dates (vs approximate month/year)
+- **can_see_location** - See GPS coordinates and maps
+- **can_see_technical_details** - See camera, lens, and EXIF data
+- **can_download_thumbnail** - Download thumbnail images
+- **can_download_gallery_size** - Download gallery-sized images
+- **can_download_medium** - Download medium resolution
+- **can_download_large** - Download large resolution
+- **can_download_original** - Download original files
+
+#### Permission Examples
+
+**Example 1: Public Portfolio**
+```toml
+[[galleries]]
+name = "portfolio"
+copyright_holder = "Professional Photographer Inc."
+
+[galleries.permissions]
+public_role = "viewer"
+default_authenticated_role = "viewer"
+
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_technical_details",  # Show camera info for credibility
+    "can_download_thumbnail",
+    "can_download_gallery_size"
+    # No location or exact dates for privacy
+    # No high-res downloads without permission
+]
+```
+
+**Example 2: Family Gallery with Privacy**
+```toml
+[[galleries]]
+name = "family"
+copyright_holder = "The Smith Family"
+
+[galleries.permissions]
+public_role = "limited"
+default_authenticated_role = "limited"
+
+# Public sees limited info
+[galleries.permissions.roles.limited]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    # Approximate dates only (shows "October 2026" instead of exact date)
+    "can_download_thumbnail"
+]
+
+# Family members see everything
+[galleries.permissions.roles.family_member]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_see_technical_details",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_download_large",
+    "can_download_original"
+]
+
+# Assign family members to their role
+[[galleries.permissions.user_roles]]
+email = "parent@family.com"
+role = "family_member"
+```
+
+### Folder-Level Permissions
+
+You can override gallery permissions for specific folders by creating a `_folder.md` file within that folder:
+
+**Example: Hide a folder from public view**
+
+Create `photos/private/_folder.md`:
+```markdown
++++
+title = "Private Photos"
+
+[permissions]
+# Remove all public access to this folder
+public_role = "none"
+
+# Only specific users can access
+default_authenticated_role = "family"
+
+[permissions.roles.family]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_download_original"
+]
++++
+
+These photos are only visible to family members.
+```
+
+**Example: Limited access folder**
+
+Create `photos/preview/_folder.md`:
+```markdown
++++
+title = "Client Preview"
+
+[permissions]
+public_role = "preview_only"
+
+[permissions.roles.preview_only]
+permissions = ["can_view", "can_see_metadata"]
+# No downloads or folder browsing allowed
++++
+
+Preview images for client approval.
 ```
 
 ### Image Size Configuration
@@ -145,61 +300,67 @@ max_depth = 3       # How deep to traverse folders
 max_per_folder = 2  # Max images from each folder
 ```
 
-## Multiple Gallery Example
+## Authentication Configuration
 
-Here's a complete example with multiple galleries:
+### Email Provider Configuration
+
+Tenrankai supports multiple email providers for authentication:
 
 ```toml
-# Main portfolio gallery
-[[galleries]]
-name = "portfolio"
-url_prefix = "/portfolio"
-source_directory = "/var/photos/portfolio"
-cache_directory = "cache/portfolio"
-images_per_page = 20
-jpeg_quality = 90
-webp_quality = 90.0
-pregenerate_cache = true
-copyright_holder = "My Photography Studio"
+[email]
+provider = "ses"  # Options: "ses", "null" (SMTP not yet implemented)
+from_address = "noreply@yourdomain.com"
+from_name = "Your Gallery"  # Optional
+reply_to = "support@yourdomain.com"  # Optional
 
-[galleries.thumbnail]
-width = 400
-height = 400
+# Amazon SES Configuration (for production)
+# provider = "ses"
+region = "us-east-1"  # Optional, uses AWS credential chain
+access_key_id = "your-key"  # Optional, uses AWS credential chain
+secret_access_key = "your-secret"  # Optional
 
-[galleries.gallery_size]
-width = 1000
-height = 1000
+# OR Null Provider (for development - logs emails instead of sending)
+# provider = "null"
 
-# Family photos gallery (restricted access)
-[[galleries]]
-name = "family"
-url_prefix = "/family"
-source_directory = "/var/photos/family"
-cache_directory = "cache/family"
-images_per_page = 100
-new_threshold_days = 30
-# Only family members can view this gallery
-user_access_list = ["mom@family.com", "dad@family.com", "kids@family.com"]
-approximate_dates_for_public = true  # Extra privacy
-hide_location_from_public = true     # Hide GPS coordinates from public
-image_indexing = "unique_id"         # Prevent URL guessing
-copyright_holder = "The Smith Family"
-
-# Client galleries (restricted to specific clients)
-[[galleries]]
-name = "clients"
-url_prefix = "/clients"
-source_directory = "/var/photos/clients"
-cache_directory = "cache/clients"
-images_per_page = 50
-# Each client can only see their own gallery
-user_access_list = ["client@company1.com", "contact@agency2.com"]
-copyright_holder = "Professional Photography Inc."
+# Note: SMTP provider is planned but not yet implemented
 ```
+
+### WebAuthn/Passkey Configuration
+
+WebAuthn/Passkey support is automatically enabled when authentication is configured. No separate configuration is needed:
+
+```toml
+[app]
+name = "My Photo Gallery"  # Used as the WebAuthn RP name
+base_url = "https://yourdomain.com"  # Required - hostname used as RP ID
+user_database = "users.db"  # Enables authentication and WebAuthn
+
+# That's it! WebAuthn is now enabled with:
+# - RP ID: yourdomain.com (from base_url hostname)
+# - RP Name: "My Photo Gallery" (from app.name)
+# - Origin: https://yourdomain.com (from base_url)
+```
+
+### User Management
+
+Create and manage users with the CLI:
+
+```bash
+# Add a new user
+tenrankai user add john.doe@example.com --display-name "John Doe"
+
+# List all users
+tenrankai user list
+
+# Remove a user
+tenrankai user remove john.doe@example.com
+```
+
+Users can manage their passkeys at `/_login/profile`.
 
 ## Posts Configuration
 
-Configure multiple blog/posts systems:
+Configure multiple blog/documentation systems:
 
 ```toml
 [[posts]]
@@ -218,327 +379,201 @@ name = "docs"
 source_directory = "posts/docs"
 url_prefix = "/docs"
 posts_per_page = 20
+refresh_interval_minutes = 60
 ```
 
-## Authentication Configuration
+## Advanced Features
 
-Tenrankai supports email-based authentication with optional WebAuthn/Passkey support:
+### Image Indexing Modes
 
-```toml
-[app]
-user_database = "users.toml"  # Enable authentication
+Control how images are referenced in URLs:
 
-# Optional: Configure email provider for login emails
-[email]
-from_address = "noreply@yourdomain.com"
-from_name = "Your Gallery"  # Optional
-reply_to = "support@yourdomain.com"  # Optional
-provider = "ses"  # Options: "ses" for production, "null" for development
+1. **filename** (default): `/gallery/image/vacation/IMG_1234.jpg`
+   - SEO-friendly, predictable URLs
+   - Exposes file naming patterns
 
-# Amazon SES configuration (when provider = "ses")
-# region = "us-east-1"  # Optional, defaults to AWS SDK default
-# access_key_id = "your-key"  # Optional, uses AWS credential chain
-# secret_access_key = "your-secret"  # Optional
+2. **sequence**: `/gallery/image/vacation/1`
+   - Clean, ordered URLs
+   - Good for portfolios and stories
 
-# Null provider (when provider = "null")
-# Logs emails to console instead of sending - perfect for development
-```
+3. **unique_id**: `/gallery/image/vacation/a3k2x`
+   - Maximum privacy, prevents URL guessing
+   - Best for client galleries
 
-### User Management
 
-Create and manage users with the CLI:
+### Cascading Directories
 
-```bash
-# Add a new user
-tenrankai user add john.doe@example.com --display-name "John Doe"
-
-# List all users
-tenrankai user list
-
-# Remove a user
-tenrankai user remove john.doe@example.com
-```
-
-### WebAuthn/Passkey Support
-
-When authentication is enabled, users can register passkeys for passwordless login:
-- Biometric authentication (fingerprint, face recognition)
-- Hardware security keys (YubiKey, etc.)
-- Cross-device synchronization via platform providers
-- Automatic fallback to email login when unavailable
-
-### Gallery Access Control
-
-You can restrict gallery access to specific users by adding a `user_access_list`:
-
-```toml
-[[galleries]]
-name = "family"
-url_prefix = "/family"
-source_directory = "photos/family"
-# Only these users can view this gallery
-user_access_list = ["mom@example.com", "dad@example.com", "kids@example.com"]
-
-[[galleries]]
-name = "clients"
-url_prefix = "/clients"
-source_directory = "photos/clients"
-# Different users for different galleries
-user_access_list = ["client1@company.com", "client2@agency.com"]
-```
-
-When `user_access_list` is configured:
-- Only authenticated users in the list can view the gallery
-- Non-authenticated users receive a 404 error
-- Users not in the list receive a 403 forbidden error
-- Omit the field to make a gallery public
-
-## Folder-Level Configuration
-
-In addition to gallery-wide settings, you can configure individual folders using `_folder.md` files. Place a `_folder.md` file in any gallery folder to customize that folder's behavior.
-
-### Privacy Controls
-
-Hide technical details for specific folders:
-
-```markdown
-+++
-title = "Family Vacation 2024"
-description = "Our trip to the mountains"
-hide_technical_details = true
-+++
-
-Optional markdown content shown at the top of the folder page.
-```
-
-When `hide_technical_details = true`, the following are hidden from image detail pages:
-- Image metadata (dimensions, file size, capture date, color profile)
-- Camera information (make, model, lens, aperture, ISO, shutter speed)
-- Location information (GPS coordinates, embedded maps)
-
-### Folder Access Control
-
-Restrict folder access to specific users:
-
-```markdown
-+++
-title = "Private Photos"
-require_auth = true
-allowed_users = ["user1@example.com", "user2@example.com"]
-+++
-```
-
-Options:
-- **require_auth**: Requires authentication to view the folder
-- **allowed_users**: List of email addresses allowed to view (if omitted, all authenticated users can access)
-
-### Combining Settings
-
-You can combine multiple settings:
-
-```markdown
-+++
-title = "Client Project - Wedding"
-description = "Sarah & John's Wedding - June 2024"
-require_auth = true
-allowed_users = ["sarah@example.com", "john@example.com", "photographer@studio.com"]
-hide_technical_details = true
-+++
-
-Welcome! Your wedding photos are ready for review. 
-Please let me know if you'd like any adjustments to the editing.
-```
-
-## Advanced Configuration Options
-
-### Cascading Static Directories
-
-Tenrankai supports multiple static file directories with precedence ordering. This is useful for:
-- Overriding default assets with custom versions
-- Theme customization without modifying originals
-- A/B testing different designs
-- Seasonal or event-specific customizations
+Override default assets without modifying core files:
 
 ```toml
 [static_files]
-# Files in "static-custom" override files in "static"
-directories = ["static-custom", "static"]
+# Files in first directory override later ones
+directories = ["static-custom", "static-theme", "static"]
 
-# Example structure:
-# static-custom/
-#   style.css        # Overrides default style.css
-#   logo.png         # Custom logo
-# static/
-#   style.css        # Default styles (overridden)
-#   script.js        # Used as-is (no override)
-#   logo.png         # Default logo (overridden)
+[templates]
+directories = ["templates-brand", "templates"]
 ```
 
-The asset URL filter automatically handles cache busting:
-```liquid
-<!-- In templates -->
-<link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
-<!-- Outputs: /static/style.css?v=1234567890 -->
+## Migration Guide
+
+### From Old Permission System
+
+**Old configuration:**
+```toml
+approximate_dates_for_public = true
+hide_location_from_public = true
+hide_technical_details = true  # In _folder.md
 ```
 
-### Performance Tuning
+**New configuration:**
+```toml
+[galleries.permissions]
+public_role = "viewer"
+
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata"
+    # Note: No can_see_exact_dates, can_see_location, or can_see_technical_details
+]
+```
+
+### Copyright Holder
+
+**Old:** Global in `[app]` section
+**New:** Per-gallery in each `[[galleries]]` section
 
 ```toml
 [[galleries]]
 name = "main"
-# ... other settings ...
-
-# Pre-generate all image sizes on startup
-pregenerate_cache = true
-
-# Refresh cache every 30 minutes
-cache_refresh_interval_minutes = 30
-
-# Process 4 images concurrently
-concurrent_processing = 4
+copyright_holder = "Your Name"  # Now here instead of [app]
 ```
 
-### Privacy Settings
+## Complete Example
 
-Tenrankai provides several privacy controls to protect sensitive information in your galleries:
-
-#### Date Privacy
-
-The `approximate_dates_for_public` option protects privacy by showing only approximate capture dates to non-authenticated users:
+Here's a comprehensive configuration showing all features:
 
 ```toml
-[[galleries]]
-name = "family"
-# ... other settings ...
+[server]
+host = "0.0.0.0"
+port = 8080
 
-# Show only "Month Year" to public visitors
-# Authenticated users see full date/time
-approximate_dates_for_public = true
-```
+[app]
+name = "Professional Photography"
+log_level = "info"
+cookie_secret = "use-openssl-rand-base64-32-output-here"
+base_url = "https://photos.example.com"
+user_database = "users.toml"
 
-When enabled:
-- Public visitors see: "October 2024"
-- Authenticated users see: "October 15, 2024 at 3:45 PM"
+[templates]
+directories = ["templates-custom", "templates"]
 
-#### Location Privacy
+[static_files]
+directories = ["static-custom", "static"]
 
-The `hide_location_from_public` option protects GPS coordinates and location information from non-authenticated users:
+[email]
+provider = "ses"  # Use Amazon SES for production
+from_address = "noreply@photos.example.com"
+from_name = "Photo Gallery"
+region = "us-east-1"
+# Uses AWS credential chain for authentication
 
-```toml
-[[galleries]]
-name = "travel"
-# ... other settings ...
+# WebAuthn is automatically configured based on app settings
 
-# Hide GPS coordinates from public viewers
-# Users must be logged in to see location information
-hide_location_from_public = true
-```
-
-When enabled:
-- Public visitors: Location information is completely hidden
-- Authenticated users: Full GPS coordinates, maps, and location metadata are visible
-
-#### Image Indexing Modes
-
-The `image_indexing` option controls how images are referenced in URLs, providing different levels of privacy and organization:
-
-```toml
+# Public portfolio
 [[galleries]]
 name = "portfolio"
-# ... other settings ...
+url_prefix = "/"
+source_directory = "/srv/photos/portfolio"
+cache_directory = "/srv/cache/portfolio"
+copyright_holder = "Jane Photographer"
+image_indexing = "sequence"
+pregenerate_cache = true
 
-# Choose URL format: "filename" (default), "sequence", or "unique_id"
-image_indexing = "unique_id"
+[galleries.permissions]
+public_role = "viewer"
+default_authenticated_role = "viewer"
+
+[galleries.permissions.roles.viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_technical_details",
+    "can_download_thumbnail",
+    "can_download_gallery_size"
+]
+
+# Client gallery with restricted access
+[[galleries]]
+name = "clients"
+url_prefix = "/clients"
+source_directory = "/srv/photos/clients"
+cache_directory = "/srv/cache/clients"
+copyright_holder = "Studio Name"
+image_indexing = "unique_id"  # Privacy
+
+[galleries.permissions]
+public_role = "preview"
+default_authenticated_role = "preview"
+
+# Very limited public access
+[galleries.permissions.roles.preview]
+permissions = ["can_view"]
+
+# Client role with download rights
+[galleries.permissions.roles.client]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_download_original"
+]
+
+# Assign specific clients
+[[galleries.permissions.user_roles]]
+email = "client@company.com"
+role = "client"
+
+# Note: Folder-specific permissions are configured via _folder.md files
+# within the gallery directories, not in config.toml
 ```
 
-**Available modes:**
-
-1. **filename** (default): Traditional URLs exposing actual filenames
-   - Example: `/gallery/image/vacation/IMG_1234.jpg`
-   - Best for: Public galleries where filenames don't contain sensitive information
-   - Pros: SEO-friendly, predictable URLs
-   - Cons: Exposes file naming patterns, allows enumeration
-
-2. **sequence**: URLs use sequential numbers within each folder
-   - Example: `/gallery/image/vacation/1`, `/gallery/image/vacation/2`
-   - Best for: Organized collections where order matters
-   - Pros: Clean URLs, easy navigation
-   - Cons: Still allows enumeration, order may change if files are added/removed
-
-3. **unique_id**: URLs use short base36 identifiers
-   - Example: `/gallery/image/vacation/a3k2x`, `/gallery/image/vacation/b7n9p`
-   - Best for: Maximum privacy, preventing URL guessing
-   - Pros: Cannot enumerate images, hides file organization
-   - Cons: URLs are not human-readable, harder to share specific images verbally
-
-**Choosing the Right Mode:**
-- Use `filename` for public portfolios and marketing galleries
-- Use `sequence` for ordered collections like tutorials or stories
-- Use `unique_id` for private galleries, client work, or sensitive collections
-
-#### Privacy Use Cases
-
-These privacy controls are useful for:
-- **Family photo galleries**: Hide exact timestamps and locations that reveal personal schedules and home addresses
-- **Travel galleries**: Share beautiful photos while keeping specific locations private until visitors authenticate
-- **Event galleries**: Show the month/event but not specific dates or venues
-- **Portfolio galleries**: Protect client locations and session details
-
-### Hidden Folders
-
-Create a `_folder.md` file in any gallery folder with TOML frontmatter:
-
-```markdown
-+++
-hidden = true
-title = "Private Collection"
-+++
-
-This folder won't appear in listings but can be accessed directly.
-```
-
-## Environment Variables
-
-Some settings can be overridden using environment variables:
-
-```bash
-# Override log level
-RUST_LOG=debug tenrankai
-
-# Override server settings
-TENRANKAI_HOST=0.0.0.0 TENRANKAI_PORT=8080 tenrankai
-```
-
-## Configuration Best Practices
+## Best Practices
 
 1. **Security**:
-   - Always change default passwords and secrets
-   - Use strong, random values for production
-   - Keep config files secure (chmod 600)
+   - Use strong, random cookie secrets
+   - Enable HTTPS in production
+   - Use `unique_id` indexing for sensitive galleries
+   - Carefully consider each permission
 
-2. **Performance**:
-   - Enable `pregenerate_cache` for galleries with stable content
-   - Adjust `images_per_page` based on your needs
+2. **Privacy**:
+   - Omit `can_see_exact_dates` for public family photos
+   - Omit `can_see_location` to protect home addresses
+   - Use folder-level permissions to hide sensitive content
+
+3. **Performance**:
+   - Enable `pregenerate_cache` for stable galleries
    - Use appropriate JPEG/WebP quality settings
+   - Set appropriate cache refresh intervals
 
-3. **Organization**:
-   - Use meaningful gallery names
-   - Keep source and cache directories organized
-   - Use consistent URL prefixes
+4. **User Experience**:
+   - Enable WebAuthn for easy passwordless login
+   - Use role inheritance to avoid repetition
+   - Provide appropriate download sizes for each audience
 
-4. **Maintenance**:
-   - Regular cache refresh intervals for dynamic galleries
-   - Monitor disk usage in cache directories
-   - Keep backups of your configuration
+## Troubleshooting
 
-## Validation
+Common issues:
 
-Tenrankai validates configuration on startup. Common errors:
-
-- **Missing directories**: Source directories must exist
-- **Invalid URL prefixes**: Must start with `/`
-- **Duplicate names**: Gallery and post names must be unique
-- **Invalid quality values**: JPEG (1-100), WebP (0.0-100.0)
+- **"Permission denied" errors**: Check role assignments and inheritance
+- **Missing images**: Verify folder permissions allow `can_view`
+- **Dates showing incorrectly**: Check `can_see_exact_dates` permission
+- **Downloads failing**: Ensure appropriate download permissions are set
 
 ## Next Steps
 

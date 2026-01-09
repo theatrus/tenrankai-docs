@@ -95,7 +95,7 @@ Create markdown files in `posts/docs/` with TOML frontmatter:
 +++
 title = "Your Guide Title"
 summary = "Brief description"
-date = "2024-12-15"
+date = "2026-01-09"
 +++
 
 # Your Guide Title
@@ -109,7 +109,7 @@ Similar to docs, but in `posts/blog/`:
 +++
 title = "Announcing Feature X"
 summary = "We've added amazing new capabilities"
-date = "2024-12-15"
+date = "2026-01-09"
 +++
 
 Content here...
