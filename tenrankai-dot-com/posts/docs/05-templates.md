@@ -50,6 +50,48 @@ Contains shared template fragments:
 - `_gallery_preview.html.liquid` - Gallery thumbnail preview
 - `_user_menu.html.liquid` - User authentication menu
 
+## JavaScript Bundle
+
+Tenrankai includes a unified JavaScript bundle (`dist/tenrankai.js`) that provides all interactive functionality. This bundle is automatically loaded in the `_header.html.liquid` partial template.
+
+### Included Features
+
+The bundle provides:
+
+- **Theme Management**
+  - Automatic dark/light mode switching
+  - System preference detection
+  - Persistent theme storage
+
+- **Gallery Enhancements**
+  - Image lazy loading for performance
+  - Smooth transitions between images
+  - Keyboard navigation (arrow keys)
+  - Touch gestures on mobile
+
+- **Authentication Features**
+  - WebAuthn/Passkey support
+  - Secure login flows
+  - Session management
+  - User menu interactions
+
+- **UI Components**
+  - Toast notifications for user feedback
+  - Form validation and enhancement
+  - Responsive menu toggles
+  - Loading indicators
+
+### Using the Bundle
+
+The bundle is loaded automatically:
+
+```liquid
+<!-- In _header.html.liquid -->
+<script src="{{ 'dist/tenrankai.js' | asset_url }}" defer></script>
+```
+
+No additional JavaScript files are needed for standard functionality.
+
 ## Available Variables
 
 ### Global Variables
