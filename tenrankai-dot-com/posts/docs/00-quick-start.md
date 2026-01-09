@@ -46,16 +46,20 @@ images_per_page = 50
 copyright_holder = "Your Name"
 
 # Simple permissions for a public gallery
-[[galleries.roles]]
-name = "public"
+[galleries.permissions]
+public_role = "viewer"
+
+[galleries.permissions.roles.viewer]
 permissions = [
     "can_view",
-    "can_browse_folders",
+    "can_browse_folders", 
     "can_see_metadata",
     "can_see_exact_dates",
     "can_see_location",
+    "can_see_technical_details",
     "can_download_thumbnail",
-    "can_download_gallery_size"
+    "can_download_gallery_size",
+    "can_use_zoom"          # Enable zoom for exploring images
 ]
 ```
 
@@ -127,8 +131,7 @@ Photos from our amazing trip to the coast. Perfect weather and great memories!
 Want to hide dates and locations from public viewers? Easy:
 
 ```toml
-[[galleries.roles]]
-name = "public"
+[galleries.permissions.roles.viewer]
 permissions = [
     "can_view",
     "can_browse_folders",
@@ -136,7 +139,8 @@ permissions = [
     # Remove these lines to hide dates/location:
     # "can_see_exact_dates",  # Shows only month/year when removed
     # "can_see_location",     # Hides GPS data when removed
-    "can_download_thumbnail"
+    "can_download_thumbnail",
+    "can_use_zoom"           # Keep zoom for better viewing
 ]
 ```
 

@@ -139,17 +139,35 @@ role = "member"
 
 #### Available Permissions
 
+**Viewing Permissions:**
 - **can_view** - View images in the gallery
 - **can_browse_folders** - Browse folder structure
 - **can_see_metadata** - See basic image metadata
 - **can_see_exact_dates** - See exact capture dates (vs approximate month/year)
 - **can_see_location** - See GPS coordinates and maps
 - **can_see_technical_details** - See camera, lens, and EXIF data
+
+**Download Permissions:**
 - **can_download_thumbnail** - Download thumbnail images
 - **can_download_gallery_size** - Download gallery-sized images
 - **can_download_medium** - Download medium resolution
 - **can_download_large** - Download large resolution
 - **can_download_original** - Download original files
+
+**Interactive Permissions:**
+- **can_use_zoom** - Use zoom functionality for detailed viewing
+- **can_read_metadata** - Read user-generated content (comments, picks, tags)
+
+**Content Management:**
+- **can_add_comments** - Add comments to images
+- **can_edit_own_comments** - Edit your own comments
+- **can_delete_own_comments** - Delete your own comments
+- **can_set_picks** - Mark images as picks/favorites
+- **can_add_tags** - Add tags to images
+
+**Moderation:**
+- **can_edit_any_comments** - Edit any user's comments (admin)
+- **can_delete_any_comments** - Delete any user's comments (admin)
 
 #### Permission Examples
 
@@ -170,7 +188,8 @@ permissions = [
     "can_see_metadata",
     "can_see_technical_details",  # Show camera info for credibility
     "can_download_thumbnail",
-    "can_download_gallery_size"
+    "can_download_gallery_size",
+    "can_use_zoom"               # Allow detailed image viewing
     # No location or exact dates for privacy
     # No high-res downloads without permission
 ]
@@ -209,7 +228,14 @@ permissions = [
     "can_download_gallery_size",
     "can_download_medium",
     "can_download_large",
-    "can_download_original"
+    "can_download_original",
+    "can_use_zoom",
+    "can_read_metadata",
+    "can_add_comments",
+    "can_edit_own_comments",
+    "can_delete_own_comments",
+    "can_set_picks",
+    "can_add_tags"
 ]
 
 # Assign family members to their role
@@ -502,7 +528,8 @@ permissions = [
     "can_see_metadata",
     "can_see_technical_details",
     "can_download_thumbnail",
-    "can_download_gallery_size"
+    "can_download_gallery_size",
+    "can_use_zoom"
 ]
 
 # Client gallery with restricted access
@@ -531,7 +558,10 @@ permissions = [
     "can_download_thumbnail",
     "can_download_gallery_size",
     "can_download_medium",
-    "can_download_original"
+    "can_download_original",
+    "can_use_zoom",
+    "can_read_metadata",    # See comments and feedback
+    "can_add_comments"      # Leave feedback on images
 ]
 
 # Assign specific clients

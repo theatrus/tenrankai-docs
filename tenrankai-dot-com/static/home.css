@@ -145,6 +145,23 @@
     color: var(--text-primary);
 }
 
+/* New Feature Highlight */
+.new-feature {
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.new-feature-highlight {
+    border: 2px solid var(--link-color);
+    background-color: rgba(0, 102, 204, 0.05);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .hero-section h1 {

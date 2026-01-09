@@ -31,10 +31,26 @@ webp_quality = 80.0
 copyright_holder = "Tenrankai Project"
 image_indexing = "filename"
 
-# Simple dev permissions - everything visible
+# Simple dev permissions - show most features for testing
 [galleries.permissions]
-public_role = "viewer"
-default_authenticated_role = "member"
+public_role = "dev_viewer"
+default_authenticated_role = "dev_viewer"
+
+# Development viewer role with most features enabled for testing
+[galleries.permissions.roles.dev_viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_see_technical_details",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_read_metadata",      # NEW: Enable metadata reading
+    "can_use_zoom"           # NEW: Enable zoom functionality
+]
 
 # Minimal documentation
 [[posts]]

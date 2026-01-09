@@ -40,8 +40,25 @@ image_detail_template = "modules/image_detail.html.liquid"
 # NEW: Role-based permissions (replaces old hide_location_from_public, approximate_dates_for_public, etc.)
 [galleries.permissions]
 # For this demo gallery, we'll show everything to the public
-public_role = "full_access"
-default_authenticated_role = "full_access"
+public_role = "demo_viewer"
+default_authenticated_role = "demo_viewer"
+
+# Define a custom role that shows all features for the demo
+[galleries.permissions.roles.demo_viewer]
+permissions = [
+    "can_view",
+    "can_browse_folders",
+    "can_see_metadata",
+    "can_see_exact_dates",
+    "can_see_location",
+    "can_see_technical_details",
+    "can_download_thumbnail",
+    "can_download_gallery_size",
+    "can_download_medium",
+    "can_download_large",
+    "can_read_metadata",      # NEW: Enable metadata reading for comments, picks, tags
+    "can_use_zoom"           # NEW: Enable zoom functionality
+]
 
 # Image size configurations
 [galleries.thumbnail]

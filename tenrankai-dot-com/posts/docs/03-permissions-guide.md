@@ -74,6 +74,21 @@ role = "member"
 - **`can_download_large`** - Download large resolution images
 - **`can_download_original`** - Access original, unmodified files
 
+#### Interactive Permissions
+- **`can_use_zoom`** - Use zoom functionality to view images in detail
+- **`can_read_metadata`** - Read user-generated content (comments, picks, tags)
+
+#### Content Management Permissions
+- **`can_add_comments`** - Add comments to images
+- **`can_edit_own_comments`** - Edit your own comments
+- **`can_delete_own_comments`** - Delete your own comments
+- **`can_set_picks`** - Mark images as picks/favorites
+- **`can_add_tags`** - Add tags to images
+
+#### Moderation Permissions
+- **`can_edit_any_comments`** - Edit any user's comments
+- **`can_delete_any_comments`** - Delete any user's comments
+
 ## Common Permission Patterns
 
 ### Public Portfolio
@@ -136,7 +151,12 @@ permissions = [
     "can_download_gallery_size",
     "can_download_medium",
     "can_download_large",
-    "can_download_original"
+    "can_download_original",
+    "can_use_zoom",             # Zoom for detailed viewing
+    "can_read_metadata",        # Read comments and tags
+    "can_add_comments",         # Comment on family photos
+    "can_set_picks",            # Mark favorite photos
+    "can_add_tags"              # Tag family members
 ]
 
 # Assign family members
