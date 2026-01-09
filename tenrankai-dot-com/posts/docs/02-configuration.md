@@ -6,7 +6,7 @@ date = "2026-01-09"
 
 # Configuration Guide
 
-Tenrankai is highly configurable, allowing you to tailor it to your specific needs. This guide covers all configuration options including the new role-based permission system.
+Tenrankai is highly configurable, allowing you to tailor it to your specific needs. This guide covers all configuration options including role-based permissions, metadata storage, image protection features, and more.
 
 ## Configuration File
 
@@ -89,7 +89,7 @@ cache_refresh_interval_minutes = 60    # Auto-refresh interval
 jpeg_quality = 85                      # JPEG compression (1-100)
 webp_quality = 85.0                    # WebP compression (0.0-100.0)
 copyright_holder = "Your Name"         # Per-gallery copyright watermark (NEW)
-image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id" (NEW)
+image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id"
 
 # Custom templates (optional)
 gallery_template = "modules/gallery.html.liquid"
@@ -153,7 +153,7 @@ roles = ["member"]
 Note: Thumbnail and gallery size downloads are automatically included with the `can_view` permission.
 
 **Interactive Permissions:**
-- **can_use_zoom** - Use zoom functionality for detailed viewing
+- **can_use_zoom** - Use click-to-zoom loupe functionality (2x magnification)
 - **can_read_metadata** - Read user-generated content (comments, picks, tags)
 
 **Content Management:**
@@ -238,6 +238,43 @@ permissions = {
 username = "parent"
 roles = ["family_member"]
 ```
+
+### Metadata Storage System
+
+When users have appropriate permissions, they can add metadata (comments, picks, highlights, tags) to images. This metadata is stored in `.toml` sidecar files alongside the images:
+
+```toml
+# Example: IMG_1234.jpg.toml (created automatically)
+[picks]
+"user@example.com" = true
+
+[highlights]
+"user@example.com" = true
+
+[tags]
+"user@example.com" = ["sunset", "landscape", "california"]
+
+[[comments]]
+user = "user@example.com"
+comment = "Beautiful sunset!"
+timestamp = "2026-01-09T10:30:00Z"
+```
+
+The gallery view shows badges for images with metadata:
+- ✓ (checkmark) - Image marked as pick
+- ⭐ (star) - Image highlighted
+- 💬 (speech bubble) - Has comments
+- 🏷️ (tag) - Has tags
+
+### Gallery Filter Bar
+
+Users with `can_read_metadata` permission can filter galleries by metadata type:
+- Picks (✓) - Show only images marked as picks
+- Rejects (✗) - Show images marked as rejects
+- Highlights (⭐) - Show highlighted images
+- Comments (💬) - Show images with comments
+
+Filter selections persist in the URL for easy sharing: `/gallery?filter=picks,comments`
 
 ### Folder-Level Permissions
 
@@ -373,11 +410,17 @@ tenrankai user add john.doe@example.com --display-name "John Doe"
 # List all users
 tenrankai user list
 
+# Update user display name
+tenrankai user update john.doe@example.com --display-name "John Smith"
+
 # Remove a user
 tenrankai user remove john.doe@example.com
 ```
 
-Users can manage their passkeys at `/_login/profile`.
+Users can:
+- Manage their passkeys at `/_login/profile`
+- Add multiple passkeys for different devices
+- Use passwordless WebAuthn authentication
 
 ## Posts Configuration
 
@@ -405,6 +448,44 @@ refresh_interval_minutes = 60
 
 ## Advanced Features
 
+### Enhanced Metadata Sources
+
+Tenrankai reads metadata from multiple sources with the following priority:
+
+1. **Markdown files** (`IMAGE.jpg.md` or `IMAGE.md`)
+   ```markdown
+   +++
+   title = "Sunset at Big Sur"
+   description = "Golden hour magic"
+   tags = ["sunset", "landscape"]
+   
+   # Astronomy-specific fields
+   telescope = "Celestron NexStar 8SE"
+   mount = "EQ6-R Pro"
+   filters = "Ha, OIII, SII"
+   total_exposure_hours = 12.5
+   ra = "05:34:31.94"
+   dec = "+22:00:52.2"
+   additional_details = "7nm narrowband filters, Bortle 3 site"
+   +++
+   
+   Extended description in markdown format...
+   ```
+
+2. **XMP sidecar files** (`IMAGE.jpg.xmp`)
+   - Automatically parsed for standard metadata
+   - Supports Adobe Lightroom and other XMP-compatible tools
+
+3. **EXIF data** (embedded in image)
+   - Camera settings, GPS, timestamps
+   - Lowest priority, can be overridden
+
+This allows you to:
+- Override incorrect EXIF data
+- Add rich descriptions and context
+- Support specialized workflows (e.g., astrophotography)
+- Maintain metadata separate from image files
+
 ### Image Indexing Modes
 
 Control how images are referenced in URLs:
@@ -420,6 +501,35 @@ Control how images are referenced in URLs:
 3. **unique_id**: `/gallery/image/vacation/a3k2x`
    - Maximum privacy, prevents URL guessing
    - Best for client galleries
+
+### Click-to-Zoom Loupe
+
+When users have the `can_use_zoom` permission, they can click and hold on any image to activate a 2x magnification loupe:
+
+- **Activation**: Click and hold on the image
+- **Magnification**: 2x zoom centered on cursor position
+- **Visual Feedback**: Custom cursor indicates zoom availability
+- **Image Protection**: Uses CSS background-image to prevent easy right-click saving
+- **Performance**: Smooth animations and high-quality rendering
+
+### Hide Technical Details
+
+Control visibility of camera and technical information per folder:
+
+```markdown
+# In _folder.md
++++
+title = "Client Portfolio"
+hide_technical_details = true  # Hides camera, lens, EXIF data
++++
+```
+
+When enabled:
+- Removes camera make/model, lens information
+- Hides technical settings (ISO, aperture, shutter speed)
+- Removes GPS coordinates
+- Keeps title, description, and navigation
+- Perfect for professional portfolios
 
 
 ### Cascading Directories
@@ -574,16 +684,20 @@ roles = ["client"]
    - Omit `can_see_exact_dates` for public family photos
    - Omit `can_see_location` to protect home addresses
    - Use folder-level permissions to hide sensitive content
+   - Enable `hide_technical_details` for client portfolios
 
 3. **Performance**:
    - Enable `pregenerate_cache` for stable galleries
    - Use appropriate JPEG/WebP quality settings
    - Set appropriate cache refresh intervals
+   - React frontend builds automatically, no configuration needed
 
 4. **User Experience**:
    - Enable WebAuthn for easy passwordless login
    - Use role inheritance to avoid repetition
    - Provide appropriate download sizes for each audience
+   - Enable `can_use_zoom` for detailed image exploration
+   - Use metadata features for collaborative workflows
 
 ## Troubleshooting
 

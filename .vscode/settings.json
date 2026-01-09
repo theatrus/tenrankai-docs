@@ -1,0 +1,10 @@
+{
+    "go.goroot": "/Users/atrus/.local/share/mise/installs/go/1.24.2",
+    "debug.javascript.defaultRuntimeExecutable": {
+        "pwa-node": "/Users/atrus/.local/share/mise/shims/node"
+    },
+    "python.defaultInterpreterPath": "/Users/atrus/.local/share/mise/installs/awscli/2.26.1/aws-cli.pkg/Payload/aws-cli/python",
+    "go.alternateTools": {
+        "go": "/Users/atrus/.local/share/mise/shims/go"
+    }
+}

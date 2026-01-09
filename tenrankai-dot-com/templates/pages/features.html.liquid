@@ -8,7 +8,7 @@
     <section class="features-intro">
         <p>Tenrankai is packed with features designed to make hosting and managing photo galleries a breeze. Whether you're a photographer showcasing your portfolio or an organization managing multiple image collections, Tenrankai has you covered.</p>
         <div class="feature-highlight" style="background-color: #f0f8ff; padding: 1rem; margin-top: 1rem; border-radius: 8px; border-left: 4px solid #0066cc;">
-            <p><strong>🎉 New in Latest Release:</strong> Role-based permissions, WebAuthn/Passkey support, cascading directories, and more! Check out the <a href="/docs/03-permissions-guide">Permissions Guide</a> to learn about the powerful new access control system.</p>
+            <p><strong>🎉 New in Latest Release:</strong> Enhanced metadata system with XMP support, gallery filters, click-to-zoom loupe, React frontend, flexible image indexing, and much more! Tenrankai now supports professional photography workflows with user comments, picks, and tags.</p>
         </div>
     </section>
 
@@ -78,6 +78,8 @@
                 <li>Smooth animations and transitions</li>
                 <li>Touch-friendly navigation on mobile devices</li>
                 <li>Optimized for both portrait and landscape orientations</li>
+                <li><strong>Metadata badges:</strong> ✓ (picks), ★ (highlights), 💬 (comments)</li>
+                <li><strong>Filter bar:</strong> Persistent URL-based filtering</li>
             </ul>
         </div>
 
@@ -134,14 +136,15 @@
         </div>
 
         <div class="feature-detail">
-            <h4>Metadata Extraction</h4>
-            <p>Comprehensive EXIF data parsing:</p>
+            <h4>Enhanced Metadata System</h4>
+            <p>Multi-source metadata with priority cascade:</p>
             <ul>
-                <li>Camera make, model, and settings</li>
-                <li>GPS coordinates and location data</li>
-                <li>Capture date and time</li>
-                <li>Lens information and focal length</li>
-                <li>ISO, aperture, and shutter speed</li>
+                <li><strong>Markdown frontmatter:</strong> Override any metadata with TOML</li>
+                <li><strong>XMP sidecar files:</strong> Adobe Lightroom compatible</li>
+                <li><strong>EXIF extraction:</strong> Camera, lens, GPS, settings</li>
+                <li><strong>Astronomy support:</strong> Telescope, mount, exposure hours</li>
+                <li><strong>Custom fields:</strong> Tags, descriptions, additional details</li>
+                <li><strong>Priority order:</strong> Markdown > XMP > EXIF</li>
             </ul>
         </div>
     </section>
@@ -228,12 +231,13 @@
             <h4>🎉 Interactive Features <span class="new-feature">NEW</span></h4>
             <p>Enhanced user interaction capabilities:</p>
             <ul>
-                <li><strong>Image Zoom:</strong> Deep zoom functionality for detailed image exploration</li>
-                <li><strong>User Metadata:</strong> Comments, picks, and tags on images</li>
-                <li><strong>Permission-based interaction:</strong> Control who can zoom and read metadata</li>
-                <li><strong>Collaborative galleries:</strong> Multiple users can comment and organize</li>
-                <li><strong>Pick marking:</strong> Mark favorite images for easy filtering</li>
-                <li><strong>Tag system:</strong> Organize images with custom tags</li>
+                <li><strong>Click-to-Zoom Loupe:</strong> 2x magnification with click-and-hold</li>
+                <li><strong>User Metadata Storage:</strong> Comments, picks, highlights, tags in .toml sidecars</li>
+                <li><strong>Gallery Filters:</strong> Filter by picks, rejects, highlights, comments</li>
+                <li><strong>Permission-based interaction:</strong> Fine-grained control over features</li>
+                <li><strong>Collaborative workflows:</strong> Multiple users can comment and organize</li>
+                <li><strong>React Frontend:</strong> Modern SPA with swipe navigation on mobile</li>
+                <li><strong>Image Protection:</strong> Harder to save images via right-click</li>
             </ul>
         </div>
     </section>
@@ -284,14 +288,15 @@
 
         <div class="feature-detail">
             <h4>Privacy Protection</h4>
-            <p>Control what information is visible based on permissions:</p>
+            <p>Multiple layers of privacy control:</p>
             <ul>
                 <li><strong>Date Privacy:</strong> Show only month/year to viewers without permissions</li>
                 <li><strong>Location Privacy:</strong> Hide GPS coordinates based on user roles</li>
-                <li><strong>Permission-based metadata:</strong> Full details only for authorized users</li>
-                <li><strong>Per-gallery privacy:</strong> Different privacy settings for each gallery</li>
-                <li><strong>Public access control:</strong> Configure exactly what anonymous users can see</li>
-                <li>Perfect for family galleries, client work, or event collections</li>
+                <li><strong>Technical Details:</strong> Hide camera/lens info per folder</li>
+                <li><strong>URL Privacy:</strong> Three indexing modes (filename, sequence, unique_id)</li>
+                <li><strong>Non-guessable URLs:</strong> 6-character base36 IDs prevent enumeration</li>
+                <li><strong>Per-gallery privacy:</strong> Different settings for each gallery</li>
+                <li><strong>Folder-level control:</strong> Override gallery settings per folder</li>
             </ul>
         </div>
     </section>
@@ -361,6 +366,8 @@
                 <li>Content refresh triggers</li>
                 <li>Health check endpoints</li>
                 <li><strong>Permission-aware API:</strong> Responses filtered by user roles</li>
+                <li><strong>User metadata API:</strong> Comment and pick management</li>
+                <li><strong>Filter API:</strong> Query parameters for metadata filtering</li>
             </ul>
         </div>
 
@@ -372,6 +379,18 @@
                 <li>HTTP access logs with latency tracking</li>
                 <li>Error tracking and reporting</li>
                 <li>Performance metrics</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>CLI Tools</h4>
+            <p>Powerful command-line utilities:</p>
+            <ul>
+                <li><strong>User management:</strong> add, list, update, remove users</li>
+                <li><strong>AVIF debugging:</strong> Analyze AVIF metadata and color properties</li>
+                <li><strong>Server control:</strong> Auto-shutdown for testing</li>
+                <li><strong>Configuration:</strong> Override settings via CLI flags</li>
+                <li><strong>Consistent help:</strong> Improved command documentation</li>
             </ul>
         </div>
     </section>

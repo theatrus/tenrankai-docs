@@ -14,6 +14,7 @@ Before installing Tenrankai, ensure you have the following:
 
 - **Rust 1.89.0 or later** - The project includes a `rust-toolchain.toml` file that will automatically download the correct version
 - **Git** - For cloning the repository
+- **Node.js and npm** - Required for building the React frontend
 - **DejaVuSans.ttf font file** - Required for copyright watermarking (place in the `static` directory)
 
 ## Installation Methods
@@ -33,6 +34,7 @@ Before installing Tenrankai, ensure you have the following:
    
    The build process will:
    - Download Rust 1.89.0 if not already installed (via rust-toolchain.toml)
+   - Install npm dependencies and build the React frontend automatically
    - Compile all dependencies
    - Create an optimized binary in `target/release/tenrankai`
 
@@ -131,6 +133,9 @@ tenrankai --log-level debug
 
 # Auto-shutdown after testing
 tenrankai --quit-after 10
+
+# Debug AVIF metadata
+tenrankai avif-debug /path/to/image.avif
 ```
 
 ### Running as a Service
@@ -235,5 +240,13 @@ CMD ["tenrankai"]
 
 **Port already in use:**
 - Change the port in config.toml or use `--port` flag
+
+**Build failed with npm error:**
+- Ensure Node.js is installed
+- Try running `cd ui && npm install` manually
+
+**No images displayed:**
+- Ensure your photos directory contains supported formats (JPEG, PNG, WebP, AVIF)
+- Check file permissions on the source directory
 
 For more help, visit our [GitHub Issues](https://github.com/theatrus/tenrankai/issues) page.
