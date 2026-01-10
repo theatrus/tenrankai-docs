@@ -225,6 +225,12 @@ permissions = {
 }
 ```
 
+Users can now:
+- Leave comments on specific areas of images
+- Mark favorites with picks (✓)
+- Add tags for organization
+- See visual indicators in the gallery view
+
 ### Enable Debug Logging
 
 ```bash

@@ -6,7 +6,7 @@ date = "2026-01-09"
 
 # Tenrankai 2026 Update: Professional Photography Workflows
 
-We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 15 major new features focused on collaboration, metadata management, and privacy control.
+We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 16 major new features focused on collaboration, metadata management, and privacy control, including the highly requested area-specific commenting capability.
 
 ## Enhanced Metadata System
 
@@ -39,6 +39,25 @@ The new filter bar allows users to quickly filter galleries by metadata type:
 - Filter by tags
 
 Filter selections persist in the URL, making it easy to share specific views with clients or team members.
+
+## Area-Specific Comments
+
+One of the most requested features is now here - the ability to comment on specific areas of images:
+
+### Visual Area Selection
+- **Click and drag** to select rectangular areas when adding comments
+- **Touch support** for mobile devices and tablets
+- **Edit capabilities** - add, change, or remove areas when editing comments
+- **Visual previews** show highlighted areas in comment threads
+
+### Professional Use Cases
+- **Client feedback**: "Please brighten this corner" with exact area selection
+- **Quality control**: Mark dust spots or areas needing retouching
+- **Photo critique**: Highlight composition elements or technical issues
+- **Collaborative editing**: Discuss specific details without ambiguity
+- **Education**: Point out examples of good technique or areas for improvement
+
+The area data is stored as percentage-based coordinates, ensuring responsive display across all devices.
 
 ## Click-to-Zoom Loupe
 

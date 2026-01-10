@@ -258,6 +258,17 @@ When users have appropriate permissions, they can add metadata (comments, picks,
 user = "user@example.com"
 comment = "Beautiful sunset!"
 timestamp = "2026-01-09T10:30:00Z"
+
+# Comments can include area selections
+[[comments]]
+user = "photographer@example.com"
+comment = "Great detail in the clouds here"
+timestamp = "2026-01-09T11:45:00Z"
+[comments.image_area]
+x = 25.5      # Percentage from left
+y = 10.2      # Percentage from top
+width = 30.0  # Percentage width
+height = 25.0 # Percentage height
 ```
 
 The gallery view shows badges for images with metadata:
@@ -265,6 +276,22 @@ The gallery view shows badges for images with metadata:
 - ⭐ (star) - Image highlighted
 - 💬 (speech bubble) - Has comments
 - 🏷️ (tag) - Has tags
+
+### Image Area Comments
+
+Users can now select specific areas of an image when adding comments:
+
+- **Visual Selection**: Click and drag to select rectangular areas
+- **Touch Support**: Works on mobile devices with touch gestures
+- **Edit Support**: Areas can be added, changed, or removed when editing comments
+- **Visual Feedback**: Selected areas are highlighted when viewing comments
+- **Percentage-Based**: Areas use percentage coordinates for responsive display
+
+This feature is perfect for:
+- **Client Feedback**: Point out specific details needing adjustment
+- **Collaborative Review**: Discuss particular elements in an image
+- **Education**: Highlight technical aspects or composition elements
+- **Quality Control**: Mark areas with issues or exceptional quality
 
 ### Gallery Filter Bar
 
