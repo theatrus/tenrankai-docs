@@ -59,22 +59,24 @@ One of the most requested features is now here - the ability to comment on speci
 
 The area data is stored as percentage-based coordinates, ensuring responsive display across all devices.
 
-## Two-Level Zoom System
+## Platform-Optimized Zoom
 
-Professional photographers can examine fine details with two zoom levels:
+Tenrankai now offers the best zoom experience for each platform:
 
-### Basic Zoom (`can_use_zoom`)
+### Desktop: Click-to-Zoom Loupe
+- **Click and hold** to activate magnifying loupe
 - **1.8x magnification** using medium-sized image
-- **Quick to load** - works immediately on any image
-- **Click-and-hold** activation with smooth animations
+- **Tile-based option** (`can_use_tile_zoom`) for full resolution
 
-### Tile-Based Zoom (`can_use_tile_zoom`)
-- **Full resolution** using high-res tiles
-- **Perfect for detailed inspection** of large images
-- **Pre-generate tiles** for instant loading
-- **Permission-controlled** separately from basic zoom
+### Mobile: Pinch-to-Zoom
+- **Native pinch gesture** to zoom in/out smoothly
+- **Double-tap** to quick zoom at tap location
+- **Pan gesture** to navigate around zoomed image
+- **Fullscreen modal** with zoom level percentage indicator
+- **Automatic tile loading** when zoom exceeds 1.5x
+- **Smart navigation** - swipe disabled while zoomed to prevent accidents
 
-Both zoom modes include image protection features that make saving images harder.
+Both platforms include image protection features and smooth animations.
 
 ## Flexible Image Indexing
 

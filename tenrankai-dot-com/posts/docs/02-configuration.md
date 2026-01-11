@@ -541,26 +541,30 @@ Control how images are referenced in URLs:
    - Maximum privacy, prevents URL guessing
    - Best for client galleries
 
-### Click-to-Zoom Loupe
+### Zoom Features
 
-Tenrankai offers two levels of zoom, controlled by separate permissions:
+Tenrankai offers different zoom experiences for desktop and mobile, controlled by permissions:
 
-**Basic Zoom** (`can_use_zoom`):
-- Uses the medium-sized image at 1.8x scale
-- Quick to load, works on all images
-- Good for general image exploration
+**Desktop: Click-to-Zoom Loupe** (`can_use_zoom`):
+- Click and hold to activate magnifying loupe
+- Uses medium-sized image at 1.8x scale
+- Custom cursor indicates zoom availability
+- Image protection via CSS background-image
 
-**Tile-Based Zoom** (`can_use_tile_zoom`):
-- Uses high-resolution tiles for full detail
+**Desktop: Tile-Based Loupe** (`can_use_tile_zoom`):
+- Enhanced loupe using high-resolution tiles
+- Full detail inspection for large images
 - Requires `[galleries.tiles]` configuration
-- Best for detailed inspection of large images
-- Pre-generate tiles for instant loading
 
-Both zoom modes feature:
-- **Click and hold** activation
-- **Custom cursor** indicating zoom availability
-- **Image protection** via CSS background-image
-- **Smooth animations** and high-quality rendering
+**Mobile: Pinch-to-Zoom** (`can_use_zoom`):
+- Native pinch gesture to zoom in/out
+- Double-tap to quick zoom at tap location
+- Pan gesture to navigate when zoomed
+- Fullscreen modal with zoom level indicator
+- Automatically loads high-res tiles when zoom > 1.5x
+- Swipe navigation disabled while zoomed
+
+Both platforms feature smooth animations and image protection.
 
 ### Hide Technical Details
 
