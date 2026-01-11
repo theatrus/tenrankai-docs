@@ -600,6 +600,7 @@ tiles = false
 
 Pre-generation benefits:
 - **Parallel processing**: Uses all CPU cores for faster generation
+- **Memory-safe**: Limits concurrent operations to prevent memory exhaustion
 - **Incremental**: Only generates missing cache entries
 - **Cancellation support**: Graceful shutdown on Ctrl+C
 - **Progress logging**: See detailed progress in server logs
