@@ -59,13 +59,22 @@ One of the most requested features is now here - the ability to comment on speci
 
 The area data is stored as percentage-based coordinates, ensuring responsive display across all devices.
 
-## Click-to-Zoom Loupe
+## Two-Level Zoom System
 
-Professional photographers can now examine fine details with the new click-to-zoom feature:
-- **2x magnification** with click-and-hold
-- **Smooth animations** for seamless exploration
-- **Permission-based** - Control who can use zoom
-- **Image protection** - Makes saving images harder
+Professional photographers can examine fine details with two zoom levels:
+
+### Basic Zoom (`can_use_zoom`)
+- **1.8x magnification** using medium-sized image
+- **Quick to load** - works immediately on any image
+- **Click-and-hold** activation with smooth animations
+
+### Tile-Based Zoom (`can_use_tile_zoom`)
+- **Full resolution** using high-res tiles
+- **Perfect for detailed inspection** of large images
+- **Pre-generate tiles** for instant loading
+- **Permission-controlled** separately from basic zoom
+
+Both zoom modes include image protection features that make saving images harder.
 
 ## Flexible Image Indexing
 
@@ -104,7 +113,8 @@ Perfect for professional portfolios where you want to focus on the art, not the 
 ### Fine-Grained Permissions
 
 The role-based permission system now includes:
-- `can_use_zoom` - Control zoom access
+- `can_use_zoom` - Basic loupe zoom (medium image)
+- `can_use_tile_zoom` - Enhanced tile-based zoom (full resolution)
 - `can_read_metadata` - View user-generated content
 - `can_add_comments` - Leave feedback
 - `can_set_picks` - Mark favorites
@@ -114,8 +124,37 @@ The role-based permission system now includes:
 
 New and improved command-line tools:
 - `user update` - Change display names
+- `cache report -g <gallery>` - View format coverage analysis
+- `cache cleanup -g <gallery>` - Clean up outdated cache files
 - `avif-debug` - Analyze AVIF metadata
 - Improved help and command structure
+
+## Configurable Pre-Generation
+
+The new pre-generation system gives you fine-grained control:
+
+```toml
+[galleries.pregenerate]
+formats = { jpeg = true, webp = true, avif = false }
+sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+tiles = false  # Requires [galleries.tiles] config
+```
+
+Pre-generation now features:
+- **Parallel processing** using all CPU cores
+- **Incremental generation** - only creates missing files
+- **Graceful cancellation** on Ctrl+C
+- **Progress logging** in server output
+
+## AWS SES Improvements
+
+SES email now supports the full AWS credential provider chain:
+1. Explicit credentials in config
+2. Environment variables (`AWS_ACCESS_KEY_ID`, etc.)
+3. AWS credentials file (`~/.aws/credentials`)
+4. IAM role credentials (EC2, ECS, Lambda)
+
+This makes deployment on AWS infrastructure much simpler - no need to store credentials in config files.
 
 ## Developer Experience
 

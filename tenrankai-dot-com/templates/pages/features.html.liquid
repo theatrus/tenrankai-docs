@@ -177,12 +177,14 @@
 
         <div class="feature-detail">
             <h4>Pre-generation Options</h4>
-            <p>Optional cache pre-generation for instant loading:</p>
+            <p>Configurable cache pre-generation for instant loading:</p>
             <ul>
-                <li>Generate all image sizes on startup</li>
-                <li>Background processing without blocking</li>
-                <li>Progress tracking and logging</li>
-                <li>Skip already cached images</li>
+                <li><strong>Parallel processing:</strong> Uses all CPU cores for fast generation</li>
+                <li><strong>Selective formats:</strong> Choose which formats (JPEG, WebP, AVIF)</li>
+                <li><strong>Selective sizes:</strong> Choose which sizes (thumbnail, gallery, medium, large)</li>
+                <li><strong>Tile pre-generation:</strong> Pre-build tiles for enhanced zoom</li>
+                <li><strong>Incremental:</strong> Only generates missing cache entries</li>
+                <li><strong>Graceful cancellation:</strong> Clean shutdown on Ctrl+C</li>
             </ul>
         </div>
     </section>
@@ -231,7 +233,7 @@
             <h4>🎉 Interactive Features <span class="new-feature">NEW</span></h4>
             <p>Enhanced user interaction capabilities:</p>
             <ul>
-                <li><strong>Click-to-Zoom Loupe:</strong> 2x magnification with click-and-hold</li>
+                <li><strong>Two-Level Zoom:</strong> Basic loupe (1.8x) and tile-based high-res zoom</li>
                 <li><strong>User Metadata Storage:</strong> Comments, picks, highlights, tags in .toml sidecars</li>
                 <li><strong>Area-Specific Comments:</strong> Select and comment on specific parts of images</li>
                 <li><strong>Gallery Filters:</strong> Filter by picks, rejects, highlights, comments</li>
@@ -418,10 +420,10 @@
             <p>Powerful command-line utilities:</p>
             <ul>
                 <li><strong>User management:</strong> add, list, update, remove users</li>
+                <li><strong>Cache management:</strong> report coverage, cleanup outdated files</li>
                 <li><strong>AVIF debugging:</strong> Analyze AVIF metadata and color properties</li>
                 <li><strong>Server control:</strong> Auto-shutdown for testing</li>
                 <li><strong>Configuration:</strong> Override settings via CLI flags</li>
-                <li><strong>Consistent help:</strong> Improved command documentation</li>
             </ul>
         </div>
     </section>

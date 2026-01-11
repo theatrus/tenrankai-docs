@@ -84,16 +84,25 @@ source_directory = "/path/to/photos"   # Where your photos are stored
 cache_directory = "cache/main"         # Where to store processed images
 images_per_page = 50                   # Pagination setting
 new_threshold_days = 7                 # Mark images as "NEW" if modified within X days
-pregenerate_cache = false              # Pre-generate all sizes on startup
 cache_refresh_interval_minutes = 60    # Auto-refresh interval
 jpeg_quality = 85                      # JPEG compression (1-100)
 webp_quality = 85.0                    # WebP compression (0.0-100.0)
-copyright_holder = "Your Name"         # Per-gallery copyright watermark (NEW)
+copyright_holder = "Your Name"         # Per-gallery copyright watermark
 image_indexing = "filename"            # URL format: "filename", "sequence", or "unique_id"
 
 # Custom templates (optional)
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
+
+# Pre-generation configuration (optional)
+# [galleries.pregenerate]
+# formats = { jpeg = true, webp = true, avif = false }
+# sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+# tiles = false
+
+# Tile configuration for enhanced zoom (optional)
+# [galleries.tiles]
+# tile_size = 1024
 ```
 
 ### Role-Based Permissions (RBAC)
@@ -153,7 +162,8 @@ roles = ["member"]
 Note: Thumbnail and gallery size downloads are automatically included with the `can_view` permission.
 
 **Interactive Permissions:**
-- **can_use_zoom** - Use click-to-zoom loupe functionality (2x magnification)
+- **can_use_zoom** - Basic click-to-zoom loupe (uses medium image at 1.8x scale)
+- **can_use_tile_zoom** - Enhanced high-resolution zoom using tiles (requires tiles config)
 - **can_read_metadata** - Read user-generated content (comments, picks, tags)
 
 **Content Management:**
@@ -393,21 +403,23 @@ Tenrankai supports multiple email providers for authentication:
 
 ```toml
 [email]
-provider = "ses"  # Options: "ses", "null" (SMTP not yet implemented)
+provider = "ses"  # Options: "ses", "null"
 from_address = "noreply@yourdomain.com"
 from_name = "Your Gallery"  # Optional
 reply_to = "support@yourdomain.com"  # Optional
 
 # Amazon SES Configuration (for production)
-# provider = "ses"
-region = "us-east-1"  # Optional, uses AWS credential chain
-access_key_id = "your-key"  # Optional, uses AWS credential chain
-secret_access_key = "your-secret"  # Optional
+# The AWS SDK uses a credential provider chain:
+# 1. Explicit credentials in config (access_key_id, secret_access_key)
+# 2. Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+# 3. AWS credentials file (~/.aws/credentials)
+# 4. IAM role credentials (EC2, ECS, Lambda)
+region = "us-east-1"  # Optional, defaults to AWS SDK default region
+# access_key_id = "your-key"       # Optional - use IAM roles instead
+# secret_access_key = "your-secret" # Optional - use IAM roles instead
 
 # OR Null Provider (for development - logs emails instead of sending)
 # provider = "null"
-
-# Note: SMTP provider is planned but not yet implemented
 ```
 
 ### WebAuthn/Passkey Configuration
@@ -531,13 +543,24 @@ Control how images are referenced in URLs:
 
 ### Click-to-Zoom Loupe
 
-When users have the `can_use_zoom` permission, they can click and hold on any image to activate a 2x magnification loupe:
+Tenrankai offers two levels of zoom, controlled by separate permissions:
 
-- **Activation**: Click and hold on the image
-- **Magnification**: 2x zoom centered on cursor position
-- **Visual Feedback**: Custom cursor indicates zoom availability
-- **Image Protection**: Uses CSS background-image to prevent easy right-click saving
-- **Performance**: Smooth animations and high-quality rendering
+**Basic Zoom** (`can_use_zoom`):
+- Uses the medium-sized image at 1.8x scale
+- Quick to load, works on all images
+- Good for general image exploration
+
+**Tile-Based Zoom** (`can_use_tile_zoom`):
+- Uses high-resolution tiles for full detail
+- Requires `[galleries.tiles]` configuration
+- Best for detailed inspection of large images
+- Pre-generate tiles for instant loading
+
+Both zoom modes feature:
+- **Click and hold** activation
+- **Custom cursor** indicating zoom availability
+- **Image protection** via CSS background-image
+- **Smooth animations** and high-quality rendering
 
 ### Hide Technical Details
 
@@ -558,6 +581,63 @@ When enabled:
 - Keeps title, description, and navigation
 - Perfect for professional portfolios
 
+
+### Cache Pre-Generation
+
+Configure which image variants to pre-generate on server startup:
+
+```toml
+[galleries.pregenerate]
+# Which formats to pre-generate
+formats = { jpeg = true, webp = true, avif = false }
+
+# Which sizes to pre-generate
+sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+
+# Whether to pre-generate tiles (requires tiles config)
+tiles = false
+```
+
+Pre-generation benefits:
+- **Parallel processing**: Uses all CPU cores for faster generation
+- **Incremental**: Only generates missing cache entries
+- **Cancellation support**: Graceful shutdown on Ctrl+C
+- **Progress logging**: See detailed progress in server logs
+
+### Tile-Based High-Resolution Zoom
+
+Enable high-resolution tiled zoom for detailed image exploration:
+
+```toml
+[galleries.tiles]
+tile_size = 1024  # Size of each tile in pixels
+
+[galleries.permissions.roles.contributor]
+permissions = {
+    can_use_zoom = true,       # Basic zoom (medium image)
+    can_use_tile_zoom = true   # Enhanced tile-based zoom
+}
+```
+
+To pre-generate tiles, enable in the pregenerate section:
+```toml
+[galleries.pregenerate]
+tiles = true  # Requires [galleries.tiles] to be configured
+```
+
+### Cache Management CLI
+
+Tenrankai provides CLI commands for cache management:
+
+```bash
+# Generate a format coverage report for a gallery
+tenrankai cache report -g photos
+
+# Clean up outdated cache files
+tenrankai cache cleanup -g photos
+```
+
+The cache report shows which image sizes and formats have been generated, helping you verify pre-generation coverage.
 
 ### Cascading Directories
 

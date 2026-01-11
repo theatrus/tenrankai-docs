@@ -26,18 +26,23 @@ source_directory = "photos"
 cache_directory = "cache/gallery"
 images_per_page = 24
 new_threshold_days = 30
-pregenerate_cache = true  # Pre-generate for better demo experience
 cache_refresh_interval_minutes = 120
 jpeg_quality = 85
 webp_quality = 85.0
-copyright_holder = "Tenrankai Project"  # Per-gallery copyright holder (NEW: moved from [app] section)
-image_indexing = "filename"  # Options: filename, sequence, unique_id (NEW)
+copyright_holder = "Tenrankai Project"
+image_indexing = "filename"  # Options: filename, sequence, unique_id
+
+# Pre-generate cache for better demo experience
+[galleries.pregenerate]
+formats = { jpeg = true, webp = true, avif = false }
+sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+tiles = false
 
 # Use default templates
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
 
-# NEW: Role-based permissions (replaces old hide_location_from_public, approximate_dates_for_public, etc.)
+# Role-based permissions
 [galleries.permissions]
 # For this demo gallery, we'll show everything to the public
 public_role = "demo_viewer"
@@ -46,7 +51,7 @@ default_authenticated_role = "demo_viewer"
 # Define a custom role that shows all features for the demo
 [galleries.permissions.roles.demo_viewer]
 name = "demo_viewer"
-permissions = { can_view = true, can_see_exact_dates = true, can_see_location = true, can_see_technical_details = true, can_download_medium = true, can_download_large = true, can_read_metadata = true, can_use_zoom = true }
+permissions = { can_view = true, can_see_exact_dates = true, can_see_location = true, can_see_technical_details = true, can_download_medium = true, can_download_large = true, can_read_metadata = true, can_use_zoom = true, can_use_tile_zoom = true }
 
 # Image size configurations
 [galleries.thumbnail]
@@ -99,14 +104,12 @@ post_template = "modules/post_detail.html.liquid"
 # [email]
 # provider = "null"  # Use null provider for development (logs emails instead of sending)
 # from_address = "noreply@tenrankai.com"
-# 
-# # For production, use SMTP:
-# # provider = "smtp"
+#
+# # For production, use Amazon SES:
+# # provider = "ses"
 # # from_address = "noreply@tenrankai.com"
-# # smtp_host = "smtp.gmail.com"
-# # smtp_port = 587
-# # smtp_username = "your-email@gmail.com"
-# # smtp_password = "your-app-password"
+# # region = "us-east-1"  # Optional, uses AWS default
+# # Credentials are auto-discovered via AWS SDK (env vars, ~/.aws/credentials, IAM roles)
 
 # Note: To enable authentication and WebAuthn/Passkey support:
 # 1. Add user_database = "users.db" to the [app] section
