@@ -126,6 +126,24 @@ from_address = "noreply@tenrankai.com"
 # 3. AWS credentials file (~/.aws/credentials)
 # 4. IAM role credentials (EC2, ECS, Lambda)
 
+# AI-Powered Image Analysis with OpenAI Vision (optional)
+# Automatically generate keywords and alt-text for better SEO and accessibility
+# [openai]
+# api_key = "sk-your-openai-api-key"  # Required - use environment variable in production
+# model = "gpt-5.2"                    # Default model for image analysis
+# rate_limit_ms = 1000                 # Delay between API calls (respect rate limits)
+# max_tokens = 300                     # Max response tokens per image
+#
+# # Background processing - automatically analyze new images
+# enable_background_analysis = true    # Enable for production auto-processing
+# background_interval_minutes = 60     # Check for new images hourly
+# background_batch_size = 50           # Process up to 50 images per run
+#
+# Production usage:
+#   tenrankai analyze-images -g main             # Initial batch analysis
+#   tenrankai analyze-images -g main --limit 100 # Limit per run
+#   tenrankai clear-analysis -g main --dry-run   # Preview what would be cleared
+
 # Note: WebAuthn/Passkey support is automatically enabled when:
 # 1. user_database is configured in [app] section
 # 2. base_url is set with a valid hostname

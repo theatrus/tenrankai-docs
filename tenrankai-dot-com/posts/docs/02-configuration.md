@@ -640,9 +640,66 @@ tenrankai cache report -g photos
 
 # Clean up outdated cache files
 tenrankai cache cleanup -g photos
+
+# Invalidate specific cache entries (force regeneration)
+tenrankai cache invalidate -g photos -t composite -p "2026-01-vacation"
+tenrankai cache invalidate -g photos -t image -p "IMG_1234.jpg"
+
+# List cached composite images
+tenrankai cache list-composites -g photos
 ```
 
 The cache report shows which image sizes and formats have been generated, helping you verify pre-generation coverage.
+
+## AI-Powered Image Analysis
+
+Tenrankai integrates with OpenAI's Vision API to automatically generate keywords and alt-text for images.
+
+### OpenAI Configuration
+
+```toml
+[openai]
+api_key = "sk-your-openai-api-key"  # Required
+model = "gpt-5.2"                    # Default model
+rate_limit_ms = 1000                 # Delay between API calls
+max_tokens = 300                     # Max response tokens
+
+# Background processing (optional)
+enable_background_analysis = false   # Enable automatic analysis
+background_interval_minutes = 60     # How often to run
+background_batch_size = 50           # Max images per run
+```
+
+### Analysis CLI Commands
+
+```bash
+# Analyze all images in a gallery
+tenrankai analyze-images -g photos
+
+# Analyze a specific folder
+tenrankai analyze-images -g photos -f "2026-01-vacation"
+
+# Limit number of images analyzed
+tenrankai analyze-images -g photos --limit 100
+
+# Force re-analysis of already analyzed images
+tenrankai analyze-images -g photos --force
+
+# Dry run - see what would be analyzed
+tenrankai analyze-images -g photos --dry-run
+
+# Clear AI analysis data
+tenrankai clear-analysis -g photos
+tenrankai clear-analysis -g photos -f "2026-01-vacation" --dry-run
+```
+
+### What Gets Generated
+
+For each image, the AI generates:
+- **Keywords**: Descriptive tags for the image content
+- **Alt-text**: Accessibility description for screen readers
+
+This data is stored in the image's metadata sidecar file (`.toml`) and displayed in the image detail view.
 
 ### Cascading Directories
 

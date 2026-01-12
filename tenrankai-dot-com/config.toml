@@ -100,6 +100,25 @@ refresh_interval_minutes = 60
 index_template = "modules/posts_index.html.liquid"
 post_template = "modules/post_detail.html.liquid"
 
+# Optional: AI-Powered Image Analysis with OpenAI Vision
+# Automatically generate keywords and alt-text for images
+# [openai]
+# api_key = "sk-your-openai-api-key"  # Required
+# model = "gpt-5.2"                    # Default model
+# rate_limit_ms = 1000                 # Delay between API calls (ms)
+# max_tokens = 300                     # Max response tokens
+#
+# # Background processing (optional - runs automatically on interval)
+# enable_background_analysis = false   # Enable automatic analysis of new images
+# background_interval_minutes = 60     # How often to check for new images
+# background_batch_size = 50           # Max images to analyze per run
+#
+# CLI commands:
+#   tenrankai analyze-images -g photos           # Analyze all images in gallery
+#   tenrankai analyze-images -g photos -f folder # Analyze specific folder
+#   tenrankai analyze-images -g photos --limit 50 --dry-run
+#   tenrankai clear-analysis -g photos           # Remove AI-generated data
+
 # Optional: Email configuration for user registration and notifications
 # [email]
 # provider = "null"  # Use null provider for development (logs emails instead of sending)

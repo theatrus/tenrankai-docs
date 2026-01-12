@@ -1,12 +1,59 @@
 +++
 title = "Tenrankai 2026 Update: Professional Photography Workflows"
-summary = "Announcing major updates including enhanced metadata support, collaborative features, and advanced privacy controls"
-date = "2026-01-09"
+summary = "Announcing major updates including AI-powered image analysis, filmstrip navigation, enhanced metadata support, collaborative features, and advanced privacy controls"
+date = "2026-01-12"
 +++
 
 # Tenrankai 2026 Update: Professional Photography Workflows
 
-We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 16 major new features focused on collaboration, metadata management, and privacy control, including the highly requested area-specific commenting capability.
+We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 18 major new features focused on AI-powered analysis, collaboration, metadata management, and privacy control, including the highly requested area-specific commenting capability and AI-powered image analysis.
+
+## AI-Powered Image Analysis
+
+### OpenAI Vision Integration
+
+Tenrankai now integrates with OpenAI's Vision API to automatically analyze your images:
+
+- **Smart Keywords**: AI extracts relevant keywords from image content for better discoverability
+- **Accessibility Alt-Text**: Automatically generate WCAG-compliant alt-text for screen readers
+- **Batch Processing**: Analyze entire galleries with a single CLI command
+- **Incremental Analysis**: Only processes images without existing keywords
+- **Background Mode**: Optionally run analysis automatically on new images
+
+### Getting Started with AI Analysis
+
+```bash
+# Analyze all images in a gallery
+tenrankai analyze-images -g photos
+
+# Preview what would be analyzed
+tenrankai analyze-images -g photos --dry-run
+
+# Analyze specific folder with limit
+tenrankai analyze-images -g photos -f "2026-vacation" --limit 50
+
+# Clear AI-generated data if needed
+tenrankai clear-analysis -g photos
+```
+
+Configure in your `config.toml`:
+
+```toml
+[openai]
+api_key = "sk-your-api-key"
+model = "gpt-5.2"
+rate_limit_ms = 1000
+enable_background_analysis = true  # Auto-analyze new images
+```
+
+## Filmstrip Navigation
+
+A new filmstrip-style thumbnail navigation has been added for desktop users:
+
+- **Quick Browsing**: Scroll through thumbnails to jump to any image
+- **Current Position**: Active image is highlighted in the strip
+- **Keyboard Support**: Works alongside arrow key navigation
+- **Desktop Only**: Mobile continues to use swipe gestures for optimal touch experience
 
 ## Enhanced Metadata System
 
@@ -125,9 +172,13 @@ The role-based permission system now includes:
 ## CLI Enhancements
 
 New and improved command-line tools:
-- `user update` - Change display names
+- `analyze-images -g <gallery>` - AI-powered image analysis for keywords and alt-text
+- `clear-analysis -g <gallery>` - Remove AI-generated metadata
 - `cache report -g <gallery>` - View format coverage analysis
 - `cache cleanup -g <gallery>` - Clean up outdated cache files
+- `cache invalidate -g <gallery>` - Force regeneration of specific entries
+- `cache list-composites -g <gallery>` - List cached composite images
+- `user update` - Change display names
 - `avif-debug` - Analyze AVIF metadata
 - Improved help and command structure
 

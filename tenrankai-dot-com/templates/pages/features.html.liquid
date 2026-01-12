@@ -8,7 +8,7 @@
     <section class="features-intro">
         <p>Tenrankai is packed with features designed to make hosting and managing photo galleries a breeze. Whether you're a photographer showcasing your portfolio or an organization managing multiple image collections, Tenrankai has you covered.</p>
         <div class="feature-highlight" style="background-color: #f0f8ff; padding: 1rem; margin-top: 1rem; border-radius: 8px; border-left: 4px solid #0066cc;">
-            <p><strong>🎉 New in Latest Release:</strong> Enhanced metadata system with XMP support, gallery filters, click-to-zoom loupe, React frontend, flexible image indexing, and much more! Tenrankai now supports professional photography workflows with user comments, picks, and tags.</p>
+            <p><strong>🎉 New in Latest Release:</strong> AI-powered image analysis with OpenAI Vision, filmstrip thumbnail navigation, enhanced metadata support, gallery filters, platform-optimized zoom, and much more! Tenrankai now supports professional photography workflows with user comments, picks, and tags.</p>
         </div>
     </section>
 
@@ -150,6 +150,48 @@
     </section>
 
     <section class="feature-category">
+        <h3>🤖 AI-Powered Image Analysis <span class="new-feature">NEW</span></h3>
+
+        <div class="feature-detail">
+            <h4>OpenAI Vision Integration</h4>
+            <p>Automatic keyword and alt-text generation using AI:</p>
+            <ul>
+                <li><strong>Smart keywords:</strong> Automatically extract relevant keywords from image content</li>
+                <li><strong>Accessibility alt-text:</strong> Generate descriptive alt-text for screen readers</li>
+                <li><strong>Batch processing:</strong> Analyze entire galleries with a single command</li>
+                <li><strong>Background processing:</strong> Optional automatic analysis of new images</li>
+                <li><strong>Rate limiting:</strong> Configurable delays between API calls</li>
+                <li><strong>Incremental:</strong> Only analyzes images without existing keywords</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>Analysis CLI Commands</h4>
+            <p>Powerful command-line tools for batch analysis:</p>
+            <ul>
+                <li><strong>Gallery analysis:</strong> <code>tenrankai analyze-images -g photos</code></li>
+                <li><strong>Folder targeting:</strong> Analyze specific folders only</li>
+                <li><strong>Limit controls:</strong> Set maximum images per run</li>
+                <li><strong>Force mode:</strong> Re-analyze already processed images</li>
+                <li><strong>Dry run:</strong> Preview what would be analyzed</li>
+                <li><strong>Clear command:</strong> Remove AI-generated data when needed</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail">
+            <h4>AI Analysis Use Cases</h4>
+            <p>Enhance your galleries with AI-generated metadata:</p>
+            <ul>
+                <li><strong>SEO optimization:</strong> Better search visibility with relevant keywords</li>
+                <li><strong>Accessibility compliance:</strong> WCAG-compliant alt-text for all images</li>
+                <li><strong>Content discovery:</strong> Help users find images by content</li>
+                <li><strong>Archive organization:</strong> Auto-categorize large image collections</li>
+                <li><strong>Social sharing:</strong> Better previews with AI-generated descriptions</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="feature-category">
         <h3>⚡ Performance & Caching</h3>
         
         <div class="feature-detail">
@@ -234,6 +276,7 @@
             <h4>🎉 Interactive Features <span class="new-feature">NEW</span></h4>
             <p>Enhanced user interaction capabilities:</p>
             <ul>
+                <li><strong>Filmstrip Navigation:</strong> Thumbnail strip for quick browsing on desktop</li>
                 <li><strong>Desktop Loupe:</strong> Click-and-hold zoom with optional high-res tiles</li>
                 <li><strong>Mobile Pinch-to-Zoom:</strong> Native gestures with fullscreen modal and tiles</li>
                 <li><strong>User Metadata Storage:</strong> Comments, picks, highlights, tags in .toml sidecars</li>
@@ -422,7 +465,8 @@
             <p>Powerful command-line utilities:</p>
             <ul>
                 <li><strong>User management:</strong> add, list, update, remove users</li>
-                <li><strong>Cache management:</strong> report coverage, cleanup outdated files</li>
+                <li><strong>Cache management:</strong> report, cleanup, invalidate, list-composites</li>
+                <li><strong>AI analysis:</strong> analyze-images, clear-analysis for batch processing</li>
                 <li><strong>AVIF debugging:</strong> Analyze AVIF metadata and color properties</li>
                 <li><strong>Server control:</strong> Auto-shutdown for testing</li>
                 <li><strong>Configuration:</strong> Override settings via CLI flags</li>
