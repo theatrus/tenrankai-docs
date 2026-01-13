@@ -1,6 +1,6 @@
 +++
 title = "Tenrankai 2026 Update: Professional Photography Workflows"
-summary = "Announcing major updates including AI-powered image analysis, filmstrip navigation, enhanced metadata support, collaborative features, and advanced privacy controls"
+summary = "Announcing major updates including CSS theming, AI-powered image analysis, filmstrip navigation, enhanced metadata support, collaborative features, and advanced privacy controls"
 date = "2026-01-12"
 +++
 
@@ -54,6 +54,47 @@ A new filmstrip-style thumbnail navigation has been added for desktop users:
 - **Current Position**: Active image is highlighted in the strip
 - **Keyboard Support**: Works alongside arrow key navigation
 - **Desktop Only**: Mobile continues to use swipe gestures for optimal touch experience
+
+## CSS Theming System
+
+Tenrankai now includes a comprehensive theming system using CSS custom properties:
+
+### Easy Customization
+
+Create custom themes without modifying core files:
+
+1. Create a `static-custom/` directory
+2. Copy `theme-override.css` to your custom directory
+3. Configure cascading directories: `directories = ["static-custom", "static"]`
+4. Edit your theme file to customize colors, fonts, and spacing
+
+### CSS Variables
+
+Override any visual aspect through simple variables:
+
+```css
+:root[data-theme="light"] {
+    --bg-primary: #faf8f5;
+    --text-primary: #3d3d3d;
+    --link-color: #8b5a2b;
+    --font-heading: 'Merriweather', Georgia, serif;
+}
+
+:root[data-theme="dark"] {
+    --bg-primary: #1f1a15;
+    --text-primary: #e8e0d5;
+    --link-color: #d4a574;
+}
+```
+
+### Features
+
+- **Dark/Light Mode**: Built-in theme toggle with automatic OS preference detection
+- **Custom Fonts**: Easy integration with Google Fonts or self-hosted fonts
+- **Stable Classes**: Safe component classes (`.gallery-grid`, `.card`, `.navbar`) for reliable customization
+- **No Source Modifications**: All customization through override files
+
+See the [Theming Guide](https://github.com/theatrus/tenrankai/blob/main/docs/THEMING.md) for complete variable reference and example themes.
 
 ## Enhanced Metadata System
 

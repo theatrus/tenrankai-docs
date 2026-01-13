@@ -714,6 +714,142 @@ directories = ["static-custom", "static-theme", "static"]
 directories = ["templates-brand", "templates"]
 ```
 
+## CSS Theming and Customization
+
+Tenrankai supports custom themes through CSS variable overrides, allowing you to completely customize the look and feel without modifying core files.
+
+### Quick Theme Setup
+
+1. Create a custom static directory (e.g., `static-custom/`)
+2. Copy `static/theme-override.css` to your custom directory
+3. Configure cascading directories in `config.toml`:
+   ```toml
+   [static_files]
+   directories = ["static-custom", "static"]
+   ```
+4. Edit your `theme-override.css` to customize colors, fonts, and styles
+5. Restart the server
+
+### CSS Variables Reference
+
+Tenrankai uses CSS custom properties (variables) that can be overridden. Key variables include:
+
+**Background Colors:**
+| Variable | Description |
+|----------|-------------|
+| `--bg-primary` | Main background |
+| `--bg-secondary` | Secondary background (containers) |
+| `--bg-card` | Card/panel backgrounds |
+| `--bg-hover` | Hover state backgrounds |
+| `--header-bg` | Header background |
+
+**Text Colors:**
+| Variable | Description |
+|----------|-------------|
+| `--text-primary` | Main text |
+| `--text-secondary` | Secondary/muted text |
+| `--link-color` | Link color |
+| `--link-hover` | Link hover color |
+
+**Fonts:**
+| Variable | Description |
+|----------|-------------|
+| `--font-body` | Body text font stack |
+| `--font-heading` | Heading font stack |
+| `--font-mono` | Monospace font stack |
+
+**Spacing:**
+| Variable | Default |
+|----------|---------|
+| `--spacing-xs` | `0.25rem` |
+| `--spacing-sm` | `0.5rem` |
+| `--spacing-md` | `1rem` |
+| `--spacing-lg` | `1.5rem` |
+| `--spacing-xl` | `2rem` |
+
+### Example: Warm Sepia Theme
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root[data-theme="light"],
+:root:not([data-theme]) {
+    --bg-primary: #faf8f5;
+    --bg-secondary: #f5f0e8;
+    --bg-card: #ffffff;
+    --text-primary: #3d3d3d;
+    --text-secondary: #6b6b6b;
+    --link-color: #8b5a2b;
+    --link-hover: #6b4423;
+    --border-color: #e0d6c8;
+
+    --font-body: 'Open Sans', sans-serif;
+    --font-heading: 'Merriweather', Georgia, serif;
+}
+
+:root[data-theme="dark"] {
+    --bg-primary: #1f1a15;
+    --bg-secondary: #2a241d;
+    --bg-card: #332b22;
+    --text-primary: #e8e0d5;
+    --text-secondary: #a89f94;
+    --link-color: #d4a574;
+    --link-hover: #e8c4a0;
+    --border-color: #4a4035;
+}
+```
+
+### Using Custom Fonts
+
+**Google Fonts:**
+```css
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+:root,
+:root[data-theme="dark"],
+:root[data-theme="light"] {
+    --font-heading: 'Playfair Display', Georgia, serif;
+}
+```
+
+**Local Fonts:**
+1. Place font files in your custom static directory (e.g., `static-custom/fonts/`)
+2. Define `@font-face` rules in your theme-override.css:
+```css
+@font-face {
+    font-family: 'CustomFont';
+    src: url('/static/fonts/CustomFont-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+
+:root {
+    --font-body: 'CustomFont', sans-serif;
+}
+```
+
+### Safe Component Classes
+
+These classes are intended for theme customization and are stable across versions:
+
+| Class | Description |
+|-------|-------------|
+| `.gallery-grid` | Gallery image grid container |
+| `.gallery-item` | Individual gallery item |
+| `.card` | Card/panel component |
+| `.navbar` | Navigation bar |
+| `.container` | Main content container |
+| `.image-detail-content` | Image detail page content |
+
+### Theme Tips
+
+1. **Dark/Light Support**: Always define both `:root[data-theme="light"]` and `:root[data-theme="dark"]` to work with the built-in theme toggle
+2. **Auto Theme**: Include `:root:not([data-theme])` in your light theme selector for OS preference detection
+3. **Test Both Modes**: After making changes, test both light and dark modes using the theme toggle
+4. **Font Loading**: Use `font-display: swap` for custom fonts to prevent invisible text during loading
+
+For the complete CSS variables reference and more example themes, see the [Theming Guide](https://github.com/theatrus/tenrankai/blob/main/docs/THEMING.md) in the repository.
+
 ## Migration Guide
 
 ### From Old Permission System
