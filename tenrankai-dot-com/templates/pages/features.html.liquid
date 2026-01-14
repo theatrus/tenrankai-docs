@@ -8,7 +8,7 @@
     <section class="features-intro">
         <p>Tenrankai is packed with features designed to make hosting and managing photo galleries a breeze. Whether you're a photographer showcasing your portfolio or an organization managing multiple image collections, Tenrankai has you covered.</p>
         <div class="feature-highlight" style="background-color: #f0f8ff; padding: 1rem; margin-top: 1rem; border-radius: 8px; border-left: 4px solid #0066cc;">
-            <p><strong>🎉 New in Latest Release:</strong> CSS theming with custom variables, AI-powered image analysis with OpenAI Vision, filmstrip thumbnail navigation, and much more! Tenrankai now supports full visual customization and professional photography workflows.</p>
+            <p><strong>🎉 New in Latest Release:</strong> Full S3 storage support for cloud-native deployments, CSS theming with custom variables, AI-powered image analysis, and much more! Tenrankai now supports hybrid local/cloud configurations for maximum flexibility.</p>
         </div>
     </section>
 
@@ -404,6 +404,20 @@
                 <li>Nginx and Apache reverse proxy configurations</li>
                 <li>Built-in Let's Encrypt support via proxy</li>
                 <li>Resource-efficient - runs on minimal VPS</li>
+            </ul>
+        </div>
+
+        <div class="feature-detail new-feature-highlight">
+            <h4>☁️ S3 Storage Support <span class="new-feature">NEW</span></h4>
+            <p>Full Amazon S3 integration for cloud-native deployments:</p>
+            <ul>
+                <li><strong>Unified Storage API:</strong> Same configuration for local or S3 storage</li>
+                <li><strong>URL-based config:</strong> <code>s3://bucket/prefix?region=us-west-2</code></li>
+                <li><strong>Hybrid configurations:</strong> Local source with S3 cache for optimal performance</li>
+                <li><strong>Signed URL redirects:</strong> Direct S3 downloads reduce server bandwidth</li>
+                <li><strong>All components supported:</strong> Galleries, caches, templates, posts, static files</li>
+                <li><strong>AWS credential chain:</strong> Environment, credentials file, or IAM roles</li>
+                <li><strong>Streaming support:</strong> Efficient handling of large files from S3</li>
             </ul>
         </div>
     </section>

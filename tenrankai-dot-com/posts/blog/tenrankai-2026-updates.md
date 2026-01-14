@@ -1,12 +1,54 @@
 +++
 title = "Tenrankai 2026 Update: Professional Photography Workflows"
-summary = "Announcing major updates including CSS theming, AI-powered image analysis, filmstrip navigation, enhanced metadata support, collaborative features, and advanced privacy controls"
+summary = "Announcing major updates including S3 storage support, CSS theming, AI-powered image analysis, filmstrip navigation, and advanced privacy controls for cloud-native deployments"
 date = "2026-01-12"
 +++
 
 # Tenrankai 2026 Update: Professional Photography Workflows
 
-We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 18 major new features focused on AI-powered analysis, collaboration, metadata management, and privacy control, including the highly requested area-specific commenting capability and AI-powered image analysis.
+We're excited to announce a major update to Tenrankai that transforms it into a comprehensive platform for professional photography workflows. This release brings over 20 major new features focused on cloud-native deployment, AI-powered analysis, collaboration, and visual customization, including full S3 storage support and AI-powered image analysis.
+
+## S3 Storage Support
+
+Tenrankai now includes a pluggable storage abstraction with full Amazon S3 support. This enables cloud-native deployments and hybrid configurations for maximum flexibility.
+
+### What's Supported
+
+All components now work with S3:
+- **Gallery source images** - Store your photos in S3
+- **Gallery cache** - Persist processed images to S3
+- **Static files** - Serve CSS, JS, and assets from S3
+- **Templates** - Load Liquid templates from S3
+- **Posts** - Store markdown content in S3
+
+### Configuration
+
+Use S3 URLs anywhere a directory path is accepted:
+
+```toml
+# Hybrid: local source with S3 cache (recommended)
+[[galleries]]
+name = "photos"
+source_directory = "photos"
+cache_directory = "s3://my-bucket/cache?region=us-west-2"
+
+# Static files with signed URL redirects
+[static_files]
+directories = ["s3://my-bucket/static?region=us-west-2"]
+use_redirects = true  # Direct S3 downloads
+
+# Templates with S3 fallback
+[templates]
+directories = ["templates-local", "s3://my-bucket/templates"]
+```
+
+### Key Features
+
+- **Unified Storage API**: Same code handles local and S3 storage
+- **Signed URL Redirects**: Reduce server bandwidth by redirecting to S3
+- **AWS Credential Chain**: Supports environment variables, credentials file, and IAM roles
+- **Streaming Support**: Efficient handling of large files
+- **Hybrid Configurations**: Mix local and S3 storage for optimal performance
 
 ## AI-Powered Image Analysis
 

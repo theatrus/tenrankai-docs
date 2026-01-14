@@ -47,7 +47,7 @@ base_url = "https://yourdomain.com"
 
 ## Template and Static Files Configuration
 
-The `[templates]` and `[static_files]` sections support cascading directories for easy customization:
+The `[templates]` and `[static_files]` sections support cascading directories for easy customization. Both support local filesystem paths and S3 URLs:
 
 ```toml
 [templates]
@@ -57,18 +57,108 @@ directory = "templates"
 # Or cascading directories (files in first directory override later ones)
 directories = ["templates-custom", "templates"]
 
+# Or with S3 fallback
+directories = ["templates-local", "s3://my-bucket/templates?region=us-west-2"]
+
 [static_files]
 # Single directory (backward compatible)
 directory = "static"
 
 # Or cascading directories for customization
 directories = ["static-custom", "static"]
+
+# With S3 and signed URL redirects (reduces server bandwidth)
+directories = ["s3://my-bucket/static?region=us-west-2"]
+use_redirects = true
 ```
 
 - **templates.directory/directories**: Path(s) to your Liquid template files
 - **static_files.directory/directories**: Path(s) to static assets (CSS, JavaScript, fonts, images)
+- **static_files.use_redirects**: When `true`, S3-backed files return 307 redirects to signed URLs
 - Files in earlier directories take precedence over files in later directories
 - Perfect for customizing themes without modifying core files
+
+## S3 Storage Support
+
+Tenrankai supports Amazon S3 for storing galleries, caches, templates, posts, and static files. This enables cloud-native deployments and hybrid configurations.
+
+### S3 URL Format
+
+Use S3 URLs anywhere a directory path is accepted:
+
+```
+s3://bucket-name/optional-prefix?region=us-west-2
+```
+
+- **bucket-name**: Your S3 bucket name
+- **optional-prefix**: Path prefix within the bucket (optional)
+- **region**: AWS region (optional, defaults to AWS SDK default)
+
+### Configuration Examples
+
+**S3 Cache with Local Source** (recommended for performance):
+```toml
+[[galleries]]
+name = "photos"
+source_directory = "photos"                              # Local for fast reads
+cache_directory = "s3://my-bucket/cache?region=us-west-2" # S3 for persistence
+```
+
+**Full S3 Gallery**:
+```toml
+[[galleries]]
+name = "archive"
+source_directory = "s3://my-bucket/photos?region=us-west-2"
+cache_directory = "s3://my-bucket/cache?region=us-west-2"
+```
+
+**Static Files with Signed URL Redirects**:
+```toml
+[static_files]
+directories = ["s3://my-bucket/static?region=us-west-2"]
+use_redirects = true  # Clients download directly from S3
+```
+
+**Templates with S3 Fallback**:
+```toml
+[templates]
+directories = ["templates-local", "s3://my-bucket/templates?region=us-west-2"]
+```
+
+**Posts from S3**:
+```toml
+[[posts]]
+name = "blog"
+source_directory = "s3://my-bucket/posts/blog?region=us-west-2"
+url_prefix = "/blog"
+```
+
+### AWS Credentials
+
+Tenrankai uses the standard AWS SDK credential chain:
+
+1. **Environment variables**: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+2. **AWS credentials file**: `~/.aws/credentials`
+3. **IAM role credentials**: EC2 instance profiles, ECS task roles, Lambda execution roles
+
+For production on AWS infrastructure, IAM roles are recommended (no credentials in config).
+
+### S3 Performance Tips
+
+1. **Hybrid Configuration**: Keep source images local, use S3 for cache persistence
+2. **Signed URL Redirects**: Enable `use_redirects` for static files to reduce server bandwidth
+3. **Region Selection**: Choose a region close to your server for lower latency
+4. **Pre-generation**: Use `tenrankai cache pregenerate` to warm the S3 cache before deployment
+
+### Components with S3 Support
+
+| Component | S3 Support | Notes |
+|-----------|------------|-------|
+| Gallery Source | ✅ | Source images from S3 |
+| Gallery Cache | ✅ | Processed images and metadata |
+| Static Files | ✅ | With optional signed URL redirects |
+| Templates | ✅ | Multi-directory with precedence |
+| Posts | ✅ | Markdown files from S3 |
 
 ## Gallery Configuration
 
@@ -80,8 +170,8 @@ Tenrankai supports multiple independent galleries. Each gallery is configured in
 [[galleries]]
 name = "main"                          # Unique identifier
 url_prefix = "/gallery"                # URL path prefix
-source_directory = "/path/to/photos"   # Where your photos are stored
-cache_directory = "cache/main"         # Where to store processed images
+source_directory = "/path/to/photos"   # Local path or S3 URL
+cache_directory = "cache/main"         # Local path or S3 URL
 images_per_page = 50                   # Pagination setting
 new_threshold_days = 7                 # Mark images as "NEW" if modified within X days
 cache_refresh_interval_minutes = 60    # Auto-refresh interval

@@ -19,17 +19,29 @@ base_url = "https://tenrankai.com"
 [templates]
 # Cascade: use tenrankai-dot-com customizations first, fall back to main templates
 directories = ["templates", "../tenrankai/templates"]
+# S3 alternative with local fallback:
+# directories = ["templates-local", "s3://my-bucket/templates?region=us-west-2"]
 
 [static_files]
 # Cascade: use tenrankai-dot-com customizations first, fall back to main static files
 directories = ["static", "../tenrankai/static"]
+# S3 with signed URL redirects (reduces server bandwidth):
+# directories = ["s3://my-bucket/static?region=us-west-2"]
+# use_redirects = true  # Clients download directly from S3
 
 # Main demo gallery
 [[galleries]]
 name = "main"
 url_prefix = "/gallery"
+# Local storage (default)
 source_directory = "photos"  # Change to absolute path for production: /srv/tenrankai/photos
 cache_directory = "cache/gallery"  # Change to absolute path for production: /srv/tenrankai/cache/gallery
+# S3 storage alternatives:
+# source_directory = "s3://my-bucket/photos?region=us-west-2"
+# cache_directory = "s3://my-bucket/cache?region=us-west-2"
+# Hybrid: local source with S3 cache (recommended for performance)
+# source_directory = "/srv/tenrankai/photos"
+# cache_directory = "s3://my-bucket/cache?region=us-west-2"
 images_per_page = 24
 new_threshold_days = 30
 cache_refresh_interval_minutes = 360  # 6 hours
