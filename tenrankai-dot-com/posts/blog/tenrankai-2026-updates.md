@@ -221,11 +221,12 @@ The unique ID mode is perfect for client galleries where you don't want URLs to 
 ## React Frontend with TypeScript
 
 The image detail view is now a modern React SPA featuring:
+- **Image preloading** - Adjacent images preload in background for instant navigation
 - **Swipe navigation** on mobile devices
 - **Keyboard shortcuts** for desktop
 - **Smooth transitions** between images
 - **Loading states** with 500ms delay
-- **Retina support** with automatic 2x image loading
+- **Retina support** with automatic 2x image loading (including preloaded images)
 
 ## Enhanced Privacy Controls
 
