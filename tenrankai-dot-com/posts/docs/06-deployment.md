@@ -124,7 +124,12 @@ sudo systemctl restart tenrankai
 
 # Stop service
 sudo systemctl stop tenrankai
+
+# Hot reload configuration (no downtime)
+sudo systemctl kill -s HUP tenrankai
 ```
+
+**Hot Reload**: Send SIGHUP to reload configuration without restarting. This allows adding/removing sites, galleries, and posts without downtime. See [Multi-Site Virtual Hosting](/docs/08-advanced#multi-site-virtual-hosting) for details.
 
 ## Reverse Proxy Configuration
 
@@ -192,6 +197,31 @@ sudo ln -s /etc/nginx/sites-available/tenrankai /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
+
+### Multi-Site Nginx Configuration
+
+For multi-site deployments, configure nginx to pass the Host header:
+
+```nginx
+# Catch-all server block for multiple domains
+server {
+    listen 443 ssl http2;
+    server_name photos.example.com blog.example.com *.clients.example.com;
+
+    ssl_certificate /path/to/wildcard-cert.pem;
+    ssl_certificate_key /path/to/wildcard-key.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;  # Critical for virtual hosting
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Tenrankai routes requests to the correct site based on the `Host` header. See [Multi-Site Virtual Hosting](/docs/08-advanced#multi-site-virtual-hosting) for configuration details.
 
 ### Apache Configuration
 

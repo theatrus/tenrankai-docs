@@ -48,6 +48,21 @@ Run multiple independent galleries from a single instance, each with its own:
 - Quality settings
 - Custom templates
 
+### 🌐 Multi-Site Virtual Hosting
+
+Serve multiple websites from a single Tenrankai instance:
+- **Virtual hosts** - Route by hostname (photos.example.com, blog.example.com)
+- **Wildcard subdomains** - Support patterns like `*.clients.example.com`
+- **Per-site isolation** - Each site has its own templates, galleries, and authentication
+- **Hot reload** - Update configuration without downtime via SIGHUP
+
+### ☁️ Cloud-Ready
+
+Full S3 storage support for enterprise deployments:
+- Store galleries, caches, and assets in S3
+- Signed URL redirects for bandwidth efficiency
+- Hybrid local/cloud configurations
+
 ## Getting Started
 
 Getting up and running is simple:

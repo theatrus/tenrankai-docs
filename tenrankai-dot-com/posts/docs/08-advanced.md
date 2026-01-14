@@ -78,6 +78,166 @@ For production on AWS, use IAM roles.
 3. **Pre-generate cache**: Warm S3 cache before deployment
 4. **Choose nearby region**: Lower latency
 
+## Multi-Site Virtual Hosting
+
+Run multiple independent sites from a single Tenrankai instance, each with its own domain, templates, galleries, and settings.
+
+### Overview
+
+Virtual hosting allows:
+- **Multiple domains**: Serve different sites on different hostnames
+- **Per-site isolation**: Each site has its own templates, static files, galleries, and posts
+- **Hot reload**: Update configuration without downtime (SIGHUP)
+- **Wildcard subdomains**: Match patterns like `*.clients.example.com`
+
+### Basic Multi-Site Configuration
+
+```toml
+[server]
+host = "0.0.0.0"
+port = 3000
+
+[app]
+name = "Multi-Site Gallery"
+cookie_secret = "your-secret-here"
+
+# Default site (catch-all for unmatched hostnames)
+[sites.default]
+hostnames = ["*"]
+
+[sites.default.templates]
+directories = ["templates"]
+
+[sites.default.static_files]
+directories = ["static"]
+
+[[sites.default.galleries]]
+name = "main"
+url_prefix = "/gallery"
+source_directory = "photos"
+cache_directory = "cache/default/main"
+
+# Photography portfolio site
+[sites.photos]
+hostnames = ["photos.example.com"]
+
+[sites.photos.templates]
+directories = ["templates-photos", "templates"]
+
+[[sites.photos.galleries]]
+name = "portfolio"
+url_prefix = "/"
+source_directory = "portfolio"
+cache_directory = "cache/photos"
+image_indexing = "unique_id"
+
+# Blog-only site
+[sites.blog]
+hostnames = ["blog.example.com"]
+
+[sites.blog.templates]
+directories = ["templates-blog", "templates"]
+
+[[sites.blog.posts]]
+name = "articles"
+url_prefix = "/"
+source_directory = "blog-posts"
+```
+
+### Hostname Matching
+
+Hostnames are matched in priority order:
+
+1. **Exact match** (highest): `photos.example.com`
+2. **Glob pattern**: `*.clients.example.com`
+3. **Default catch-all**: `*`
+
+```toml
+# Exact hostname
+[sites.main]
+hostnames = ["example.com", "www.example.com"]
+
+# Wildcard subdomain
+[sites.clients]
+hostnames = ["*.clients.example.com"]
+
+# Catch-all default
+[sites.default]
+hostnames = ["*"]
+```
+
+### Per-Site User Databases
+
+Each site can have its own user authentication:
+
+```toml
+[sites.photos]
+hostnames = ["photos.example.com"]
+user_database = "users-photos.toml"
+
+[sites.clients]
+hostnames = ["*.clients.example.com"]
+user_database = "users-clients.toml"
+```
+
+### Client Delivery Example
+
+Serve client galleries on wildcard subdomains with authentication:
+
+```toml
+[sites.clients]
+hostnames = ["*.clients.example.com"]
+user_database = "users-clients.toml"
+
+[sites.clients.templates]
+directories = ["templates-clients", "templates"]
+
+[[sites.clients.galleries]]
+name = "delivery"
+url_prefix = "/"
+source_directory = "clients"
+cache_directory = "cache/clients"
+
+[sites.clients.galleries.permissions]
+public_role = "none"
+default_authenticated_role = "viewer"
+
+[sites.clients.galleries.permissions.roles.viewer]
+name = "Viewer"
+permissions = { can_view = true, can_download_large = true }
+```
+
+### Hot Reloading
+
+Update configuration without restarting:
+
+```bash
+# Send SIGHUP to reload config
+kill -HUP $(pgrep tenrankai)
+```
+
+What can be hot-reloaded:
+- Add/remove sites
+- Modify site hostnames
+- Add/remove galleries or posts
+- Change templates or static files
+- Update gallery settings
+
+What requires restart:
+- Server host/port changes
+
+### Backward Compatibility
+
+Existing single-site configurations continue to work. If no `[sites.*]` section exists, Tenrankai creates a default site from the top-level configuration:
+
+```toml
+# Old format (still works)
+[[galleries]]
+name = "main"
+url_prefix = "/gallery"
+source_directory = "photos"
+```
+
 ## AI Image Analysis
 
 Tenrankai integrates with OpenAI Vision to automatically generate keywords and alt-text.
