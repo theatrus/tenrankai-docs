@@ -1,67 +1,208 @@
 +++
-title = "Installation Guide"
-summary = "Learn how to install and set up Tenrankai on your server"
-date = "2026-01-09"
+title = "Installation"
+summary = "Install Tenrankai from source, binary, or Docker"
+date = "2026-01-13"
 +++
 
-# Installation Guide
+# Installation
 
-Getting Tenrankai up and running is straightforward. This guide will walk you through the installation process step by step.
+This guide covers all the ways to install and run Tenrankai.
 
-## Prerequisites
+## Quick Install Options
 
-Before installing Tenrankai, ensure you have the following:
+| Method | Best For | Time |
+|--------|----------|------|
+| [Docker](#docker) | Production, quick start | 5 min |
+| [Pre-built Binary](#pre-built-binary) | Simple deployments | 5 min |
+| [From Source](#from-source) | Development, customization | 15 min |
 
-- **Rust 1.89.0 or later** - The project includes a `rust-toolchain.toml` file that will automatically download the correct version
-- **Git** - For cloning the repository
-- **Node.js and npm** - Required for building the React frontend
-- **DejaVuSans.ttf font file** - Required for copyright watermarking (place in the `static` directory)
+## Docker
 
-## Installation Methods
+The easiest way to run Tenrankai in production.
 
-### Building from Source (Recommended)
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/theatrus/tenrankai.git
-   cd tenrankai
-   ```
-
-2. **Build the project:**
-   ```bash
-   cargo build --release
-   ```
-   
-   The build process will:
-   - Download Rust 1.89.0 if not already installed (via rust-toolchain.toml)
-   - Install npm dependencies and build the React frontend automatically
-   - Compile all dependencies
-   - Create an optimized binary in `target/release/tenrankai`
-
-3. **Copy the binary to your preferred location:**
-   ```bash
-   sudo cp target/release/tenrankai /usr/local/bin/
-   ```
-
-### Using Cargo Install
-
-You can also install directly from the repository:
+### Quick Start
 
 ```bash
-cargo install --git https://github.com/theatrus/tenrankai.git
+# Create a minimal config.toml
+cat > config.toml << 'EOF'
+[server]
+host = "0.0.0.0"
+port = 3000
+
+[app]
+name = "My Gallery"
+cookie_secret = "change-me-to-a-random-string"
+
+[templates]
+directories = ["/app/templates"]
+
+[static_files]
+directories = ["/app/static"]
+
+[[galleries]]
+name = "main"
+url_prefix = "/gallery"
+source_directory = "/photos"
+cache_directory = "/cache"
+EOF
+
+# Run with Docker
+docker run -d \
+  --name tenrankai \
+  -p 3000:3000 \
+  -v $(pwd)/config.toml:/config.toml:ro \
+  -v /path/to/photos:/photos:ro \
+  -v tenrankai-cache:/cache \
+  ghcr.io/theatrus/tenrankai:latest
+```
+
+### Docker Compose (Recommended)
+
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  tenrankai:
+    image: ghcr.io/theatrus/tenrankai:latest
+    container_name: tenrankai
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.toml:/config.toml:ro
+      - ./photos:/photos:ro
+      - cache_data:/cache
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  cache_data:
+```
+
+Run with:
+
+```bash
+docker-compose up -d
+```
+
+### Docker Image Features
+
+- **Optimized size**: ~168 MB multi-stage build
+- **Full AVIF support**: HDR and gain maps
+- **Security hardened**: Runs as non-root user (UID 1001)
+- **All dependencies included**: No additional setup needed
+
+### Volume Mapping
+
+| Path | Purpose | Mode |
+|------|---------|------|
+| `/config.toml` | Configuration | Read-only |
+| `/photos` | Source images | Read-only |
+| `/cache` | Processed images | Read-write |
+| `/users.toml` | User database (optional) | Read-only |
+| `/templates` | Custom templates (optional) | Read-only |
+| `/static` | Custom static files (optional) | Read-only |
+
+## Pre-built Binary
+
+Download and run directly on Linux.
+
+### Download
+
+```bash
+# Download latest release
+curl -LO https://github.com/theatrus/tenrankai/releases/latest/download/tenrankai-linux-amd64
+
+# Make executable
+chmod +x tenrankai-linux-amd64
+
+# Move to PATH
+sudo mv tenrankai-linux-amd64 /usr/local/bin/tenrankai
+```
+
+### Run
+
+```bash
+# With config in current directory
+tenrankai serve
+
+# With custom config
+tenrankai serve --config /path/to/config.toml
+```
+
+## From Source
+
+Build from source for development or customization.
+
+### Prerequisites
+
+- **Rust 1.89+** (auto-installed via rust-toolchain.toml)
+- **Node.js 18+** and npm (for frontend build)
+- **Git**
+
+### Build
+
+```bash
+# Clone repository
+git clone https://github.com/theatrus/tenrankai.git
+cd tenrankai
+
+# Build (includes frontend)
+cargo build --release
+
+# Binary is at target/release/tenrankai
+```
+
+The build automatically:
+- Downloads correct Rust version
+- Installs npm dependencies
+- Builds React frontend
+- Compiles optimized binary
+
+### Build Options
+
+```bash
+# Without AVIF support (faster build, smaller binary)
+cargo build --release --no-default-features
+
+# Development build (faster, debug symbols)
+cargo build
+
+# Skip frontend build
+TENRANKAI_SKIP_FRONTEND=1 cargo build --release
+```
+
+### Install
+
+```bash
+# Copy to system path
+sudo cp target/release/tenrankai /usr/local/bin/
+
+# Or install via cargo
+cargo install --path .
 ```
 
 ## Initial Setup
 
-### 1. Create Configuration File
+After installation, you need to set up your site.
 
-Create a `config.toml` file based on the example:
+### 1. Create Directory Structure
 
 ```bash
-cp config.example.toml config.toml
+mkdir -p my-gallery/{photos,cache,static,templates}
+cd my-gallery
 ```
 
-Edit the configuration to match your setup:
+### 2. Create Configuration
+
+Create `config.toml`:
 
 ```toml
 [server]
@@ -70,183 +211,151 @@ port = 3000
 
 [app]
 name = "My Gallery"
-cookie_secret = "change-me-in-production"
-base_url = "https://yourdomain.com"
+cookie_secret = "$(openssl rand -base64 32)"
+base_url = "https://photos.example.com"
+
+[templates]
+directories = ["templates"]
+
+[static_files]
+directories = ["static"]
 
 [[galleries]]
 name = "main"
 url_prefix = "/gallery"
-source_directory = "/path/to/your/photos"
-cache_directory = "cache/main"
-images_per_page = 50
-copyright_holder = "Your Name"
+source_directory = "photos"
+cache_directory = "cache"
 ```
 
-### 2. Create Required Directories
+### 3. Add Font for Watermarks
+
+If using copyright watermarks, add the DejaVuSans font:
 
 ```bash
-# Create cache directories
-mkdir -p cache/main
-
-# Create static directory for fonts
-mkdir -p static
-
-# Create photo directories (if not existing)
-mkdir -p photos
-```
-
-### 3. Add DejaVuSans Font
-
-Download and place the DejaVuSans.ttf font in the static directory:
-
-```bash
-# On Ubuntu/Debian
+# Ubuntu/Debian
 cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf static/
 
-# Or download directly
-wget https://github.com/dejavu-fonts/dejavu-fonts/releases/download/version_2_37/dejavu-fonts-ttf-2.37.tar.bz2
+# Or download
+curl -LO https://github.com/dejavu-fonts/dejavu-fonts/releases/download/version_2_37/dejavu-fonts-ttf-2.37.tar.bz2
 tar -xjf dejavu-fonts-ttf-2.37.tar.bz2
 cp dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf static/
 ```
 
-## Running Tenrankai
+### 4. Add Images
 
-### Basic Usage
-
-Start the server with default configuration:
+Copy or symlink your photos:
 
 ```bash
-tenrankai
+cp -r /path/to/your/photos/* photos/
+# or
+ln -s /path/to/your/photos photos
 ```
 
-### With Custom Options
+### 5. Run
 
 ```bash
-# Use a different config file
-tenrankai --config /path/to/config.toml
-
-# Override host and port
-tenrankai --host 0.0.0.0 --port 8080
-
-# Enable debug logging
-tenrankai --log-level debug
-
-# Auto-shutdown after testing
-tenrankai --quit-after 10
-
-# Debug AVIF metadata
-tenrankai avif-debug /path/to/image.avif
+tenrankai serve
 ```
 
-### Running as a Service
+Visit `http://localhost:3000` to see your gallery.
 
-For production deployments, it's recommended to run Tenrankai as a systemd service.
+## Verify Installation
+
+```bash
+# Check health endpoint
+curl http://localhost:3000/api/health
+
+# Check version
+tenrankai --version
+
+# Test with auto-shutdown
+tenrankai serve --quit-after 5
+```
+
+## Running as a Service
+
+### systemd (Linux)
 
 Create `/etc/systemd/system/tenrankai.service`:
 
 ```ini
 [Unit]
-Description=Tenrankai Photo Gallery Server
+Description=Tenrankai Photo Gallery
 After=network.target
 
 [Service]
 Type=simple
 User=tenrankai
 WorkingDirectory=/opt/tenrankai
-ExecStart=/usr/local/bin/tenrankai --config /opt/tenrankai/config.toml
+ExecStart=/usr/local/bin/tenrankai serve
 Restart=on-failure
 RestartSec=5
-StandardOutput=journal
-StandardError=journal
 
-# Security hardening
+# Security
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ProtectHome=true
 ReadWritePaths=/opt/tenrankai/cache
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Enable and start:
 
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable tenrankai
 sudo systemctl start tenrankai
+sudo systemctl status tenrankai
 ```
-
-## Verifying Installation
-
-1. **Check server status:**
-   ```bash
-   curl http://localhost:3000/api/health
-   ```
-
-2. **Visit the web interface:**
-   Open your browser to `http://localhost:3000`
-
-3. **Check logs:**
-   ```bash
-   # If running directly
-   tenrankai --log-level debug
-   
-   # If running as a service
-   sudo journalctl -u tenrankai -f
-   ```
-
-## Docker Installation (Alternative)
-
-While not officially provided, you can create a Dockerfile:
-
-```dockerfile
-FROM rust:1.89 as builder
-WORKDIR /app
-COPY . .
-RUN cargo build --release
-
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/tenrankai /usr/local/bin/
-COPY static/DejaVuSans.ttf /app/static/
-WORKDIR /app
-EXPOSE 3000
-CMD ["tenrankai"]
-```
-
-## Next Steps
-
-- [Configuration Guide](/docs/02-configuration) - Learn about all configuration options
-- [Deployment Guide](/docs/03-deployment) - Best practices for production deployment
-- [Template Customization](/docs/05-templates) - Customize the look and feel
 
 ## Troubleshooting
 
-### Common Issues
+### Permission Denied
 
-**Rust version mismatch:**
-- The project will automatically use Rust 1.89.0 via rust-toolchain.toml
-- If you have issues, run `rustup update`
+```bash
+# Check directory permissions
+ls -la photos/ cache/
 
-**Missing font file:**
-- Ensure DejaVuSans.ttf is in the static directory
-- Watermarking will fail without this font
+# Fix ownership (for Docker, UID 1001)
+sudo chown -R 1001:1001 cache/
+```
 
-**Permission denied:**
-- Check that the user has read access to photo directories
-- Ensure write access to cache directories
+### Port Already in Use
 
-**Port already in use:**
-- Change the port in config.toml or use `--port` flag
+```bash
+# Use different port
+tenrankai serve --port 8080
 
-**Build failed with npm error:**
-- Ensure Node.js is installed
-- Try running `cd ui && npm install` manually
+# Or check what's using the port
+lsof -i :3000
+```
 
-**No images displayed:**
-- Ensure your photos directory contains supported formats (JPEG, PNG, WebP, AVIF)
-- Check file permissions on the source directory
+### Build Fails
 
-For more help, visit our [GitHub Issues](https://github.com/theatrus/tenrankai/issues) page.
+```bash
+# Update Rust
+rustup update
+
+# Clean and rebuild
+cargo clean
+cargo build --release
+
+# Check Node.js
+node --version  # Should be 18+
+npm --version
+```
+
+### No Images Displayed
+
+- Check `source_directory` path exists
+- Ensure images are JPEG, PNG, WebP, or AVIF
+- Check file permissions
+- Look at logs: `tenrankai serve --log-level debug`
+
+## Next Steps
+
+- [Core Concepts](/docs/02-core-concepts) - Understand how Tenrankai works
+- [Gallery Setup](/docs/03-galleries) - Configure your galleries
+- [Deployment](/docs/06-deployment) - Production deployment guide

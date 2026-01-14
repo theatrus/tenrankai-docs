@@ -1,7 +1,7 @@
 +++
 title = "Quick Start Guide"
 summary = "Get Tenrankai up and running in 5 minutes"
-date = "2026-01-09"
+date = "2026-01-13"
 +++
 
 # Quick Start Guide
@@ -263,6 +263,7 @@ curl -X POST http://localhost:3000/api/gallery/main/refresh
 
 ## Learn More
 
-- [Full Installation Guide](/docs/01-installation)
-- [Configuration Reference](/docs/02-configuration)
+- [Installation Guide](/docs/01-installation) - All installation methods
+- [Core Concepts](/docs/02-core-concepts) - Understand the architecture
+- [Gallery Setup](/docs/03-galleries) - Configure your galleries
 - [Features Overview](/features)

@@ -1,16 +1,16 @@
 +++
-title = "Deployment Guide"
-summary = "Production deployment strategies and best practices for Tenrankai"
-date = "2026-01-09"
+title = "Deployment"
+summary = "Production deployment strategies and best practices"
+date = "2026-01-13"
 +++
 
-# Deployment Guide
+# Deployment
 
 This guide covers production deployment strategies for Tenrankai, including systemd services, reverse proxy configuration, and security best practices.
 
 ## Production Configuration
 
-### 1. Security Configuration
+### Security Configuration
 
 For production deployments, create a secure configuration file:
 
@@ -21,26 +21,27 @@ port = 3000
 
 [app]
 name = "Your Gallery"
-authentication_password = "your-secure-password-here"
-
-[security]
-# Generate with: openssl rand -base64 32
-session_secret = "your-32-character-session-secret"
+base_url = "https://photos.example.com"
+user_database = "users.toml"
+cookie_secret = "your-32-character-session-secret"
 
 [[galleries]]
 name = "main"
 url_prefix = "/gallery"
 source_directory = "/var/lib/tenrankai/photos"
 cache_directory = "/var/cache/tenrankai"
-pre_generate = true
+
+[galleries.pregenerate]
+formats = { jpeg = true, webp = true }
+sizes = { thumbnail = true, gallery = true, medium = true }
 ```
 
 **Security Notes:**
 - Always bind to `127.0.0.1` and use a reverse proxy in production
-- Use strong, randomly generated passwords and session secrets
-- Enable `pre_generate` for better performance with large galleries
+- Generate secrets with: `openssl rand -base64 32`
+- Enable pre-generation for better performance with large galleries
 
-### 2. Directory Structure
+### Directory Structure
 
 Create the recommended directory structure:
 
@@ -63,7 +64,7 @@ sudo chown -R tenrankai:tenrankai /etc/tenrankai
 
 ## Systemd Service
 
-### 1. Service Configuration
+### Service Configuration
 
 Create `/etc/systemd/system/tenrankai.service`:
 
@@ -78,7 +79,7 @@ Type=simple
 User=tenrankai
 Group=tenrankai
 WorkingDirectory=/opt/tenrankai
-ExecStart=/opt/tenrankai/tenrankai --config /etc/tenrankai/config.toml
+ExecStart=/opt/tenrankai/tenrankai serve --config /etc/tenrankai/config.toml
 Restart=always
 RestartSec=10
 
@@ -96,7 +97,7 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 ```
 
-### 2. Enable and Start Service
+### Enable and Start Service
 
 ```bash
 # Reload systemd
@@ -112,7 +113,7 @@ sudo systemctl start tenrankai
 sudo systemctl status tenrankai
 ```
 
-### 3. Service Management
+### Service Management
 
 ```bash
 # View logs
@@ -135,7 +136,7 @@ Create `/etc/nginx/sites-available/tenrankai`:
 server {
     listen 80;
     server_name your-domain.com;
-    
+
     # Redirect HTTP to HTTPS
     return 301 https://$server_name$request_uri;
 }
@@ -143,38 +144,38 @@ server {
 server {
     listen 443 ssl http2;
     server_name your-domain.com;
-    
+
     # SSL Configuration
     ssl_certificate /path/to/your/cert.pem;
     ssl_certificate_key /path/to/your/key.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
-    
+
     # Security headers
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
     add_header X-XSS-Protection "1; mode=block";
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    
+
     # Gzip compression
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
-    
-    # Client max body size (for large photo uploads if implemented)
+
+    # Client max body size
     client_max_body_size 100M;
-    
+
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # Timeouts for large image processing
         proxy_read_timeout 300;
         proxy_connect_timeout 300;
     }
-    
+
     # Serve static files directly (optional optimization)
     location /static/ {
         alias /opt/tenrankai/static/;
@@ -204,23 +205,23 @@ Create `/etc/apache2/sites-available/tenrankai.conf`:
 
 <VirtualHost *:443>
     ServerName your-domain.com
-    
+
     # SSL Configuration
     SSLEngine on
     SSLCertificateFile /path/to/your/cert.pem
     SSLCertificateKeyFile /path/to/your/key.pem
-    
+
     # Security headers
     Header always set X-Frame-Options DENY
     Header always set X-Content-Type-Options nosniff
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    
+
     # Proxy configuration
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:3000/
     ProxyPassReverse / http://127.0.0.1:3000/
-    
+
     # Optional: Serve static files directly
     Alias /static /opt/tenrankai/static
     <Directory "/opt/tenrankai/static">
@@ -230,58 +231,6 @@ Create `/etc/apache2/sites-available/tenrankai.conf`:
     </Directory>
 </VirtualHost>
 ```
-
-## Docker Deployment
-
-Tenrankai provides official Docker images for easy containerized deployment. For comprehensive Docker deployment instructions, see the [Docker Guide](/docs/06-docker).
-
-### Quick Start
-
-```bash
-# Using official image
-docker run -d \
-  --name tenrankai \
-  -p 3000:3000 \
-  -v $(pwd)/config.toml:/config.toml:ro \
-  -v $(pwd)/photos:/photos:ro \
-  -v tenrankai-cache:/cache \
-  theatrus/tenrankai:latest
-```
-
-### Docker Compose
-
-```yaml
-version: '3.8'
-
-services:
-  tenrankai:
-    image: theatrus/tenrankai:latest
-    container_name: tenrankai
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./config.toml:/config.toml:ro
-      - ./photos:/photos:ro
-      - cache_data:/cache
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /tmp
-
-volumes:
-  cache_data:
-```
-
-For advanced Docker configurations including:
-- Security hardening
-- Environment variable overrides
-- Multi-stage builds
-- Kubernetes deployments
-- Docker Swarm configurations
-
-See the comprehensive [Docker Guide](/docs/06-docker).
 
 ## SSL/TLS Configuration
 
@@ -305,7 +254,7 @@ sudo certbot renew --dry-run
 
 ## Monitoring and Logging
 
-### 1. Log Rotation
+### Log Rotation
 
 Configure logrotate in `/etc/logrotate.d/tenrankai`:
 
@@ -324,13 +273,13 @@ Configure logrotate in `/etc/logrotate.d/tenrankai`:
 }
 ```
 
-### 2. Health Check Script
+### Health Check Script
 
 Create `/opt/tenrankai/health-check.sh`:
 
 ```bash
 #!/bin/bash
-curl -f http://localhost:3000/ > /dev/null 2>&1
+curl -f http://localhost:3000/api/health > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo "Tenrankai is healthy"
     exit 0
@@ -349,7 +298,7 @@ Add to crontab for monitoring:
 
 ## Performance Optimization
 
-### 1. System Tuning
+### System Tuning
 
 ```bash
 # Increase file descriptor limits
@@ -363,13 +312,13 @@ echo "net.core.netdev_max_backlog = 5000" >> /etc/sysctl.conf
 sysctl -p
 ```
 
-### 2. Cache Strategy
+### Cache Strategy
 
-- Enable `pre_generate = true` for large galleries
+- Enable pre-generation for large galleries
 - Use SSD storage for cache directories
 - Monitor disk usage and implement cache cleanup if needed
 
-### 3. Resource Allocation
+### Resource Allocation
 
 - Allocate sufficient RAM for image processing
 - Consider using multiple gallery instances with load balancing for high-traffic sites
@@ -377,7 +326,7 @@ sysctl -p
 
 ## Backup and Recovery
 
-### 1. Backup Strategy
+### Backup Strategy
 
 ```bash
 #!/bin/bash
@@ -404,7 +353,7 @@ rm -rf "$DATE"
 find "$BACKUP_DIR" -name "tenrankai_backup_*.tar.gz" -mtime +30 -delete
 ```
 
-### 2. Recovery Process
+### Recovery Process
 
 ```bash
 # Stop service
@@ -435,7 +384,7 @@ sudo systemctl start tenrankai
 ### Common Issues
 
 1. **Service won't start**: Check permissions and configuration file syntax
-2. **Images not loading**: Verify source directory permissions and cache directory writability  
+2. **Images not loading**: Verify source directory permissions and cache directory writability
 3. **High memory usage**: Monitor large image processing, consider reducing concurrent processing
 4. **Slow performance**: Check if pre-generation is enabled, verify SSD usage for cache
 
@@ -449,7 +398,7 @@ sudo systemctl status tenrankai
 sudo journalctl -u tenrankai --since "1 hour ago"
 
 # Test configuration
-/opt/tenrankai/tenrankai --config /etc/tenrankai/config.toml --check-config
+/opt/tenrankai/tenrankai serve --config /etc/tenrankai/config.toml --log-level debug
 
 # Monitor resource usage
 htop
@@ -461,8 +410,6 @@ df -h
 
 Once your Tenrankai instance is deployed:
 
-- [Configuration Reference](/docs/02-configuration) - Fine-tune your settings
-- [Template Customization](/docs/05-templates) - Customize the look and feel  
-- [API Documentation](/docs/04-api) - Integrate with other systems
-
-For ongoing maintenance, establish regular monitoring of logs, disk usage, and performance metrics.
+- [Theming](/docs/07-theming) - Customize appearance
+- [Advanced Features](/docs/08-advanced) - S3 storage, AI analysis
+- [API Reference](/docs/09-api) - Build custom integrations
