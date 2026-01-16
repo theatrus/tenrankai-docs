@@ -59,8 +59,11 @@ permissions = { can_view = true, can_download_medium = true }
 | `can_download_medium` | Download medium resolution |
 | `can_download_large` | Download large resolution |
 | `can_download_original` | Download original files |
+| `can_download_gallery` | Download folders as ZIP archives |
 
 Note: Thumbnails and gallery-size images are included with `can_view`.
+
+**ZIP Downloads**: Users with `can_download_gallery` see a "Download All" button in gallery view. Downloads include all images in the folder (and subfolders) as a streaming ZIP archive.
 
 ### Interactive
 

@@ -20,6 +20,64 @@ user_database = "users.toml"              # Enables authentication
 cookie_secret = "generate-with-openssl-rand-base64-32"
 ```
 
+## User Storage Backends
+
+Tenrankai supports multiple storage backends for user data. Configure via URL-style paths:
+
+### TOML File (Default)
+
+Simple file-based storage, perfect for single-server deployments:
+
+```toml
+[app]
+user_database = "users.toml"
+```
+
+### SQLite
+
+Local database with better concurrency. Ideal for medium deployments:
+
+```toml
+[app]
+user_database = "sqlite:///var/data/users.db"
+# Or relative path
+user_database = "sqlite://users.db"
+```
+
+### PostgreSQL
+
+For production deployments with existing database infrastructure:
+
+```toml
+[app]
+user_database = "postgresql://user:password@localhost/tenrankai"
+```
+
+### DynamoDB
+
+Serverless option for AWS deployments:
+
+```toml
+[app]
+user_database = "dynamodb://users-table?region=us-east-1"
+```
+
+### Multi-Site Isolation
+
+SQL and DynamoDB backends automatically scope users by site ID, enabling secure multi-tenant deployments where each site has isolated user accounts.
+
+### Migration Between Backends
+
+Export and import users between backends:
+
+```bash
+# Export from TOML
+tenrankai user export --database users.toml --output users.json
+
+# Import to SQLite
+tenrankai user import --database sqlite://users.db --input users.json
+```
+
 ## Email Configuration
 
 Configure an email provider to send login links:

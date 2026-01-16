@@ -333,9 +333,18 @@ tenrankai cache cleanup -g photos
 tenrankai cache invalidate -g photos -t image -p "IMG_001.jpg"
 tenrankai cache invalidate -g photos -t composite -p "folder-path"
 
+# Invalidate all images in a folder (useful after replacing photos)
+tenrankai cache invalidate -g photos -t folder -p "2026-vacation"
+tenrankai cache invalidate -g photos -t folder -p "2026-vacation" --dry-run
+
 # List cached composite images
 tenrankai cache list-composites -g photos
 ```
+
+Cache invalidation types:
+- `image`: Single image (all sizes/formats)
+- `composite`: Folder preview composite image
+- `folder`: All images in a folder (thumbnails, gallery, medium, large)
 
 ### AVIF Debugging
 
