@@ -59,11 +59,14 @@ permissions = { can_view = true, can_download_medium = true }
 | `can_download_medium` | Download medium resolution |
 | `can_download_large` | Download large resolution |
 | `can_download_original` | Download original files |
+| `can_download_raw` | Download associated RAW files |
 | `can_download_gallery` | Download folders as ZIP archives |
 
 Note: Thumbnails and gallery-size images are included with `can_view`.
 
 **ZIP Downloads**: Users with `can_download_gallery` see a "Download All" button in gallery view. Downloads include all images in the folder (and subfolders) as a streaming ZIP archive.
+
+**RAW Downloads**: Users with `can_download_raw` see a RAW download button when images have associated RAW files (.dng, .arw, .cr2, etc.).
 
 ### Interactive
 
@@ -72,6 +75,9 @@ Note: Thumbnails and gallery-size images are included with `can_view`.
 | `can_use_zoom` | Click-to-zoom loupe (medium image) |
 | `can_use_tile_zoom` | High-resolution tile zoom |
 | `can_read_metadata` | See comments, picks, tags |
+| `can_see_versions` | See and navigate to previous image versions |
+
+**Image Versions**: Users with `can_see_versions` see a version picker when images have previous versions available.
 
 ### Content Management
 
@@ -82,6 +88,9 @@ Note: Thumbnails and gallery-size images are included with `can_view`.
 | `can_delete_own_comments` | Delete your own comments |
 | `can_set_picks` | Mark images as picks/favorites |
 | `can_add_tags` | Add tags to images |
+| `can_edit_content` | Edit folder and image descriptions |
+
+**Inline Editing**: Users with `can_edit_content` can edit titles and descriptions directly in the gallery UI using a rich text editor.
 
 ### Moderation
 

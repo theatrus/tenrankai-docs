@@ -363,6 +363,85 @@ Shows:
 - Gain map presence
 - ICC profile info
 
+## HEIC/HEIF Support
+
+Tenrankai natively supports HEIC/HEIF images (iPhone photos) with full HDR pipeline:
+
+- **Apple Photos**: Direct support for iPhone HEIC files
+- **HDR Preservation**: Gain maps extracted and converted to AVIF format
+- **Metadata**: Full EXIF extraction (camera, GPS, dates)
+- **Color Profiles**: ICC profiles preserved through processing
+
+HEIC images are automatically converted to web-friendly formats (WebP, AVIF, JPEG) while preserving HDR data when outputting to AVIF.
+
+## Multi-File Image Support
+
+Associate multiple files with a single gallery image for RAW workflows and version management.
+
+### RAW File Association
+
+Place RAW files alongside processed images:
+
+```
+photos/
+├── IMG_0001.jpg      # Displayed in gallery
+├── IMG_0001.dng      # Associated RAW (downloadable)
+├── IMG_0002.arw      # Sony RAW
+└── IMG_0002.jpg      # Processed version
+```
+
+Supported RAW formats: `.dng`, `.arw`, `.crw`, `.cr2`, `.cr3`, `.nef`, `.orf`, `.raf`, `.rw2`, `.pef`, `.srw`
+
+Users with `can_download_raw` permission see a RAW download button.
+
+### Image Versions
+
+Track multiple versions using suffixes or a versions folder:
+
+**Version Suffixes**:
+```
+photos/
+├── IMG_0001.jpg       # Primary (displayed)
+├── IMG_0001_v1.jpg    # Previous version
+└── IMG_0001_v2.jpg    # Older version
+```
+
+**Versions Folder**:
+```
+photos/
+├── IMG_0001.jpg           # Primary (displayed)
+└── __versions/
+    ├── IMG_0001.jpg       # Previous version (by mod time)
+    └── IMG_0001_v1.jpg    # Explicit version
+```
+
+Users with `can_see_versions` permission see a version picker to navigate between versions.
+
+### Hidden Folders
+
+Folders prefixed with `__` are hidden from navigation but accessible for internal use:
+
+```
+photos/
+├── vacation/          # Visible folder
+└── __versions/        # Hidden (for version storage)
+```
+
+## Inline Content Editing
+
+Edit folder and image descriptions directly in the gallery UI.
+
+Users with `can_edit_content` permission see edit buttons to modify:
+- **Folder descriptions**: Title and markdown description
+- **Image descriptions**: Title and caption
+
+The editor supports:
+- Rich text mode with formatting toolbar
+- Raw markdown editing mode
+- Bold, italic, headings, lists, quotes, code, links
+
+Changes are saved to the markdown sidecar files (`_folder.md` or `image.jpg.md`).
+
 ## Enhanced Metadata Sources
 
 Tenrankai reads metadata from multiple sources with priority:
