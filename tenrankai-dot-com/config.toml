@@ -1,4 +1,9 @@
-# Tenrankai Configuration for Marketing & Documentation Site
+# Tenrankai Bootstrap Configuration for Marketing & Documentation Site
+#
+# This is the bootstrap configuration file. It contains server settings and
+# references the ConfigStorage directory for site-specific configuration.
+#
+# Site configuration (galleries, posts, permissions) is managed in config.d/
 
 [server]
 host = "127.0.0.1"
@@ -7,98 +12,19 @@ port = 3000
 [app]
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery Server"
-cookie_secret = "change-me-in-production-use-a-long-random-string"
-base_url = "https://tenrankai.com"
+# ConfigStorage directory for site configuration
+config_storage = "config.d"
 
-[templates]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
-directories = ["templates", "../../tenrankai/templates"]
-
-[static_files]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
-directories = ["static", "../../tenrankai/static"]
-
-# Main demo gallery showcasing Tenrankai's capabilities
-[[galleries]]
-name = "main"
-url_prefix = "/gallery"
-source_directory = "photos"
-cache_directory = "cache/gallery"
-images_per_page = 24
-new_threshold_days = 30
-cache_refresh_interval_minutes = 120
-jpeg_quality = 85
-webp_quality = 85.0
-copyright_holder = "Tenrankai Project"
-image_indexing = "filename"  # Options: filename, sequence, unique_id
-
-# Pre-generate cache for better demo experience
-[galleries.pregenerate]
-formats = { jpeg = true, webp = true, avif = false }
-sizes = { thumbnail = true, gallery = true, medium = true, large = false }
-tiles = false
-
-# Use default templates
-gallery_template = "modules/gallery.html.liquid"
-image_detail_template = "modules/image_detail.html.liquid"
-
-# Role-based permissions
-[galleries.permissions]
-# For this demo gallery, we'll show everything to the public
-public_role = "demo_viewer"
-default_authenticated_role = "demo_viewer"
-
-# Define a custom role that shows all features for the demo
-[galleries.permissions.roles.demo_viewer]
-name = "demo_viewer"
-permissions = { can_view = true, can_see_exact_dates = true, can_see_location = true, can_see_technical_details = true, can_download_medium = true, can_download_large = true, can_read_metadata = true, can_use_zoom = true, can_use_tile_zoom = true }
-
-# Image size configurations
-[galleries.thumbnail]
-width = 300
-height = 300
-
-[galleries.gallery_size]
-width = 800
-height = 800
-
-[galleries.medium]
-width = 1200
-height = 1200
-
-[galleries.large]
-width = 1600
-height = 1600
-
-# Gallery preview settings
-[galleries.preview]
-max_images = 6
-max_depth = 3
-max_per_folder = 2
-
-# Documentation posts system
-[[posts]]
-name = "docs"
-source_directory = "posts/docs"
-url_prefix = "/docs"
-posts_per_page = 20
-refresh_interval_minutes = 30  # Auto-refresh for live documentation updates
-
-# Use default templates
-index_template = "modules/posts_index.html.liquid"
-post_template = "modules/post_detail.html.liquid"
-
-# Blog posts system
-[[posts]]
-name = "blog"
-source_directory = "posts/blog"
-url_prefix = "/blog"
-posts_per_page = 10
-refresh_interval_minutes = 60
-
-# Use default templates
-index_template = "modules/posts_index.html.liquid"
-post_template = "modules/post_detail.html.liquid"
+# Optional: Email configuration for user registration and notifications
+# [email]
+# provider = "null"  # Use null provider for development (logs emails instead of sending)
+# from_address = "noreply@tenrankai.com"
+#
+# # For production, use Amazon SES:
+# # provider = "ses"
+# # from_address = "noreply@tenrankai.com"
+# # region = "us-east-1"  # Optional, uses AWS default
+# # Credentials are auto-discovered via AWS SDK (env vars, ~/.aws/credentials, IAM roles)
 
 # Optional: AI-Powered Image Analysis with OpenAI Vision
 # Automatically generate keywords and alt-text for images
@@ -112,64 +38,3 @@ post_template = "modules/post_detail.html.liquid"
 # enable_background_analysis = false   # Enable automatic analysis of new images
 # background_interval_minutes = 60     # How often to check for new images
 # background_batch_size = 50           # Max images to analyze per run
-#
-# CLI commands:
-#   tenrankai analyze-images -g photos           # Analyze all images in gallery
-#   tenrankai analyze-images -g photos -f folder # Analyze specific folder
-#   tenrankai analyze-images -g photos --limit 50 --dry-run
-#   tenrankai clear-analysis -g photos           # Remove AI-generated data
-
-# Optional: Email configuration for user registration and notifications
-# [email]
-# provider = "null"  # Use null provider for development (logs emails instead of sending)
-# from_address = "noreply@tenrankai.com"
-#
-# # For production, use Amazon SES:
-# # provider = "ses"
-# # from_address = "noreply@tenrankai.com"
-# # region = "us-east-1"  # Optional, uses AWS default
-# # Credentials are auto-discovered via AWS SDK (env vars, ~/.aws/credentials, IAM roles)
-
-# Note: To enable authentication and WebAuthn/Passkey support:
-# 1. Add user_database = "users.db" to the [app] section
-# 2. Ensure base_url is set with a valid hostname
-# WebAuthn will automatically use the hostname from base_url as the RP ID
-
-# Optional: Example of a portfolio gallery with clean URLs
-# [[galleries]]
-# name = "portfolio"
-# url_prefix = "/examples/portfolio"
-# source_directory = "photos/portfolio-example"
-# cache_directory = "cache/portfolio"
-# images_per_page = 20
-# jpeg_quality = 90
-# webp_quality = 90.0
-# copyright_holder = "Your Name"
-# image_indexing = "sequence"  # Clean URLs like /1, /2 instead of filenames
-# 
-# [galleries.permissions]
-# public_role = "viewer"  # Limited public access
-# default_authenticated_role = "member"
-# 
-# [galleries.thumbnail]
-# width = 400
-# height = 400
-# 
-# [galleries.gallery_size]
-# width = 1000
-# height = 1000
-
-# Optional: Example of a family gallery with privacy settings
-# [[galleries]]
-# name = "family"
-# url_prefix = "/examples/family"
-# source_directory = "photos/family-example"
-# cache_directory = "cache/family"
-# images_per_page = 50
-# new_threshold_days = 7
-# copyright_holder = "The Smith Family"
-# 
-# [galleries.permissions]
-# public_role = "viewer"  # Limited public access
-# default_authenticated_role = "family"  # Family members get full access
-

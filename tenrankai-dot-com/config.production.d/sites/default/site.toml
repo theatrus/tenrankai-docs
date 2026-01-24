@@ -1,0 +1,16 @@
+# Production Site Configuration for tenrankai.com
+# IMPORTANT: Generate strong secrets for production!
+# Use: openssl rand -base64 32
+
+hostnames = ["tenrankai.com", "www.tenrankai.com"]
+templates = ["templates", "../tenrankai/templates"]
+static_files = ["static", "../tenrankai/static"]
+# S3 alternatives:
+# templates = ["templates-local", "s3://my-bucket/templates?region=us-west-2"]
+# static_files = ["s3://my-bucket/static?region=us-west-2"]
+# use_redirects = true  # Clients download directly from S3
+
+base_url = "https://tenrankai.com"
+cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
+# user_database = "users.toml"  # Uncomment to enable authentication & WebAuthn
+# storage_prefix = "/srv/tenrankai/data"  # Base path for galleries/posts

@@ -1,0 +1,10 @@
+# Documentation Posts Configuration
+
+name = "docs"
+source_directory = "posts/docs"
+url_prefix = "/docs"
+posts_per_page = 20
+refresh_interval_minutes = 30  # Auto-refresh for live documentation updates
+
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"

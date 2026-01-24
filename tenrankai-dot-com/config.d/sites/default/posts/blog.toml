@@ -1,0 +1,10 @@
+# Blog Posts Configuration
+
+name = "blog"
+source_directory = "posts/blog"
+url_prefix = "/blog"
+posts_per_page = 10
+refresh_interval_minutes = 60
+
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"

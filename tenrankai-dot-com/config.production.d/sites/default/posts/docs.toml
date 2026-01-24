@@ -1,0 +1,10 @@
+# Production Documentation Posts Configuration
+
+name = "docs"
+source_directory = "posts/docs"
+url_prefix = "/docs"
+posts_per_page = 50  # Show more docs per page
+refresh_interval_minutes = 60  # Check for updates hourly
+
+index_template = "modules/posts_index.html.liquid"
+post_template = "modules/post_detail.html.liquid"

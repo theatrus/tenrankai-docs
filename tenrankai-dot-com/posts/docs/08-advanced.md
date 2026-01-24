@@ -1,12 +1,62 @@
 +++
 title = "Advanced Features"
-summary = "S3 storage, AI image analysis, CLI tools, and power user features"
-date = "2026-01-13"
+summary = "Admin UI, S3 storage, AI image analysis, CLI tools, and power user features"
+date = "2026-01-23"
 +++
 
 # Advanced Features
 
 This guide covers Tenrankai's advanced features for power users and cloud deployments.
+
+## Admin UI
+
+Tenrankai includes a built-in web-based administration interface for managing users, viewing galleries, and configuring permissions without editing files.
+
+### Accessing the Admin UI
+
+The Admin UI is available at `/_admin/` and requires:
+- Authentication (must be logged in)
+- `owner_access` permission in any gallery
+
+### Features
+
+**User Management:**
+- View all registered users
+- Create new users
+- Delete users
+- Send login invitation emails (72-hour expiry)
+
+**Gallery Viewer:**
+- See all configured galleries
+- View gallery permissions and role assignments
+- See folder structures and image counts
+
+**Role Viewer:**
+- View built-in roles and their permissions
+- See permission groups organized by category
+
+### Admin API
+
+The Admin UI communicates with a REST API that you can also use programmatically:
+
+```bash
+# List all sites
+curl -H "Cookie: session=..." https://example.com/_admin/api/sites
+
+# Get site configuration
+curl -H "Cookie: session=..." https://example.com/_admin/api/sites/default
+
+# List galleries for a site
+curl -H "Cookie: session=..." https://example.com/_admin/api/sites/default/galleries
+
+# Get/update permissions
+curl -H "Cookie: session=..." https://example.com/_admin/api/sites/default/permissions
+
+# Reload site configuration
+curl -X POST -H "Cookie: session=..." https://example.com/_admin/api/sites/default/reload
+```
+
+See the [API Reference](/docs/09-api) for complete Admin API documentation.
 
 ## S3 Storage Support
 

@@ -1,127 +1,20 @@
-# Tenrankai Production Configuration for Marketing & Documentation Site
-# 
-# This configuration is optimized for production deployment.
+# Tenrankai Production Bootstrap Configuration
+#
+# This is the bootstrap configuration file for production deployment.
 # Copy to config.toml and adjust for your environment.
+#
+# Site configuration is managed in config.production.d/
+# Copy config.production.d/ to config.d/ when deploying.
 
 [server]
-host = "127.0.0.1"  # Listen on all interfaces
-port = 8091       # Common port for reverse proxy setups
+host = "127.0.0.1"  # Bind to localhost for reverse proxy setups
+port = 8091         # Common port for reverse proxy setups
 
 [app]
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery CMS Server"
-# IMPORTANT: Generate strong secrets for production!
-# Use: openssl rand -base64 32
-cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
-base_url = "https://tenrankai.com"
-# user_database = "users.db"  # Uncomment to enable authentication & WebAuthn
-
-[templates]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
-directories = ["templates", "../tenrankai/templates"]
-# S3 alternative with local fallback:
-# directories = ["templates-local", "s3://my-bucket/templates?region=us-west-2"]
-
-[static_files]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
-directories = ["static", "../tenrankai/static"]
-# S3 with signed URL redirects (reduces server bandwidth):
-# directories = ["s3://my-bucket/static?region=us-west-2"]
-# use_redirects = true  # Clients download directly from S3
-
-# Main demo gallery
-[[galleries]]
-name = "main"
-url_prefix = "/gallery"
-# Local storage (default)
-source_directory = "photos"  # Change to absolute path for production: /srv/tenrankai/photos
-cache_directory = "cache/gallery"  # Change to absolute path for production: /srv/tenrankai/cache/gallery
-# S3 storage alternatives:
-# source_directory = "s3://my-bucket/photos?region=us-west-2"
-# cache_directory = "s3://my-bucket/cache?region=us-west-2"
-# Hybrid: local source with S3 cache (recommended for performance)
-# source_directory = "/srv/tenrankai/photos"
-# cache_directory = "s3://my-bucket/cache?region=us-west-2"
-images_per_page = 24
-new_threshold_days = 30
-cache_refresh_interval_minutes = 360  # 6 hours
-jpeg_quality = 85
-webp_quality = 85.0
-copyright_holder = "Tenrankai Project"
-image_indexing = "filename"
-
-gallery_template = "modules/gallery.html.liquid"
-image_detail_template = "modules/image_detail.html.liquid"
-
-# Pre-generate cache for production (recommended)
-[galleries.pregenerate]
-formats = { jpeg = true, webp = true, avif = false }
-sizes = { thumbnail = true, gallery = true, medium = true, large = false }
-tiles = true  # Pre-generate tiles for enhanced zoom
-
-# Tile configuration for enhanced zoom
-[galleries.tiles]
-tile_size = 1024
-
-# Permission configuration for this gallery
-# Since user_database is configured, we want to restrict public access
-[galleries.permissions]
-public_role = "viewer"  # Public users get limited viewer role
-default_authenticated_role = "contributor"  # Authenticated users get contributor role
-
-# Define the viewer role for public/unauthenticated users
-[galleries.permissions.roles.viewer]
-name = "viewer"
-permissions = { can_view = true, can_see_technical_details = true, can_download_medium = true, can_use_zoom = true, can_use_tile_zoom = true }
-
-# Define the contributor role for authenticated users
-[galleries.permissions.roles.contributor]
-name = "contributor"
-inherits = "viewer"
-permissions = { can_see_exact_dates = true, can_see_location = true, can_download_large = true, can_read_metadata = true, can_add_comments = true, can_edit_own_comments = true, can_delete_own_comments = true, can_set_picks = true, can_add_tags = true }
-
-[galleries.thumbnail]
-width = 300
-height = 300
-
-[galleries.gallery_size]
-width = 800
-height = 800
-
-[galleries.medium]
-width = 1200
-height = 1200
-
-[galleries.large]
-width = 1600
-height = 1600
-
-[galleries.preview]
-max_images = 6
-max_depth = 3
-max_per_folder = 2
-
-# Documentation
-[[posts]]
-name = "docs"
-source_directory = "posts/docs"
-url_prefix = "/docs"
-posts_per_page = 50  # Show more docs per page
-refresh_interval_minutes = 60  # Check for updates hourly
-
-index_template = "modules/posts_index.html.liquid"
-post_template = "modules/post_detail.html.liquid"
-
-# Blog
-[[posts]]
-name = "blog"
-source_directory = "posts/blog"
-url_prefix = "/blog"
-posts_per_page = 10
-refresh_interval_minutes = 120  # Check every 2 hours
-
-index_template = "modules/posts_index.html.liquid"
-post_template = "modules/post_detail.html.liquid"
+# ConfigStorage directory for site configuration
+config_storage = "config.production.d"
 
 # Email configuration for production (required for user registration)
 [email]
@@ -133,10 +26,9 @@ from_address = "noreply@tenrankai.com"
 # For Amazon SES (when provider = "ses"):
 # region = "us-east-1"  # Optional, defaults to AWS SDK default region
 # Credentials are auto-discovered via AWS SDK provider chain:
-# 1. Explicit credentials (access_key_id, secret_access_key)
-# 2. Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-# 3. AWS credentials file (~/.aws/credentials)
-# 4. IAM role credentials (EC2, ECS, Lambda)
+# 1. Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+# 2. AWS credentials file (~/.aws/credentials)
+# 3. IAM role credentials (EC2, ECS, Lambda)
 
 # AI-Powered Image Analysis with OpenAI Vision (optional)
 # Automatically generate keywords and alt-text for better SEO and accessibility
@@ -150,22 +42,12 @@ from_address = "noreply@tenrankai.com"
 # enable_background_analysis = true    # Enable for production auto-processing
 # background_interval_minutes = 60     # Check for new images hourly
 # background_batch_size = 50           # Process up to 50 images per run
-#
-# Production usage:
-#   tenrankai analyze-images -g main             # Initial batch analysis
-#   tenrankai analyze-images -g main --limit 100 # Limit per run
-#   tenrankai clear-analysis -g main --dry-run   # Preview what would be cleared
-
-# Note: WebAuthn/Passkey support is automatically enabled when:
-# 1. user_database is configured in [app] section
-# 2. base_url is set with a valid hostname
-# WebAuthn will use the base_url hostname as the RP ID
 
 # Example systemd service file (save as /etc/systemd/system/tenrankai.service):
 # [Unit]
 # Description=Tenrankai Photo Gallery Server
 # After=network.target
-# 
+#
 # [Service]
 # Type=simple
 # User=tenrankai
@@ -175,7 +57,7 @@ from_address = "noreply@tenrankai.com"
 # ExecStart=/srv/tenrankai/tenrankai/target/release/tenrankai
 # Restart=always
 # RestartSec=10
-# 
+#
 # [Install]
 # WantedBy=multi-user.target
 
@@ -183,12 +65,12 @@ from_address = "noreply@tenrankai.com"
 # server {
 #     listen 443 ssl http2;
 #     server_name tenrankai.com;
-#     
+#
 #     ssl_certificate /etc/letsencrypt/live/tenrankai.com/fullchain.pem;
 #     ssl_certificate_key /etc/letsencrypt/live/tenrankai.com/privkey.pem;
-#     
+#
 #     client_max_body_size 50M;  # For photo uploads if enabled
-#     
+#
 #     location / {
 #         proxy_pass http://127.0.0.1:8091;
 #         proxy_set_header Host $host;

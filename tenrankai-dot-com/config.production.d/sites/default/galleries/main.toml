@@ -1,0 +1,56 @@
+# Production Gallery Configuration
+
+name = "main"
+url_prefix = "/gallery"
+# Local storage (default)
+source_directory = "photos"  # Change to absolute path for production: /srv/tenrankai/photos
+cache_directory = "cache/gallery"  # Change to absolute path for production: /srv/tenrankai/cache/gallery
+# S3 storage alternatives:
+# source_directory = "s3://my-bucket/photos?region=us-west-2"
+# cache_directory = "s3://my-bucket/cache?region=us-west-2"
+# Hybrid: local source with S3 cache (recommended for performance)
+# source_directory = "/srv/tenrankai/photos"
+# cache_directory = "s3://my-bucket/cache?region=us-west-2"
+images_per_page = 24
+new_threshold_days = 30
+cache_refresh_interval_minutes = 360  # 6 hours
+jpeg_quality = 85
+webp_quality = 85.0
+copyright_holder = "Tenrankai Project"
+image_indexing = "filename"
+
+gallery_template = "modules/gallery.html.liquid"
+image_detail_template = "modules/image_detail.html.liquid"
+
+# Pre-generate cache for production (recommended)
+[pregenerate]
+formats = { jpeg = true, webp = true, avif = false }
+sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+tiles = true  # Pre-generate tiles for enhanced zoom
+
+# Tile configuration for enhanced zoom
+[tiles]
+tile_size = 1024
+
+# Image size configurations
+[thumbnail]
+width = 300
+height = 300
+
+[gallery_size]
+width = 800
+height = 800
+
+[medium]
+width = 1200
+height = 1200
+
+[large]
+width = 1600
+height = 1600
+
+# Gallery preview settings
+[preview]
+max_images = 6
+max_depth = 3
+max_per_folder = 2

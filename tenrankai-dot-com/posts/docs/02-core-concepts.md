@@ -26,7 +26,17 @@ A typical Tenrankai site looks like this:
 
 ```
 my-gallery/
-├── config.toml              # Main configuration
+├── config.toml              # Bootstrap configuration (server, email)
+├── config.d/                # Site configuration (ConfigStorage)
+│   └── sites/
+│       └── default/
+│           ├── site.toml        # Site settings
+│           ├── permissions.toml # Roles and access control
+│           ├── galleries/
+│           │   └── main.toml    # Gallery configurations
+│           └── posts/
+│               ├── blog.toml    # Blog configuration
+│               └── docs.toml    # Documentation configuration
 ├── users.toml               # User database (if authentication enabled)
 ├── templates/               # Liquid templates
 │   ├── pages/              # Full page templates
@@ -47,9 +57,12 @@ my-gallery/
 └── cache/                   # Generated images (auto-created)
 ```
 
-## Configuration File
+## Two-Tier Configuration
 
-Tenrankai uses TOML format for configuration. By default, it looks for `config.toml` in the current directory:
+Tenrankai uses a two-tier configuration system:
+
+1. **Bootstrap config** (`config.toml`): Server settings, email, OpenAI - static settings that rarely change
+2. **ConfigStorage** (`config.d/`): Site-specific configuration (galleries, posts, permissions) that can be managed via CLI or Admin UI
 
 ```bash
 # Use default config.toml
@@ -59,9 +72,70 @@ tenrankai serve
 tenrankai serve --config production.toml
 ```
 
-### Minimal Configuration
+### Quick Setup with CLI
 
-Here's the simplest working configuration:
+The easiest way to get started is using the CLI:
+
+```bash
+# Initialize ConfigStorage directory with a default site
+tenrankai config init config.d
+
+# Add galleries and posts to your site
+tenrankai config add-gallery photos --site default --source photos --url-prefix /gallery
+tenrankai config add-posts blog --site default --source posts/blog --url-prefix /blog
+```
+
+### Bootstrap Configuration (config.toml)
+
+The bootstrap config contains server-level settings:
+
+```toml
+[server]
+host = "127.0.0.1"
+port = 3000
+
+[app]
+name = "My Gallery"
+config_storage = "config.d"  # Path to ConfigStorage directory
+
+# Optional: Email for authentication
+# [email]
+# provider = "null"
+# from_address = "noreply@example.com"
+```
+
+### Site Configuration (ConfigStorage)
+
+Site-specific configuration lives in `config.d/sites/default/`:
+
+**site.toml** - Site settings:
+```toml
+hostnames = ["localhost", "photos.example.com"]
+templates = ["templates"]
+static_files = ["static"]
+base_url = "https://photos.example.com"
+cookie_secret = "generate-with-openssl-rand-base64-32"
+# user_database = "users.toml"  # Enables authentication
+```
+
+**galleries/main.toml** - Gallery configuration:
+```toml
+name = "main"
+url_prefix = "/gallery"
+source_directory = "photos"
+cache_directory = "cache/main"
+```
+
+**permissions.toml** - Roles and access control:
+```toml
+public_role = "viewer"
+[roles.viewer]
+permissions = { can_view = true }
+```
+
+### Legacy Single-File Configuration
+
+For simpler deployments, you can still use a single config.toml with everything inline:
 
 ```toml
 [server]
@@ -85,6 +159,8 @@ source_directory = "photos"
 cache_directory = "cache"
 ```
 
+This format continues to work and is automatically converted to a default site internally.
+
 ## Server Configuration
 
 The `[server]` section controls network settings:
@@ -104,30 +180,49 @@ For production, bind to `127.0.0.1` and use a reverse proxy (nginx, Caddy) for H
 
 ## Application Configuration
 
-The `[app]` section contains global settings:
+The `[app]` section in the bootstrap config contains global settings:
 
 ```toml
 [app]
 name = "My Photo Gallery"
 log_level = "info"
-cookie_secret = "generate-with-openssl-rand-base64-32"
-base_url = "https://photos.example.com"
-user_database = "users.toml"  # Enables authentication
+config_storage = "config.d"  # Path to ConfigStorage directory
 ```
 
 | Setting | Required | Description |
 |---------|----------|-------------|
 | `name` | Yes | Site name (appears in titles, emails) |
 | `log_level` | No | `trace`, `debug`, `info`, `warn`, `error` (default: `info`) |
-| `cookie_secret` | Yes | Secret for signing cookies (min 32 chars recommended) |
-| `base_url` | No* | Full URL of your site (* Required for email login) |
-| `user_database` | No | Path to user database file (enables authentication) |
+| `config_storage` | No | Path to ConfigStorage directory (recommended) |
+
+Site-specific settings like `cookie_secret`, `base_url`, and `user_database` are configured in `config.d/sites/default/site.toml`.
 
 ### Generating a Cookie Secret
 
 ```bash
 # Generate a secure random secret
 openssl rand -base64 32
+```
+
+### CLI Configuration Commands
+
+Manage your configuration without editing files:
+
+```bash
+# Initialize ConfigStorage
+tenrankai config init config.d
+
+# List and manage sites
+tenrankai config list-sites
+tenrankai config add-site photos --hostname photos.example.com
+
+# Manage galleries
+tenrankai config list-galleries default
+tenrankai config add-gallery portfolio --site default --source portfolio --url-prefix /portfolio
+
+# Manage posts
+tenrankai config list-posts default
+tenrankai config add-posts blog --site default --source posts/blog --url-prefix /blog
 ```
 
 ## Templates and Static Files
@@ -283,6 +378,22 @@ tenrankai cache report -g photos
 tenrankai cache cleanup -g photos
 ```
 
+## Admin UI
+
+Tenrankai includes a built-in administration interface at `/_admin/` for managing your site without editing configuration files.
+
+**Features:**
+- **User Management**: Create, delete, and invite users
+- **Gallery Viewer**: See gallery configurations and permissions
+- **Role Viewer**: View built-in roles and their permissions
+- **Site Configuration**: Manage site settings via API
+
+**Access Requirements:**
+- Must be authenticated
+- Must have `owner_access` permission in any gallery
+
+The Admin UI is a React-based single-page application that communicates with the Admin API.
+
 ## Next Steps
 
 Now that you understand the basics:
@@ -290,3 +401,4 @@ Now that you understand the basics:
 1. [Gallery Setup](/docs/03-galleries) - Configure image processing, sizes, and formats
 2. [Authentication](/docs/04-authentication) - Set up user accounts and login
 3. [Permissions](/docs/05-permissions) - Control who can see what
+4. [Advanced Features](/docs/08-advanced) - Admin UI, S3 storage, multi-site hosting
