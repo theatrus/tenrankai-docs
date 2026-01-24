@@ -92,6 +92,14 @@ Note: Thumbnails and gallery-size images are included with `can_view`.
 
 **Inline Editing**: Users with `can_edit_content` can edit titles and descriptions directly in the gallery UI using a rich text editor.
 
+### Image Management
+
+| Permission | Description |
+|------------|-------------|
+| `can_manage_images` | Upload, move, copy, hide, and delete images |
+
+**Web-Based Image Management**: Users with `can_manage_images` see a toolbar in gallery view with options to upload images, create folders, and perform batch operations on selected images (move, copy, hide, unhide, delete). See [Web-Based Image Management](#web-based-image-management) below.
+
 ### Moderation
 
 | Permission | Description |
@@ -333,6 +341,55 @@ Users with `can_read_metadata` can filter by:
 - Has tags
 
 Filters persist in URL: `/gallery?filter=picks,comments`
+
+## Web-Based Image Management
+
+Users with `can_manage_images` permission can manage gallery content directly through the web interface, providing an alternative to file-based management with SyncThing.
+
+### Upload Images
+
+Click the **+ New** button and select **Upload Images** to open the upload modal:
+
+- **Drag and drop** files or click to browse
+- **Resumable uploads** using the TUS protocol (survives network interruptions)
+- **Large file support** up to 500MB per file
+- **Smart sidecar handling**: Automatically associates `.xmp`, `.md`, and RAW files with their images
+- **Progress tracking** with per-file and overall progress bars
+
+Supported formats: JPEG, PNG, WebP, AVIF, HEIC/HEIF, plus RAW formats (DNG, ARW, CR2, CR3, NEF, ORF, RAF, RW2, PEF, SRW).
+
+### Create Folders
+
+Click **+ New** → **New Folder** to create a folder in the current location.
+
+### Batch Operations
+
+Select images by clicking the checkbox overlay, then use the management toolbar:
+
+| Action | Description |
+|--------|-------------|
+| **Move** | Move selected images to another folder |
+| **Copy** | Copy selected images to another folder |
+| **Hide** | Hide selected images from gallery view |
+| **Unhide** | Unhide previously hidden images |
+| **Delete** | Permanently delete selected images |
+
+The folder picker modal shows the gallery structure for Move and Copy operations.
+
+### SyncThing vs Web Upload
+
+Both approaches work well together:
+
+| Feature | SyncThing | Web Upload |
+|---------|-----------|------------|
+| Bulk sync from desktop | ✅ Best choice | Limited |
+| Quick upload from browser | Limited | ✅ Best choice |
+| Auto-sync between devices | ✅ | — |
+| Remote upload (no local access) | — | ✅ |
+| Metadata editing | Via sidecar files | Via UI |
+| Works offline | ✅ | — |
+
+**Recommendation**: Use SyncThing for desktop workflows and bulk operations, web upload for quick additions and remote management.
 
 ## Troubleshooting
 
