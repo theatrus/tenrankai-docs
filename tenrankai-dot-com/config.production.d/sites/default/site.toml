@@ -2,7 +2,7 @@
 # IMPORTANT: Generate strong secrets for production!
 # Use: openssl rand -base64 32
 
-hostnames = ["tenrankai.com", "www.tenrankai.com"]
+hostnames = ["tenrankai.com", "www.tenrankai.com", "localhost", "*"]
 templates = ["templates", "../tenrankai/templates"]
 static_files = ["static", "../tenrankai/static"]
 # S3 alternatives:
