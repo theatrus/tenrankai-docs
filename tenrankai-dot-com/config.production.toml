@@ -13,6 +13,9 @@ port = 8091         # Common port for reverse proxy setups
 [app]
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery CMS Server"
+# IMPORTANT: Generate a strong secret for production!
+# Use: openssl rand -base64 32
+cookie_secret = "CHANGE_ME_USE_OPENSSL_RAND_BASE64_32"
 # ConfigStorage directory for site configuration
 config_storage = "config.production.d"
 

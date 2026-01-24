@@ -12,6 +12,7 @@ port = 3000
 [app]
 log_level = "info"
 name = "Tenrankai - High-Performance Photo Gallery Server"
+cookie_secret = "change-me-in-production-use-a-long-random-string"
 # ConfigStorage directory for site configuration
 config_storage = "config.d"
 
