@@ -106,4 +106,6 @@ jobs:
         done
     
     - name: Validate TOML configs
-      run: python3 scripts/validate_config.py
+      run: |
+        pip install toml -q
+        python3 scripts/validate_config.py

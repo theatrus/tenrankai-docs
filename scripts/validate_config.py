@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Validate Tenrankai TOML configuration files."""
+"""Validate Tenrankai TOML configuration files.
+
+Requires: pip install toml
+"""
 
 import sys
 import os
-
-try:
-    import toml
-except ImportError:
-    print("Installing toml...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "toml", "-q"])
-    import toml
+import toml
 
 configs = [
     "tenrankai-dot-com/config.toml",
