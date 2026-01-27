@@ -96,7 +96,7 @@ jobs:
         done
         
         # Check documentation
-        for doc in 00-quick-start.md 01-installation.md 02-configuration.md; do
+        for doc in 00-quick-start.md 01-installation.md 02-core-concepts.md; do
           if [ -f "tenrankai-dot-com/posts/docs/$doc" ]; then
             echo "✓ Found $doc"
           else
