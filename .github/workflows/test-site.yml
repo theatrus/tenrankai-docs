@@ -38,7 +38,12 @@ jobs:
     
     - name: Install uv
       uses: astral-sh/setup-uv@v4
-    
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm libheif-dev
+
     - name: Build Tenrankai
       run: |
         cd tenrankai
@@ -96,7 +101,7 @@ jobs:
         done
         
         # Check documentation
-        for doc in 00-quick-start.md 01-installation.md 02-configuration.md; do
+        for doc in 00-quick-start.md 01-installation.md 02-core-concepts.md; do
           if [ -f "tenrankai-dot-com/posts/docs/$doc" ]; then
             echo "✓ Found $doc"
           else
@@ -107,30 +112,5 @@ jobs:
     
     - name: Validate TOML configs
       run: |
-        # Simple TOML validation
-        python3 -c "
-import toml
-import sys
-
-configs = [
-    'tenrankai-dot-com/config.toml',
-    'tenrankai-dot-com/config.dev.toml',
-    'tenrankai-dot-com/config.production.toml'
-]
-
-for config in configs:
-    try:
-        with open(config, 'r') as f:
-            data = toml.load(f)
-        print(f'✓ {config} is valid TOML')
-        
-        # Check required sections
-        required = ['server', 'app', 'templates', 'static_files']
-        for section in required:
-            if section not in data:
-                print(f'✗ {config} missing required section: {section}')
-                sys.exit(1)
-    except Exception as e:
-        print(f'✗ {config} failed validation: {e}')
-        sys.exit(1)
-        "
+        pip install toml -q
+        python3 scripts/validate_config.py
