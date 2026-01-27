@@ -58,6 +58,95 @@ curl -X POST -H "Cookie: session=..." https://example.com/_admin/api/sites/defau
 
 See the [API Reference](/docs/09-api) for complete Admin API documentation.
 
+## Theme Editor
+
+The Admin UI includes a visual theme editor for customizing colors and fonts without editing CSS files.
+
+### Accessing the Theme Editor
+
+Navigate to `/_admin/theme` (requires admin access). The editor provides:
+
+- **Dark/Light Mode Tabs**: Customize colors for each mode independently
+- **Color Pickers**: Visual color selection with hex input
+- **Font Selectors**: Choose from 42 curated Google Fonts
+- **Force Color Scheme**: Lock users to dark or light mode
+- **Reset to Defaults**: Restore original theme
+
+### Customizable Colors
+
+| Color Variable | Description |
+|----------------|-------------|
+| Background Primary | Main page background |
+| Background Secondary | Alternate sections |
+| Background Card | Card and panel backgrounds |
+| Background Hover | Hover state backgrounds |
+| Header Background | Site header |
+| Text Primary | Main text color |
+| Text Secondary | Secondary text |
+| Text Muted | Subtle text, captions |
+| Link Color | Link text |
+| Link Hover | Link hover state |
+| Border Color | Borders and dividers |
+| Accent Color | Highlights and accents |
+| Danger Button | Delete/destructive actions |
+
+### Font Options
+
+Three font categories can be customized:
+
+- **Body Font**: Main content text
+- **Heading Font**: Titles and headers
+- **Monospace Font**: Code blocks and technical text
+
+Fonts are organized by style: Sans-serif, Serif, Slab Serif, Display, Script, Rounded, and Monospace. The editor shows a live preview of each font before selection.
+
+### Force Color Scheme
+
+Override user preferences to lock the site to a specific theme:
+
+- **User Choice** (default): Respects system preference and manual toggle
+- **Always Dark**: Forces dark mode for all visitors
+- **Always Light**: Forces light mode for all visitors
+
+### How It Works
+
+1. Changes are saved to the site's configuration storage
+2. Site automatically reloads to apply changes
+3. Theme CSS is generated dynamically at `/theme.css`
+4. Cache-busting ensures browsers receive updated styles
+
+### Theme API
+
+```bash
+# Get current theme
+curl -H "Cookie: session=..." https://example.com/_admin/api/theme
+
+# Update theme
+curl -X PUT -H "Cookie: session=..." \
+  -H "Content-Type: application/json" \
+  -d '{"dark":{"bg_primary":"#1a1a2e"},"font_body":"Inter"}' \
+  https://example.com/_admin/api/theme
+
+# Reset to defaults
+curl -X DELETE -H "Cookie: session=..." https://example.com/_admin/api/theme
+```
+
+### Manual CSS Override
+
+For advanced customization beyond the theme editor, create `theme-override.css` in your static directory:
+
+```css
+:root {
+  --custom-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0d1117;
+}
+```
+
+The theme editor and manual overrides work together - editor changes are applied first, then `theme-override.css` additions.
+
 ## S3 Storage Support
 
 Tenrankai supports Amazon S3 for storing galleries, caches, templates, and static files.
