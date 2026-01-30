@@ -80,7 +80,7 @@ make clean       # Clean build artifacts
 ### Documentation Posts
 - Quick Start Guide (`/docs/00-quick-start`)
 - Installation Guide (`/docs/01-installation`)
-- Configuration Guide (`/docs/02-configuration`)
+- Core Concepts Guide (`/docs/02-core-concepts`)
 
 ### Blog Posts
 - Introducing Tenrankai (`/blog/introducing-tenrankai`)

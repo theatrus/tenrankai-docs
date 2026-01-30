@@ -250,7 +250,7 @@ class TenrankaiTester:
             ("/blog", "Blog", 200, "Introducing Tenrankai"),
             ("/docs/00-quick-start", "Quick Start doc", 200, "5-Minute Setup"),
             ("/docs/01-installation", "Installation doc", 200, "Installation Guide"),
-            ("/docs/02-configuration", "Configuration doc", 200, "Configuration Guide"),
+            ("/docs/02-core-concepts", "Core Concepts doc", 200, "Core Concepts"),
             ("/blog/introducing-tenrankai", "Blog post", 200, "high-performance photo gallery"),
         ]
         
