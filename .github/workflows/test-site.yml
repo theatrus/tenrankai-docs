@@ -42,7 +42,19 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y nasm libheif-dev
+        # Build tools for AVIF
+        sudo apt-get install -y nasm ninja-build meson cmake pkg-config
+        # libheif dependencies
+        sudo apt-get install -y libde265-dev libx265-dev libaom-dev
+        # Build libheif from source (need >= 1.21 for libheif-rs)
+        git clone --depth 1 --branch v1.21.1 https://github.com/strukturag/libheif.git /tmp/libheif
+        cd /tmp/libheif
+        mkdir build && cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_EXAMPLES=OFF
+        make -j$(nproc)
+        sudo make install
+        sudo ldconfig
+        rm -rf /tmp/libheif
 
     - name: Build Tenrankai
       run: |
