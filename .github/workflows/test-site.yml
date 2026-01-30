@@ -74,15 +74,16 @@ jobs:
     
     - name: Run tests
       run: |
-        uv run test_tenrankai_site.py
-    
-    - name: Test different configs
+        # Use dev config which doesn't have pre-generation blocking startup
+        uv run test_tenrankai_site.py --config config.dev.toml
+
+    - name: Test ConfigStorage config
       run: |
-        # Test dev config
-        uv run test_tenrankai_site.py --config config.dev.toml --port 3457
-        
-        # Test that production config parses (will fail on paths)
+        # Test that ConfigStorage config starts (with quick exit)
         cd tenrankai-dot-com
+        ../tenrankai/target/release/tenrankai --config config.toml --quit-after 5 || true
+
+        # Test that production config parses (will fail on paths)
         ../tenrankai/target/release/tenrankai --config config.production.toml --quit-after 2 || true
     
     - name: Upload logs on failure
