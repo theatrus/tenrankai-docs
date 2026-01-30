@@ -56,6 +56,17 @@ jobs:
         sudo ldconfig
         rm -rf /tmp/libheif
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install frontend dependencies
+      run: |
+        cd tenrankai
+        npm ci
+        cd admin && npm ci
+
     - name: Build Tenrankai
       run: |
         cd tenrankai
