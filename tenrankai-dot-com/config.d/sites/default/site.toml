@@ -1,7 +1,7 @@
 # Site Configuration for tenrankai.com
 # This file defines the default site's templates, static files, and settings
 
-hostnames = ["localhost", "tenrankai.com", "www.tenrankai.com"]
+hostnames = ["localhost", "tenrankai.com", "www.tenrankai.com", "*"]
 templates = ["templates", "../../tenrankai/templates"]
 static_files = ["static", "../../tenrankai/static"]
 base_url = "https://tenrankai.com"

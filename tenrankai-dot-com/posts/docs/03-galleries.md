@@ -97,9 +97,13 @@ Tenrankai preserves color accuracy:
 - **HDR AVIF**: Gain maps preserved for tone mapping
 - **10-bit encoding**: HDR content encoded at proper bit depth
 
-## Copyright Watermarking
+## Watermarking
 
-Add watermarks to medium-sized images:
+Tenrankai supports two watermark types: text-based and PNG image watermarks.
+
+### Text Watermarks
+
+Add text watermarks with automatic color adjustment:
 
 ```toml
 [[galleries]]
@@ -108,10 +112,52 @@ copyright_holder = "Jane Photographer"
 ```
 
 When set:
-- Watermark appears on medium-sized images only
+- Watermark appears on medium-sized images by default
 - Text color automatically adjusts for background (black or white)
 - Color profiles preserved through watermarking
 - Requires `DejaVuSans.ttf` in your static directory
+
+### PNG Image Watermarks
+
+Use custom PNG logos or graphics as watermarks:
+
+```toml
+[[galleries]]
+name = "portfolio"
+
+[galleries.image_watermark]
+image = "_watermark/logo.png"    # Path relative to gallery source
+position = "bottom_right"         # Where to place watermark
+opacity = 0.7                     # 0.0 to 1.0
+scale = 15.0                      # Percentage of image width (1-100)
+padding = 20                      # Pixels from edge
+adaptive = true                   # Auto-invert on light backgrounds
+apply_to_gallery = false          # Watermark grid view images
+apply_to_medium = true            # Watermark detail view images
+apply_to_large = false            # Watermark download images
+```
+
+**Position options:**
+- `top_left`, `top_right`, `bottom_left`, `bottom_right` - corners
+- `center` - centered on image
+- `tiled` - repeating pattern across image
+
+**Adaptive mode:** Grayscale watermarks automatically invert when placed on light backgrounds, ensuring visibility. Colored watermarks are not inverted to preserve their appearance.
+
+**Watermark folder:** Store watermark images in a `_watermark` folder in your gallery. This folder is automatically hidden from gallery navigation.
+
+### Configuring via Admin UI
+
+Both watermark types can be configured through the Admin UI:
+
+1. Go to `/_admin/` → Galleries
+2. Select your gallery
+3. In the Watermark section:
+   - Toggle text watermark and enter copyright holder
+   - Toggle image watermark and select from available images
+   - Adjust position, opacity, scale, and other settings
+
+Changes take effect immediately after saving.
 
 ## Image URL Modes
 

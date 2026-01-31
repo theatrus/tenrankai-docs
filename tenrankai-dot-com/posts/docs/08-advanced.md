@@ -26,10 +26,13 @@ The Admin UI is available at `/_admin/` and requires:
 - Delete users
 - Send login invitation emails (72-hour expiry)
 
-**Gallery Viewer:**
+**Gallery Management:**
 - See all configured galleries
 - View gallery permissions and role assignments
 - See folder structures and image counts
+- Configure watermarks (text and PNG image)
+- Enable/disable tile zoom
+- Adjust gallery settings with live reload
 
 **Role Viewer:**
 - View built-in roles and their permissions
