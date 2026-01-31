@@ -119,7 +119,7 @@ class ComprehensiveTester:
         tests = [
             ("/docs/00-quick-start", "Quick Start guide", 200, "5-Minute Setup"),
             ("/docs/01-installation", "Installation guide", 200, "Installation Guide"),
-            ("/docs/02-configuration", "Configuration guide", 200, "Configuration Guide"),
+            ("/docs/02-core-concepts", "Core Concepts guide", 200, "Core Concepts"),
         ]
         
         for path, name, status, content in tests:

@@ -16,11 +16,12 @@ image_indexing = "filename"  # Options: filename, sequence, unique_id
 gallery_template = "modules/gallery.html.liquid"
 image_detail_template = "modules/image_detail.html.liquid"
 
-# Pre-generate cache for better demo experience
-[pregenerate]
-formats = { jpeg = true, webp = true, avif = false }
-sizes = { thumbnail = true, gallery = true, medium = true, large = false }
-tiles = false
+# Pre-generate cache disabled for faster CI startup
+# Enable in production for better demo experience
+# [pregenerate]
+# formats = { jpeg = true, webp = true, avif = false }
+# sizes = { thumbnail = true, gallery = true, medium = true, large = false }
+# tiles = false
 
 # Image size configurations
 [thumbnail]

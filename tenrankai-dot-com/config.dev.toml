@@ -1,5 +1,6 @@
 # Tenrankai Development Configuration
 # Simple configuration for local development and testing
+# Uses ConfigStorage for site configuration (same as production)
 
 [server]
 host = "127.0.0.1"
@@ -9,59 +10,10 @@ port = 3000
 log_level = "info"
 name = "Tenrankai Dev"
 cookie_secret = "dev-cookie-secret"
-base_url = "http://localhost:3000"
-
-[templates]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main templates
-directories = ["templates", "../../tenrankai/templates"]
-
-[static_files]
-# Cascade: use tenrankai-dot-com customizations first, fall back to main static files
-directories = ["static", "../../tenrankai/static"]
-
-# Single gallery for testing
-[[galleries]]
-name = "main"
-url_prefix = "/gallery"
-source_directory = "photos"
-cache_directory = "cache"
-images_per_page = 12
-jpeg_quality = 80
-webp_quality = 80.0
-copyright_holder = "Tenrankai Project"
-image_indexing = "filename"
-
-# Simple dev permissions - show most features for testing
-[galleries.permissions]
-public_role = "dev_viewer"
-default_authenticated_role = "dev_viewer"
-
-# Development viewer role with most features enabled for testing
-[galleries.permissions.roles.dev_viewer]
-name = "dev_viewer"
-permissions = { can_view = true, can_see_exact_dates = true, can_see_location = true, can_see_technical_details = true, can_download_medium = true, can_read_metadata = true, can_use_zoom = true }
-
-# Minimal documentation
-[[posts]]
-name = "docs"
-source_directory = "posts/docs"
-url_prefix = "/docs"
-posts_per_page = 20
-
-# Blog
-[[posts]]
-name = "blog"
-source_directory = "posts/blog"
-url_prefix = "/blog"
-posts_per_page = 10
+# Use the same ConfigStorage as main config
+config_storage = "config.d"
 
 # Development email configuration - logs emails instead of sending
 [email]
 provider = "null"  # Null provider for development
 from_address = "noreply@localhost"
-
-# Optional: Enable authentication in dev
-# Add to [app] section above:
-# user_database = "users.db"
-# This will automatically enable WebAuthn with localhost as the RP ID
-
