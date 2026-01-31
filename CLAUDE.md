@@ -117,3 +117,49 @@ cd ../tenrankai-dot-com
 
 # Visit http://localhost:3000
 ```
+
+## Testing
+
+### Quick Config Validation
+
+Verify a config file works without leaving the server running:
+```bash
+cd tenrankai-dot-com
+
+# Test default config
+../tenrankai/target/release/tenrankai serve --config config.toml --quit-after 2
+
+# Test production config
+../tenrankai/target/release/tenrankai serve --config config.production.toml --quit-after 2
+
+# Test dev config
+../tenrankai/target/release/tenrankai serve --config config.dev.toml --quit-after 2
+```
+
+The `--quit-after N` flag starts the server, loads all configuration, and exits after N seconds. A clean exit (no errors) means the config is valid.
+
+### TOML Syntax Validation
+
+Validate TOML files without running the server:
+```bash
+python3 scripts/validate_config.py
+```
+
+This checks:
+- TOML syntax is valid
+- Required sections (`[server]`, `[app]`) exist
+- ConfigStorage directories exist if specified
+
+### Building Tenrankai
+
+Before testing, ensure tenrankai is built:
+```bash
+cd tenrankai
+
+# Install npm dependencies (required for frontend build)
+npm ci
+cd admin && npm ci && cd ..
+
+# Build release binary
+cargo build --release
+```
